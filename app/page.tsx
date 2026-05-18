@@ -761,8 +761,7 @@ export default function Home() {
     <main className="studioShell">
       <aside className="projectSidebar" aria-label="Project history">
         <div className="sidebarBrand">
-          <img className="brandLogo" alt="" src="/ugc-logo-icon.png" />
-          <strong>UGCLabs</strong>
+          <img className="sidebarWordmark" alt="UGCDay" src="/ugcday-wordmark.png" />
         </div>
         <nav className="sidebarNav" aria-label="Studio navigation">
           <a className="sidebarNavItem selected" href="#generate">
@@ -842,7 +841,11 @@ export default function Home() {
 
       <section className="studioHero" id="generate">
         <div>
-          <h1>Drop in a video. Generate UGC ads.</h1>
+          <h1 className="heroTitle">
+            <span>Drop in a video. Generate</span>
+            <img className="heroUgcWordmark" alt="UGC" src="/ugc-wordmark.png" />
+            <span>ads.</span>
+          </h1>
           <p className="studioHeroSubcopy">Turn one reference video into endless UGC variations.</p>
           <p className="studioHeroTagline">No editing. More UGC. Faster growth. Just click.</p>
         </div>
