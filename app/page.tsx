@@ -83,33 +83,6 @@ function templateStyleForSubFormat(subFormatId: string): string {
   return subFormatTemplateStyleMap[subFormatId] ?? "auto";
 }
 
-function formatHistoryDate(createdAt: string) {
-  const date = new Date(createdAt);
-
-  if (Number.isNaN(date.getTime())) return "Unknown date";
-
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit"
-  }).format(date);
-}
-
-function getHistoryStatus(item: ProjectHistoryItem) {
-  if (!item.result) return "Saved";
-  if (item.result.videos.every((video) => video.status === "completed")) return "Complete";
-  if (item.result.videos.some((video) => video.status === "failed")) return "Partial";
-  return "Ready";
-}
-
-function getHistoryDownloadUrl(item: ProjectHistoryItem) {
-  return item.result?.videos.find((video) => video.playbackUrl || video.sourceUrl)?.playbackUrl
-    ?? item.result?.videos.find((video) => video.playbackUrl || video.sourceUrl)?.sourceUrl
-    ?? item.thumbnailUrl
-    ?? "";
-}
-
 function asRecord(value: unknown): Record<string, unknown> | undefined {
   return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : undefined;
 }
@@ -268,7 +241,6 @@ export default function Home() {
   const [starterLoading, setStarterLoading] = useState(false);
   const [starterPreview, setStarterPreview] = useState<StarterPreviewResponse | null>(null);
   const [starterApproved, setStarterApproved] = useState(false);
-  const [historyOpen, setHistoryOpen] = useState(false);
   const [activeVideoModal, setActiveVideoModal] = useState<ActiveVideoModal | null>(null);
   const [layerPreviewOpen, setLayerPreviewOpen] = useState(false);
   const [generationMode, setGenerationMode] = useState<GenerationMode>("fast_ugc");
@@ -664,32 +636,6 @@ export default function Home() {
     });
   }
 
-  async function openHistoryItem(item: ProjectHistoryItem) {
-    window.history.pushState({}, "", `?jobId=${encodeURIComponent(item.jobId)}#results`);
-
-    if (item.result) {
-      setResult(item.result);
-      setResultsOpen(true);
-      return;
-    }
-
-    await loadResultByJobId(item.jobId, "History result failed");
-  }
-
-  async function openHistorySource(item: ProjectHistoryItem) {
-    window.history.pushState({}, "", `?jobId=${encodeURIComponent(item.jobId)}#results`);
-
-    if (item.result) {
-      setResult(item.result);
-      setResultsOpen(true);
-      setLayerPreviewOpen(true);
-      return;
-    }
-
-    const payload = await loadResultByJobId(item.jobId, "History source failed");
-    if (payload) setLayerPreviewOpen(true);
-  }
-
   async function loadResultByJobId(jobId: string, errorLabel: string): Promise<GenerateResponse | null> {
     setError("");
 
@@ -787,54 +733,14 @@ export default function Home() {
             <span>Login</span>
           </a>
           <div className="sidebarHistoryMenu">
-            <button
-              className="sidebarNavItem historyToggle"
-              type="button"
-              aria-expanded={historyOpen}
-              onClick={() => setHistoryOpen((open) => !open)}
-            >
+            <a className="sidebarNavItem historyToggle" href="/history">
               <SidebarIcon name="history" />
               <span>History</span>
               <em>{projectHistory.length}</em>
               <svg className="sidebarChevron" aria-hidden="true" viewBox="0 0 24 24">
                 <path d="m6 9 6 6 6-6" />
               </svg>
-            </button>
-            {historyOpen && projectHistory.length ? (
-              <ul className="projectHistoryList">
-                {projectHistory.map((item) => {
-                  const downloadUrl = getHistoryDownloadUrl(item);
-
-                  return (
-                    <li key={item.jobId}>
-                      <article className="historyCard">
-                        <span className="historyThumb">
-                          {item.thumbnailUrl ? <video muted playsInline preload="metadata" src={item.thumbnailUrl} /> : null}
-                        </span>
-                        <div className="historyMeta">
-                          <strong>{item.title}</strong>
-                          <span>{formatHistoryDate(item.createdAt)}</span>
-                          <span>{item.formatName}</span>
-                          <span>{item.videoCount} video{item.videoCount > 1 ? "s" : ""} / {getHistoryStatus(item)}</span>
-                        </div>
-                        <div className="historyActions">
-                          <button type="button" onClick={() => void openHistoryItem(item)}>Open</button>
-                          <button type="button" onClick={() => void openHistorySource(item)}>Source</button>
-                          {downloadUrl ? (
-                            <a href={downloadUrl} download>Download</a>
-                          ) : (
-                            <span>Download</span>
-                          )}
-                        </div>
-                      </article>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : null}
-            {historyOpen && !projectHistory.length ? (
-              <p className="sidebarEmpty">No projects yet.</p>
-            ) : null}
+            </a>
           </div>
         </nav>
       </aside>

@@ -2511,6 +2511,427 @@ h3 {
   text-align: center;
 }
 
+.historyVaultPage {
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(255, 47, 146, 0.12), transparent 28%),
+    linear-gradient(180deg, #ffffff 0, #fbfcff 58%, #ffffff 100%);
+  color: var(--ink);
+}
+
+.historyVaultSidebar {
+  position: sticky;
+  top: 0;
+  display: grid;
+  height: 100vh;
+  align-content: start;
+  gap: 22px;
+  border-right: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 18px 14px;
+}
+
+.historyVaultLogo img {
+  display: block;
+  width: 138px;
+  height: auto;
+}
+
+.historyVaultSidebar nav {
+  display: grid;
+  gap: 8px;
+}
+
+.historyVaultSidebar nav a {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  border-radius: 10px;
+  color: var(--ink);
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 760;
+}
+
+.historyVaultSidebar nav a:hover,
+.historyVaultSidebar nav a.selected {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.historyVaultMain {
+  min-width: 0;
+  padding: 42px clamp(18px, 4vw, 54px) 54px;
+}
+
+.historyVaultHero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 auto 24px;
+}
+
+.historyVaultHero > div:first-child {
+  display: grid;
+  gap: 8px;
+}
+
+.historyVaultHero span,
+.historyJobTop span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.historyVaultHero h1 {
+  margin: 0;
+  font-size: clamp(38px, 5vw, 72px);
+  line-height: 1;
+}
+
+.historyVaultHero p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.historyVaultStats {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 2px 12px;
+  min-width: 184px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 42px rgba(16, 18, 22, 0.06);
+  padding: 14px 16px;
+}
+
+.historyVaultStats strong {
+  font-size: 28px;
+}
+
+.historyVaultStats span {
+  align-self: end;
+  color: var(--muted);
+  text-transform: none;
+}
+
+.historyVaultNotice {
+  border: 1px solid rgba(180, 35, 24, 0.18);
+  border-radius: 14px;
+  background: #fff7f6;
+  color: var(--danger);
+  padding: 12px 14px;
+  font-weight: 720;
+}
+
+.historyJobList {
+  display: grid;
+  gap: 16px;
+}
+
+.historyJobCard,
+.historyVaultEmpty {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 42px rgba(16, 18, 22, 0.06);
+}
+
+.historyJobCard {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.historyJobTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.historyJobTop h2 {
+  margin: 5px 0 4px;
+  font-size: clamp(22px, 2.6vw, 34px);
+}
+
+.historyJobTop p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.historyJobBadges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.historyJobBadges span,
+.historyJobBadges strong {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 820;
+}
+
+.historyJobBadges span {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.historyJobBadges strong {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.historyVariantGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(174px, 1fr));
+  gap: 12px;
+}
+
+.historyVariantCard {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.historyVariantPreview {
+  position: relative;
+  display: grid;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  place-items: center;
+  overflow: hidden;
+  border: 0;
+  background: linear-gradient(180deg, #fff0f7, #f7f8fa);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.historyVariantPreview video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.historyVariantPreview em {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  border-radius: 999px;
+  background: rgba(255, 47, 146, 0.94);
+  color: #ffffff;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 840;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.historyVariantPreview:hover em {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.historyVariantMeta {
+  display: grid;
+  gap: 5px;
+  min-height: 108px;
+  padding: 12px;
+}
+
+.historyVariantMeta span {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.historyVariantMeta strong {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.historyVariantMeta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 720;
+  text-transform: capitalize;
+}
+
+.historyVariantActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  border-top: 1px solid var(--line);
+  padding: 10px;
+}
+
+.historyVariantActions button,
+.historyVariantActions a,
+.historyVariantActions span {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 820;
+}
+
+.historyVariantActions a {
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  color: #ffffff;
+}
+
+.historyVariantActions span {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.historyVaultEmpty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 54px 20px;
+  text-align: center;
+}
+
+.historyVaultEmpty strong {
+  font-size: 24px;
+}
+
+.historyVaultEmpty p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.historyVaultEmpty a {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  color: #ffffff;
+  padding: 0 16px;
+  font-weight: 820;
+}
+
+.historyPreviewModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  background: rgba(16, 18, 22, 0.64);
+  padding: 24px;
+}
+
+.historyPreviewPanel,
+.historySourcePanel {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 30px 90px rgba(16, 18, 22, 0.3);
+  padding: 14px;
+}
+
+.historyPreviewPanel video {
+  max-width: min(92vw, 520px);
+  max-height: calc(100vh - 130px);
+  border-radius: 12px;
+  background: #000000;
+}
+
+.historyPreviewPanel button,
+.historySourcePanel button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(16, 18, 22, 0.88);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.historyPreviewPanel strong {
+  text-align: center;
+}
+
+.historySourcePanel {
+  width: min(980px, calc(100vw - 36px));
+  max-height: calc(100vh - 36px);
+  overflow: hidden;
+  padding: 20px;
+}
+
+.historySourcePanel > div {
+  display: grid;
+  gap: 4px;
+  padding-right: 46px;
+}
+
+.historySourcePanel span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.historySourcePanel h2 {
+  margin: 0;
+}
+
+.historySourcePanel pre {
+  overflow: auto;
+  max-height: calc(100vh - 160px);
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: #303846;
+  padding: 14px;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
 .promptDetails {
   padding-top: 6px;
   border-top: 1px solid var(--line);
@@ -3677,6 +4098,48 @@ h3 {
 
   .historyPageActions {
     grid-template-columns: 1fr;
+  }
+
+  .historyVaultPage {
+    grid-template-columns: 1fr;
+  }
+
+  .historyVaultSidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .historyVaultSidebar nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .historyVaultSidebar nav a {
+    justify-content: center;
+    padding: 0 8px;
+  }
+
+  .historyVaultMain {
+    padding: 28px 14px 42px;
+  }
+
+  .historyVaultHero,
+  .historyJobTop {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .historyVaultStats {
+    width: 100%;
+  }
+
+  .historyJobBadges {
+    justify-content: flex-start;
+  }
+
+  .historyVariantGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .studioMain .topBar .brandMark {
