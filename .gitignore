@@ -13,3 +13,5 @@ public/outputs/*
 public/uploads/*
 !public/outputs/.gitkeep
 !public/uploads/.gitkeep
+
+.vercel
