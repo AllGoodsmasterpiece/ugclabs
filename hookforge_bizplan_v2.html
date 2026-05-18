@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HookForge — 사업기획서 v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0a0a;
+  --white: #f5f4f0;
+  --gray-1: #141414;
+  --gray-2: #1f1f1f;
+  --gray-3: #2e2e2e;
+  --gray-4: #4a4a4a;
+  --gray-5: #7a7a7a;
+  --gray-6: #a8a8a8;
+  --accent: #e8ff47;
+  --accent-dim: rgba(232,255,71,0.1);
+  --accent-border: rgba(232,255,71,0.25);
+  --red: #ff5555;
+  --blue: #5b9fff;
+  --teal: #2dd4bf;
+  --orange: #ff8c42;
+  --purple: #b794f6;
+  --font-display: 'Syne', 'Noto Sans KR', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-body: 'Noto Sans KR', sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.page { max-width: 960px; margin: 0 auto; padding: 0 40px 120px; }
+
+/* COVER */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 0 60px;
+  border-bottom: 0.5px solid var(--gray-3);
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(232,255,71,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cover::after {
+  content: 'v2.0';
+  position: absolute;
+  top: 40px; right: 40px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+  letter-spacing: 0.15em;
+}
+.cover-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cover-tag::before {
+  content: '';
+  display: block;
+  width: 32px; height: 1px;
+  background: var(--accent);
+}
+.cover h1 {
+  font-family: var(--font-display);
+  font-size: clamp(56px, 10vw, 104px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.cover h1 span { color: var(--accent); }
+.cover-sub {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 3vw, 22px);
+  font-weight: 400;
+  color: var(--gray-6);
+  margin: 24px 0 48px;
+  max-width: 640px;
+  line-height: 1.5;
+}
+.cover-meta {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.cover-meta-item label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.cover-meta-item span {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--white);
+}
+
+/* TOC */
+.toc {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 32px;
+  margin: 48px 0 0;
+}
+.toc h3 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 32px;
+}
+.toc ol li {
+  counter-increment: toc;
+  font-size: 13px;
+  color: var(--gray-6);
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 0.5px solid var(--gray-2);
+}
+.toc ol li::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* SECTIONS */
+.section {
+  padding: 80px 0 60px;
+  border-bottom: 0.5px solid var(--gray-2);
+}
+.section:last-child { border-bottom: none; }
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-num::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1px;
+  background: var(--accent);
+}
+.section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin-bottom: 40px;
+  color: var(--white);
+}
+.section h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--white);
+  margin: 40px 0 20px;
+}
+
+p.prose { color: var(--gray-6); font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+strong { color: var(--white); font-weight: 500; }
+
+/* POSITION BLOCK */
+.position-block {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 36px;
+  margin-bottom: 32px;
+}
+.position-block .tagline {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+.position-block p { color: var(--gray-6); font-size: 15px; line-height: 1.8; }
+
+/* STATS */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin: 40px 0;
+}
+.stat-card {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 10px;
+  padding: 24px 20px;
+}
+.stat-card .val {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-card .val.blue { color: var(--blue); }
+.stat-card .val.teal { color: var(--teal); }
+.stat-card .val.orange { color: var(--orange); }
+.stat-card .val.purple { color: var(--purple); }
+.stat-card label {
+  font-size: 12px;
+  color: var(--gray-5);
+  line-height: 1.4;
+  display: block;
+}
+
+/* LAYER STACK — 영상 설계도 */
+.layer-stack {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 32px;
+  margin: 32px 0;
+}
+.layer-stack-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.layer-stack-title .meta {
+  color: var(--accent);
+  font-size: 10px;
+}
+.video-frame {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  aspect-ratio: 9/16;
+  background: var(--gray-2);
+  border-radius: 12px;
+  border: 0.5px solid var(--gray-3);
+  position: relative;
+  overflow: hidden;
+}
+.frame-timeline {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  flex-direction: column;
+}
+.frame-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 0.5px dashed var(--gray-4);
+}
+.frame-section:last-child { border-bottom: none; }
+.frame-section.hook {
+  flex: 0 0 25%;
+  background: linear-gradient(135deg, rgba(232,255,71,0.15) 0%, rgba(232,255,71,0.05) 100%);
+}
+.frame-section.body {
+  flex: 1;
+  background: var(--gray-1);
+}
+.frame-section .time-mark {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-5);
+  position: absolute;
+  top: 8px; left: 12px;
+}
+.frame-section .duration-mark {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--gray-5);
+  position: absolute;
+  top: 8px; right: 12px;
+}
+.frame-section .label {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+  text-align: center;
+}
+.frame-section.hook .label { color: var(--accent); }
+.frame-section .desc {
+  font-size: 10px;
+  color: var(--gray-5);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* LAYER ROWS */
+.layer-rows {
+  margin-top: 32px;
+}
+.layer-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 20px;
+  padding: 20px 0;
+  border-top: 0.5px solid var(--gray-3);
+  align-items: center;
+}
+.layer-row:last-child { border-bottom: 0.5px solid var(--gray-3); }
+.layer-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  background: var(--accent-dim);
+  border: 0.5px solid var(--accent-border);
+  padding: 6px 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+.layer-tag.l2 { color: var(--blue); background: rgba(91,159,255,0.1); border-color: rgba(91,159,255,0.25); }
+.layer-tag.l3 { color: var(--teal); background: rgba(45,212,191,0.1); border-color: rgba(45,212,191,0.25); }
+.layer-tag.l4 { color: var(--orange); background: rgba(255,140,66,0.1); border-color: rgba(255,140,66,0.25); }
+.layer-tag.l5 { color: var(--purple); background: rgba(183,148,246,0.1); border-color: rgba(183,148,246,0.25); }
+.layer-tag.l6 { color: var(--red); background: rgba(255,85,85,0.1); border-color: rgba(255,85,85,0.25); }
+.layer-info h5 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.layer-info p {
+  font-size: 12px;
+  color: var(--gray-5);
+  line-height: 1.6;
+}
+
+/* PIPELINE */
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  margin: 32px 0;
+  position: relative;
+}
+.pipeline::before {
+  content: '';
+  position: absolute;
+  left: 28px;
+  top: 30px; bottom: 30px;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--accent), var(--purple), var(--teal));
+  opacity: 0.3;
+}
+.pipe-step {
+  display: flex;
+  gap: 24px;
+  padding: 20px 0;
+  position: relative;
+}
+.pipe-num {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.pipe-content { flex: 1; padding-top: 8px; }
+.pipe-content h4 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.pipe-api {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--accent-dim);
+  border: 0.5px solid var(--accent-border);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin: 6px 4px 12px 0;
+}
+.pipe-api.blue { background: rgba(91,159,255,0.1); border-color: rgba(91,159,255,0.25); color: var(--blue); }
+.pipe-api.teal { background: rgba(45,212,191,0.1); border-color: rgba(45,212,191,0.25); color: var(--teal); }
+.pipe-api.orange { background: rgba(255,140,66,0.1); border-color: rgba(255,140,66,0.25); color: var(--orange); }
+.pipe-api.red { background: rgba(255,85,85,0.1); border-color: rgba(255,85,85,0.25); color: var(--red); }
+.pipe-api.purple { background: rgba(183,148,246,0.1); border-color: rgba(183,148,246,0.25); color: var(--purple); }
+.pipe-content p { color: var(--gray-6); font-size: 13px; line-height: 1.7; }
+.pipe-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.pipe-meta span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-5);
+  padding: 4px 0;
+}
+.pipe-meta span strong {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+/* CODE BLOCK */
+.code-block {
+  background: #050505;
+  border: 0.5px solid var(--gray-3);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--gray-6);
+}
+.code-block .kw { color: var(--purple); }
+.code-block .fn { color: var(--accent); }
+.code-block .str { color: var(--teal); }
+.code-block .com { color: var(--gray-4); font-style: italic; }
+.code-block .num { color: var(--orange); }
+.code-block .var { color: var(--blue); }
+
+/* STACK TABLE */
+.stack-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 13px;
+}
+.stack-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 0.5px solid var(--gray-3);
+}
+.stack-table td {
+  padding: 14px 16px;
+  border-bottom: 0.5px solid var(--gray-2);
+  color: var(--gray-6);
+  vertical-align: top;
+}
+.stack-table td:first-child {
+  color: var(--white);
+  font-weight: 500;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.stack-table .total td {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  border-top: 0.5px solid var(--gray-3);
+  border-bottom: none;
+  background: var(--accent-dim);
+}
+.stack-table td.num {
+  font-family: var(--font-mono);
+  color: var(--white);
+  text-align: right;
+}
+.stack-table td.num.accent { color: var(--accent); }
+
+/* IO BLOCK */
+.io-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 32px 0;
+}
+.io-box {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 10px;
+  padding: 24px;
+}
+.io-box.output { border-color: var(--accent-border); }
+.io-box h5 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.io-box.output h5 { color: var(--accent); }
+.io-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 0.5px solid var(--gray-2);
+  font-size: 13px;
+  color: var(--gray-6);
+}
+.io-item:last-child { border-bottom: none; }
+.io-item .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gray-4);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.io-box.output .io-item .dot { background: var(--accent); }
+
+/* PRICING */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 40px 0;
+}
+.price-card {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 28px 24px;
+  position: relative;
+}
+.price-card.featured {
+  border-color: var(--accent);
+  background: rgba(232,255,71,0.03);
+}
+.price-badge {
+  position: absolute;
+  top: -12px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: var(--black);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.price-tier {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.price-val {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.price-val sup {
+  font-size: 18px;
+  font-weight: 600;
+  vertical-align: top;
+  margin-top: 8px;
+  display: inline-block;
+}
+.price-period {
+  font-size: 12px;
+  color: var(--gray-4);
+  margin-bottom: 20px;
+}
+.price-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.price-features li {
+  font-size: 13px;
+  color: var(--gray-6);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.price-features li::before {
+  content: '→';
+  color: var(--accent);
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* REVENUE */
+.revenue-block {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 32px;
+  margin: 32px 0;
+}
+.revenue-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 0.5px solid var(--gray-2);
+}
+.revenue-row:last-child { border-bottom: none; }
+.revenue-row .label { color: var(--gray-6); font-size: 14px; }
+.revenue-row .amount {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--white);
+}
+.revenue-row.highlight .amount { color: var(--accent); font-size: 20px; font-weight: 500; }
+
+/* ROADMAP */
+.roadmap {
+  position: relative;
+  margin: 40px 0;
+}
+.road-phase {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 24px;
+  margin-bottom: 40px;
+  position: relative;
+}
+.road-phase::before {
+  content: '';
+  position: absolute;
+  left: 50px;
+  top: 40px; bottom: -40px;
+  width: 1px;
+  background: var(--gray-3);
+}
+.road-phase:last-child::before { display: none; }
+.road-label { padding-top: 4px; }
+.road-phase-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+.road-month {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.road-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gray-2);
+  border: 2px solid var(--gray-4);
+}
+.road-phase.active .road-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(232,255,71,0.3);
+}
+.road-content {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+.road-phase.active .road-content { border-color: var(--accent-border); }
+.road-content h4 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.road-content ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.road-content ul li {
+  font-size: 13px;
+  color: var(--gray-6);
+  padding-left: 16px;
+  position: relative;
+}
+.road-content ul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gray-4);
+}
+
+/* RISK */
+.risk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 32px 0;
+}
+.risk-card {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 10px;
+  padding: 20px;
+}
+.risk-card h5 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.risk-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.risk-badge.high { background: rgba(255,85,85,0.15); color: var(--red); }
+.risk-badge.mid { background: rgba(255,140,66,0.15); color: var(--orange); }
+.risk-badge.low { background: rgba(45,212,191,0.15); color: var(--teal); }
+.risk-card p { font-size: 12px; color: var(--gray-5); line-height: 1.6; }
+
+/* QUALITY SPEC */
+.quality-block {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 28px;
+  margin: 24px 0;
+}
+.quality-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 24px;
+  padding: 14px 0;
+  border-bottom: 0.5px solid var(--gray-2);
+  align-items: center;
+}
+.quality-row:last-child { border-bottom: none; }
+.quality-row .label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.quality-row .val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--white);
+}
+.quality-row .val .accent { color: var(--accent); }
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 0.5px solid var(--gray-2);
+  margin: 48px 0;
+}
+
+/* TAG */
+.label-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  border: 0.5px solid var(--gray-3);
+  color: var(--gray-5);
+}
+.tag.green { border-color: rgba(45,212,191,0.3); color: var(--teal); background: rgba(45,212,191,0.06); }
+.tag.yellow { border-color: var(--accent-border); color: var(--accent); background: var(--accent-dim); }
+.tag.blue { border-color: rgba(91,159,255,0.3); color: var(--blue); background: rgba(91,159,255,0.06); }
+
+/* FOOTER */
+.footer {
+  padding: 48px 0;
+  border-top: 0.5px solid var(--gray-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-4);
+}
+.footer .logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+}
+.footer .logo span { color: var(--accent); }
+
+/* ARCH / GANTT / STATE — SVG containers */
+.arch-svg, .gantt-svg, .state-machine {
+  width: 100%;
+  margin: 24px 0;
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* DB SCHEMA */
+.schema-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+.schema-card {
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.schema-header {
+  background: var(--gray-2);
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.5px solid var(--gray-3);
+}
+.schema-name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+}
+.schema-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-5);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.schema-fields { padding: 6px 0; }
+.schema-field {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-bottom: 0.5px solid var(--gray-2);
+}
+.schema-field:last-child { border-bottom: none; }
+.schema-field .name { color: var(--white); }
+.schema-field .name.pk { color: var(--accent); }
+.schema-field .name.fk { color: var(--blue); }
+.schema-field .type {
+  color: var(--gray-5);
+  font-size: 11px;
+}
+
+/* API ENDPOINT TABLE */
+.endpoint-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 12px;
+}
+.endpoint-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--gray-4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 0.5px solid var(--gray-3);
+}
+.endpoint-table td {
+  padding: 12px 14px;
+  border-bottom: 0.5px solid var(--gray-2);
+  vertical-align: middle;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gray-6);
+}
+.method-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+.method-badge.get { background: rgba(45,212,191,0.15); color: var(--teal); }
+.method-badge.post { background: var(--accent-dim); color: var(--accent); }
+.method-badge.delete { background: rgba(255,85,85,0.15); color: var(--red); }
+.method-badge.patch { background: rgba(91,159,255,0.15); color: var(--blue); }
+
+/* DONUT BLOCK */
+.donut-block {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
+  align-items: center;
+  background: var(--gray-1);
+  border: 0.5px solid var(--gray-3);
+  border-radius: 12px;
+  padding: 32px;
+  margin: 32px 0;
+}
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.donut-legend-item {
+  display: grid;
+  grid-template-columns: 14px 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--gray-2);
+}
+.donut-legend-item:last-child { border-bottom: none; }
+.donut-legend-item .swatch {
+  width: 12px; height: 12px;
+  border-radius: 2px;
+}
+.donut-legend-item .name { font-size: 13px; color: var(--gray-6); }
+.donut-legend-item .pct {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-5);
+  min-width: 40px;
+  text-align: right;
+}
+.donut-legend-item .cost {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--white);
+  font-weight: 500;
+  min-width: 60px;
+  text-align: right;
+}
+
+@media (max-width: 720px) {
+  .page { padding: 0 20px 80px; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .io-block { grid-template-columns: 1fr; }
+  .risk-grid { grid-template-columns: 1fr; }
+  .toc ol { grid-template-columns: 1fr; }
+  .road-phase { grid-template-columns: 1fr; }
+  .road-phase::before { display: none; }
+  .layer-row { grid-template-columns: 1fr; }
+  .quality-row { grid-template-columns: 1fr; }
+  .cover-meta { gap: 24px; }
+  .donut-block { grid-template-columns: 1fr; }
+  .schema-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">Business Plan — Confidential</div>
+  <h1>Hook<span>Forge</span></h1>
+  <p class="cover-sub">하나의 영상에서<br>전환율을 다섯 배 높일 훅(Hook)을 자동으로 찾아주는<br>어필리에이트 마케터 전용 A/B 테스트 인프라</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><label>버전</label><span>v2.0</span></div>
+    <div class="cover-meta-item"><label>작성일</label><span>2026.05.12</span></div>
+    <div class="cover-meta-item"><label>단계</label><span>MVP 설계 확정</span></div>
+    <div class="cover-meta-item"><label>스택</label><span>Python + FastAPI</span></div>
+    <div class="cover-meta-item"><label>타겟</label><span>글로벌 / EN</span></div>
+  </div>
+  <div class="toc">
+    <h3>목차</h3>
+    <ol>
+      <li>제품 정의 & 포지셔닝</li>
+      <li>I/O 구조 (입출력 명세)</li>
+      <li>영상 레이어 설계도</li>
+      <li>퀄리티 유지 정책</li>
+      <li>풀 파이프라인 아키텍처</li>
+      <li>Python 기술 스택</li>
+      <li>시스템 아키텍처 & 타임라인</li>
+      <li>DB 스키마</li>
+      <li>API 엔드포인트 & 상태 머신</li>
+      <li>에러 처리 & 재시도 정책</li>
+      <li>모니터링 & 시크릿 관리</li>
+      <li>원가 & 마진 구조</li>
+      <li>프라이싱 & 수익 모델</li>
+      <li>GTM 전략</li>
+      <li>개발 로드맵</li>
+      <li>리스크 분석</li>
+    </ol>
+  </div>
+</div>
+
+<!-- 01 -->
+<div class="section">
+  <div class="section-num">01</div>
+  <h2>제품 정의 &<br>포지셔닝</h2>
+
+  <div class="position-block">
+    <div class="tagline">"1 Source → 10 Hooks<br>Find the highest-converting version in 5 minutes."</div>
+    <p>HookForge는 어필리에이트 마케터를 위한 영상 A/B 테스트 자동화 SaaS다. 고객은 자기 제품을 홍보하는 원본 영상 하나만 업로드한다. HookForge는 시청자의 시선을 가장 강하게 잡는 첫 3초(Hook)를 열 가지 다른 각도로 자동 생성한 뒤, 원본 본편과 매끄럽게 이어붙여 10개의 완성 영상을 토해낸다.</p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="val">1</div>
+      <label>입력 영상</label>
+    </div>
+    <div class="stat-card">
+      <div class="val blue">10</div>
+      <label>훅 변형 영상</label>
+    </div>
+    <div class="stat-card">
+      <div class="val teal">&lt;5분</div>
+      <label>총 생성 시간</label>
+    </div>
+    <div class="stat-card">
+      <div class="val orange">80%+</div>
+      <label>순마진율</label>
+    </div>
+  </div>
+
+  <h3>경쟁사 대비 차별점</h3>
+  <p class="prose"><strong>Vrew, CapCut</strong>은 편집 도구다. 유저가 직접 편집해야 한다.<br>
+  <strong>HeyGen, Opus Clip</strong>은 클립 추출/번역 도구다. 같은 영상의 변형이 아니다.<br>
+  <strong>HookForge</strong>는 전환율 최적화에 특화된다 — 같은 영상의 첫 3초만 열 가지로 변형해, 어떤 훅이 가장 잘 팔리는지 데이터로 증명한다.</p>
+</div>
+
+<!-- 02 -->
+<div class="section">
+  <div class="section-num">02</div>
+  <h2>I/O 구조</h2>
+
+  <div class="io-block">
+    <div class="io-box">
+      <h5>Input — 고객이 넣는 것</h5>
+      <div class="io-item"><div class="dot"></div><span>원본 제품 영상 1개 (15~60초, MP4, 최대 100MB)</span></div>
+      <div class="io-item"><div class="dot"></div><span>홍보 핵심 포인트 (텍스트, 1~3줄, 100자 이내)</span></div>
+      <div class="io-item"><div class="dot"></div><span>제품 카테고리 선택 (다이어트/뷰티/테크/생활 등)</span></div>
+      <div class="io-item"><div class="dot"></div><span>훅 스타일 선택 (Curiosity / Urgency / Result 등)</span></div>
+      <div class="io-item"><div class="dot"></div><span>생성 개수 (5 / 10 / 20개)</span></div>
+    </div>
+    <div class="io-box output">
+      <h5>Output — 받는 것</h5>
+      <div class="io-item"><div class="dot"></div><span>훅이 다른 10개 영상 (MP4, 1080×1920)</span></div>
+      <div class="io-item"><div class="dot"></div><span>각 영상별 메타데이터 (사용된 훅 카피, 보이스, 시각 컨셉)</span></div>
+      <div class="io-item"><div class="dot"></div><span>A/B 테스트 추적용 고유 ID 부여</span></div>
+      <div class="io-item"><div class="dot"></div><span>다운로드 ZIP + 개별 영상 링크</span></div>
+      <div class="io-item"><div class="dot"></div><span>완료 이메일 + 대시보드 알림</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 영상 레이어 설계도 -->
+<div class="section">
+  <div class="section-num">03</div>
+  <h2>영상 레이어<br>설계도</h2>
+
+  <p class="prose">HookForge의 영상은 <strong>2개의 시간 구간</strong>과 <strong>6개의 레이어</strong>로 구성된다. 이 구조가 퀄리티 유지의 핵심이다.</p>
+
+  <div class="layer-stack">
+    <div class="layer-stack-title">
+      <span>Final Video Structure — 9:16 / 30fps</span>
+      <span class="meta">Total ~ 20s</span>
+    </div>
+    <div class="video-frame">
+      <div class="frame-timeline">
+        <div class="frame-section hook">
+          <span class="time-mark">0:00</span>
+          <span class="duration-mark">3s</span>
+          <div class="label">HOOK<br>(변동축)</div>
+          <div class="desc">Seedance AI 클립 +<br>훅 카피 + TTS 더빙</div>
+        </div>
+        <div class="frame-section body">
+          <span class="time-mark">0:03</span>
+          <span class="duration-mark">~17s</span>
+          <div class="label">BODY<br>(고정축)</div>
+          <div class="desc">고객 원본 영상<br>원본 오디오 유지</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer-rows">
+      <div class="layer-row">
+        <span class="layer-tag">Layer 1</span>
+        <div class="layer-info">
+          <h5>Visual Base — Seedance 3초 클립</h5>
+          <p>0~3초 구간의 시각적 배경. Seedance 2.0이 생성한 도파민 클립 (마인크래프트 파쿠르, ASMR, 자동차 묘기 등). 9:16 비율, 1080p, 30fps로 통일.</p>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-tag l2">Layer 2</span>
+        <div class="layer-info">
+          <h5>Hook Audio — ElevenLabs TTS</h5>
+          <p>Claude가 생성한 훅 카피를 ElevenLabs로 더빙. 0~3초 구간에 입혀짐. 보이스 ID 10종 로테이션으로 매번 다른 톤.</p>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-tag l3">Layer 3</span>
+        <div class="layer-info">
+          <h5>Hook Text Overlay — 자막</h5>
+          <p>훅 카피 텍스트를 시각화. 큰 폰트, 노란/흰색 베이스, TikTok 스타일 팝업 애니메이션. 보이스와 정확히 싱크.</p>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-tag l4">Layer 4</span>
+        <div class="layer-info">
+          <h5>Body Visual — 원본 영상</h5>
+          <p>3초 이후 모든 시각 콘텐츠. 고객 원본 영상의 신뢰성과 진정성을 그대로 보존. 9:16으로 자동 크롭/패딩.</p>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-tag l5">Layer 5</span>
+        <div class="layer-info">
+          <h5>Body Audio — 원본 오디오</h5>
+          <p>3초 이후 원본 영상의 오디오 그대로 사용. AI 보이스 없음 — 고객 본인 목소리의 신뢰도 유지.</p>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-tag l6">Layer 6</span>
+        <div class="layer-info">
+          <h5>Transition — 컷 전환</h5>
+          <p>3초 시점에서 매끄러운 컷 전환. 페이드 또는 글리치 효과로 알고리즘 친화적인 갑작스러운 변화 연출. 시청 체류율 상승 트리거.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>레이어별 변동/고정 설계</h3>
+  <p class="prose">알고리즘 다양성 확보의 핵심은 <strong>무엇을 바꾸고 무엇을 유지할 것인가</strong>다.</p>
+
+  <div class="quality-block">
+    <div class="quality-row">
+      <span class="label">변동축</span>
+      <span class="val">Layer 1, 2, 3 (Hook 구간 전체) — <span class="accent">10개 버전 100% 다름</span></span>
+    </div>
+    <div class="quality-row">
+      <span class="label">고정축</span>
+      <span class="val">Layer 4, 5 (Body 구간) — <span class="accent">10개 버전 동일</span></span>
+    </div>
+    <div class="quality-row">
+      <span class="label">연산 효율</span>
+      <span class="val">고정 부분 재사용 → 원가 70% 절감</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">신뢰도</span>
+      <span class="val">원본 보존 → AI 위화감 최소화</span>
+    </div>
+  </div>
+</div>
+
+<!-- 04 퀄리티 정책 -->
+<div class="section">
+  <div class="section-num">04</div>
+  <h2>퀄리티 유지<br>정책</h2>
+
+  <p class="prose">자동화에서 가장 흔한 실패는 <strong>퀄리티 통제 부재</strong>다. HookForge는 모든 렌더링 파라미터를 사전 고정해 결과물 편차를 0에 수렴시킨다.</p>
+
+  <h3>렌더링 표준 (틱톡 네이티브 최적화)</h3>
+  <div class="quality-block">
+    <div class="quality-row">
+      <span class="label">해상도</span>
+      <span class="val">1080 × 1920 (9:16 세로형)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">프레임 레이트</span>
+      <span class="val">30fps 강제 통일 (CFR, 가변프레임 금지)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">코덱</span>
+      <span class="val">H.264 (libx264) / AAC 오디오</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">비트레이트</span>
+      <span class="val">CRF 23 (틱톡 권장값)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">파일 크기</span>
+      <span class="val">3~5MB / 영상 (15~20초 기준)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">오디오 평탄화</span>
+      <span class="val">LUFS -14 (TikTok 표준)</span>
+    </div>
+  </div>
+
+  <h3>프레임 정규화 (Frame Normalization)</h3>
+  <p class="prose">Seedance 클립(30fps)과 고객 원본 영상(가변, 보통 29.97fps)을 직접 붙이면 프레임 드롭으로 끊김이 발생한다. <strong>병합 직전 두 영상 모두 30fps CFR로 강제 변환</strong>한 뒤 합성한다. 이 한 줄이 영상 퀄리티의 80%를 좌우한다.</p>
+
+  <div class="code-block">
+<span class="com"># Creatomate 파라미터에서 강제 정규화</span><br>
+<span class="kw">{</span><br>
+&nbsp;&nbsp;<span class="str">"output_format"</span>: <span class="str">"mp4"</span>,<br>
+&nbsp;&nbsp;<span class="str">"frame_rate"</span>: <span class="num">30</span>,<br>
+&nbsp;&nbsp;<span class="str">"width"</span>: <span class="num">1080</span>, <span class="str">"height"</span>: <span class="num">1920</span>,<br>
+&nbsp;&nbsp;<span class="str">"resize_mode"</span>: <span class="str">"cover"</span>,<br>
+&nbsp;&nbsp;<span class="str">"audio_codec"</span>: <span class="str">"aac"</span>,<br>
+&nbsp;&nbsp;<span class="str">"video_codec"</span>: <span class="str">"h264"</span>,<br>
+&nbsp;&nbsp;<span class="str">"crf"</span>: <span class="num">23</span><br>
+<span class="kw">}</span>
+  </div>
+
+  <h3>퀄리티 게이트 (자동 검증)</h3>
+  <p class="prose">각 영상 생성 후 <strong>자동 검증 단계</strong>를 거친다. 통과 못한 영상은 재생성한다.</p>
+  <div class="quality-block">
+    <div class="quality-row">
+      <span class="label">검증 1</span>
+      <span class="val">파일 크기 1MB 이상 (렌더 실패 검출)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">검증 2</span>
+      <span class="val">길이 ±0.5초 이내 (편집 정확도)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">검증 3</span>
+      <span class="val">오디오 트랙 존재 (무음 영상 차단)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">검증 4</span>
+      <span class="val">해상도 정확히 1080×1920</span>
+    </div>
+  </div>
+</div>
+
+<!-- 05 풀 파이프라인 -->
+<div class="section">
+  <div class="section-num">05</div>
+  <h2>풀 파이프라인<br>아키텍처</h2>
+
+  <div class="label-row">
+    <span class="tag green">비동기 병렬 처리</span>
+    <span class="tag yellow">전체 ~5분 이내</span>
+    <span class="tag blue">자동 재시도 3회</span>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="pipe-num">01</div>
+      <div class="pipe-content">
+        <h4>입력 수신 & 검증</h4>
+        <span class="pipe-api">FastAPI Endpoint</span>
+        <p>고객 영상 업로드 → S3 또는 Cloudflare R2 저장. 파일 크기, 코덱, 길이 자동 검증. Job ID 발급 후 Celery 큐에 전송. 유저에겐 즉시 "접수됨" 응답.</p>
+        <div class="pipe-meta">
+          <span>응답 시간 <strong>&lt;500ms</strong></span>
+          <span>파일 검증 <strong>3가지</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">02</div>
+      <div class="pipe-content">
+        <h4>훅 카피 생성 — Brain</h4>
+        <span class="pipe-api blue">Claude 3.5 Sonnet</span>
+        <p>제품 카테고리 + 핵심 포인트 + 훅 스타일을 입력으로 받아 JSON 출력. 훅 카피 10개 + 각 카피에 매칭되는 Seedance 비디오 프롬프트 10개 + ElevenLabs 보이스 ID 10개를 한 번에 생성.</p>
+        <div class="pipe-meta">
+          <span>소요 <strong>~3초</strong></span>
+          <span>토큰 사용 <strong>~2K</strong></span>
+          <span>원가 <strong>$0.05</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">03</div>
+      <div class="pipe-content">
+        <h4>병렬 비동기 자산 생성</h4>
+        <span class="pipe-api teal">ElevenLabs ×10</span>
+        <span class="pipe-api orange">Seedance 2.0 ×10</span>
+        <p>asyncio.gather()로 ElevenLabs 10개 호출 + Seedance 10개 호출을 <strong>완전 병렬</strong>로 동시 실행. ElevenLabs는 ~10초, Seedance는 60~180초 소요. 둘 다 끝날 때까지 대기.</p>
+        <div class="pipe-meta">
+          <span>총 소요 <strong>~3분</strong> (Seedance 기준)</span>
+          <span>병렬 호출 <strong>20개</strong></span>
+          <span>원가 <strong>$1.60</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">04</div>
+      <div class="pipe-content">
+        <h4>영상 합성 — Assembly</h4>
+        <span class="pipe-api red">Creatomate ×10</span>
+        <p>각 Job별로 [Seedance 클립 + ElevenLabs 오디오 + 훅 자막 + 원본 영상]을 JSON 템플릿으로 합성 요청. Creatomate가 프레임 정규화, 비율 변환, 코덱 통일까지 자동 처리. 10개 영상 병렬 렌더링.</p>
+        <div class="pipe-meta">
+          <span>소요 <strong>~60초</strong></span>
+          <span>출력 <strong>10 MP4</strong></span>
+          <span>원가 <strong>$0.20</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">05</div>
+      <div class="pipe-content">
+        <h4>퀄리티 게이트 & 저장</h4>
+        <span class="pipe-api purple">Python + ffprobe</span>
+        <p>완성된 10개 영상의 메타데이터 자동 검증 (해상도/길이/오디오 존재 여부). 통과한 영상만 R2에 저장 + ZIP 패키징. 실패한 영상은 자동 재생성 큐로 전달.</p>
+        <div class="pipe-meta">
+          <span>검증 <strong>4단계</strong></span>
+          <span>실패율 <strong>&lt;3%</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">06</div>
+      <div class="pipe-content">
+        <h4>딜리버리 & 알림</h4>
+        <span class="pipe-api">Resend / Postmark</span>
+        <p>다운로드 URL을 포함한 이메일 발송 + 대시보드 상태 업데이트. URL은 24시간 유효한 서명된 R2 URL. 유저는 ZIP 다운로드 또는 개별 영상 다운로드 가능.</p>
+        <div class="pipe-meta">
+          <span>이메일 <strong>~1초</strong></span>
+          <span>URL 유효 <strong>24h</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 Python 스택 -->
+<div class="section">
+  <div class="section-num">06</div>
+  <h2>Python 기술 스택</h2>
+
+  <p class="prose">전체 시스템은 Python 단일 언어로 구축한다. 코딩은 Claude/Codex로 보조하며, 외부 오케스트레이션 도구(n8n, Make.com) 의존도 0%.</p>
+
+  <table class="stack-table">
+    <thead>
+      <tr>
+        <th>레이어</th>
+        <th>기술</th>
+        <th>역할</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>API Server</td>
+        <td>FastAPI + Uvicorn</td>
+        <td>유저 요청 수신, 인증, 응답 처리</td>
+      </tr>
+      <tr>
+        <td>Task Queue</td>
+        <td>Celery + Redis</td>
+        <td>백그라운드 비동기 작업 큐</td>
+      </tr>
+      <tr>
+        <td>Async Runtime</td>
+        <td>asyncio + httpx</td>
+        <td>API 병렬 호출 (ElevenLabs, Seedance)</td>
+      </tr>
+      <tr>
+        <td>Storage</td>
+        <td>Cloudflare R2 (S3 호환)</td>
+        <td>원본/완성 영상 저장 + 서명 URL</td>
+      </tr>
+      <tr>
+        <td>Database</td>
+        <td>PostgreSQL + SQLAlchemy</td>
+        <td>유저, Job, 결제, A/B 결과 저장</td>
+      </tr>
+      <tr>
+        <td>Video Validation</td>
+        <td>ffmpeg-python + ffprobe</td>
+        <td>완성 영상 메타데이터 자동 검증</td>
+      </tr>
+      <tr>
+        <td>Payment</td>
+        <td>Stripe Subscription API</td>
+        <td>구독 결제, 인보이스, 환불 처리</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>Resend API</td>
+        <td>완료 알림, 환영, 마케팅 이메일</td>
+      </tr>
+      <tr>
+        <td>Deployment</td>
+        <td>Railway 또는 Fly.io</td>
+        <td>Docker 컨테이너 배포, 자동 스케일</td>
+      </tr>
+      <tr>
+        <td>Monitoring</td>
+        <td>Sentry + PostHog</td>
+        <td>에러 트래킹, 유저 행동 분석</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>핵심 파이프라인 코드 구조</h3>
+  <div class="code-block">
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, BackgroundTasks<br>
+<span class="kw">import</span> asyncio, httpx<br>
+<span class="kw">from</span> celery <span class="kw">import</span> Celery<br><br>
+
+app = FastAPI()<br>
+celery = Celery(broker=<span class="str">"redis://localhost"</span>)<br><br>
+
+<span class="kw">@</span><span class="fn">app.post</span>(<span class="str">"/generate"</span>)<br>
+<span class="kw">async def</span> <span class="fn">create_job</span>(payload: JobInput):<br>
+&nbsp;&nbsp;<span class="com"># 1. 검증 + Job ID 발급</span><br>
+&nbsp;&nbsp;job_id = <span class="fn">create_job_record</span>(payload)<br>
+&nbsp;&nbsp;<span class="com"># 2. 백그라운드 작업 큐에 전송</span><br>
+&nbsp;&nbsp;<span class="fn">run_pipeline.delay</span>(job_id)<br>
+&nbsp;&nbsp;<span class="kw">return</span> {<span class="str">"job_id"</span>: job_id, <span class="str">"status"</span>: <span class="str">"queued"</span>}<br><br>
+
+<span class="kw">@</span><span class="fn">celery.task</span><br>
+<span class="kw">async def</span> <span class="fn">run_pipeline</span>(job_id):<br>
+&nbsp;&nbsp;<span class="com"># 1. Claude 훅 생성</span><br>
+&nbsp;&nbsp;hooks = <span class="kw">await</span> <span class="fn">call_claude</span>(job_id)<br><br>
+&nbsp;&nbsp;<span class="com"># 2. ElevenLabs + Seedance 완전 병렬</span><br>
+&nbsp;&nbsp;audios, videos = <span class="kw">await</span> asyncio.<span class="fn">gather</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;asyncio.<span class="fn">gather</span>(*[<span class="fn">call_elevenlabs</span>(h) <span class="kw">for</span> h <span class="kw">in</span> hooks]),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;asyncio.<span class="fn">gather</span>(*[<span class="fn">call_seedance</span>(h) <span class="kw">for</span> h <span class="kw">in</span> hooks])<br>
+&nbsp;&nbsp;)<br><br>
+&nbsp;&nbsp;<span class="com"># 3. Creatomate 합성 병렬</span><br>
+&nbsp;&nbsp;results = <span class="kw">await</span> asyncio.<span class="fn">gather</span>(*[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">call_creatomate</span>(audios[i], videos[i], job_id)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>)<br>
+&nbsp;&nbsp;])<br><br>
+&nbsp;&nbsp;<span class="com"># 4. 퀄리티 검증 + 이메일</span><br>
+&nbsp;&nbsp;valid = [r <span class="kw">for</span> r <span class="kw">in</span> results <span class="kw">if</span> <span class="fn">validate_video</span>(r)]<br>
+&nbsp;&nbsp;<span class="kw">await</span> <span class="fn">send_completion_email</span>(job_id, valid)
+  </div>
+</div>
+
+<!-- 07 시스템 아키텍처 -->
+<div class="section">
+  <div class="section-num">07</div>
+  <h2>시스템 아키텍처 &<br>처리 타임라인</h2>
+
+  <p class="prose">FastAPI는 API 게이트웨이 역할만 한다. 실제 무거운 작업은 Celery Worker가 받아 처리하며, <strong>4개 외부 API 호출의 병렬화</strong>가 5분 처리 시간의 핵심이다.</p>
+
+  <h3>컴포넌트 다이어그램</h3>
+  <div class="arch-svg">
+    <svg viewBox="0 0 720 540" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#4a4a4a"/>
+        </marker>
+      </defs>
+
+      <rect x="280" y="20" width="160" height="44" rx="6" fill="#141414" stroke="#2e2e2e"/>
+      <text x="360" y="47" text-anchor="middle" fill="#a8a8a8" font-size="12" font-family="IBM Plex Mono, monospace">Client / Dashboard</text>
+      <path d="M360 64 L360 86" stroke="#4a4a4a" marker-end="url(#arrow)"/>
+
+      <rect x="280" y="88" width="160" height="44" rx="6" fill="#141414" stroke="#e8ff47"/>
+      <text x="360" y="115" text-anchor="middle" fill="#e8ff47" font-size="12" font-family="IBM Plex Mono, monospace">FastAPI :8000</text>
+      <path d="M360 132 L360 154" stroke="#4a4a4a" marker-end="url(#arrow)"/>
+
+      <rect x="280" y="156" width="160" height="44" rx="6" fill="#141414" stroke="#2e2e2e"/>
+      <text x="360" y="183" text-anchor="middle" fill="#a8a8a8" font-size="12" font-family="IBM Plex Mono, monospace">Redis Queue</text>
+      <path d="M360 200 L360 222" stroke="#4a4a4a" marker-end="url(#arrow)"/>
+
+      <rect x="220" y="224" width="280" height="44" rx="6" fill="#141414" stroke="#e8ff47"/>
+      <text x="360" y="251" text-anchor="middle" fill="#e8ff47" font-size="12" font-family="IBM Plex Mono, monospace">Celery Worker — asyncio.gather()</text>
+
+      <path d="M280 268 Q170 290 90 318" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+      <path d="M320 268 Q290 290 250 318" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+      <path d="M400 268 Q430 290 470 318" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+      <path d="M440 268 Q550 290 630 318" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+
+      <rect x="20" y="320" width="140" height="44" rx="6" fill="#141414" stroke="#5b9fff"/>
+      <text x="90" y="347" text-anchor="middle" fill="#5b9fff" font-size="11" font-family="IBM Plex Mono, monospace">Claude 3.5</text>
+      <rect x="180" y="320" width="140" height="44" rx="6" fill="#141414" stroke="#2dd4bf"/>
+      <text x="250" y="347" text-anchor="middle" fill="#2dd4bf" font-size="11" font-family="IBM Plex Mono, monospace">ElevenLabs ×10</text>
+      <rect x="400" y="320" width="140" height="44" rx="6" fill="#141414" stroke="#ff8c42"/>
+      <text x="470" y="347" text-anchor="middle" fill="#ff8c42" font-size="11" font-family="IBM Plex Mono, monospace">Seedance ×10</text>
+      <rect x="560" y="320" width="140" height="44" rx="6" fill="#141414" stroke="#ff5555"/>
+      <text x="630" y="347" text-anchor="middle" fill="#ff5555" font-size="11" font-family="IBM Plex Mono, monospace">Creatomate ×10</text>
+
+      <path d="M90 364 Q200 390 320 416" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+      <path d="M250 364 Q300 390 350 416" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+      <path d="M470 364 Q430 390 390 416" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+      <path d="M630 364 Q510 390 420 416" stroke="#4a4a4a" fill="none" marker-end="url(#arrow)"/>
+
+      <rect x="260" y="418" width="200" height="44" rx="6" fill="#141414" stroke="#b794f6"/>
+      <text x="360" y="445" text-anchor="middle" fill="#b794f6" font-size="12" font-family="IBM Plex Mono, monospace">ffprobe Validate</text>
+      <path d="M360 462 L360 484" stroke="#4a4a4a" marker-end="url(#arrow)"/>
+
+      <rect x="180" y="486" width="160" height="44" rx="6" fill="#141414" stroke="#2e2e2e"/>
+      <text x="260" y="513" text-anchor="middle" fill="#a8a8a8" font-size="12" font-family="IBM Plex Mono, monospace">Cloudflare R2</text>
+      <rect x="380" y="486" width="160" height="44" rx="6" fill="#141414" stroke="#2e2e2e"/>
+      <text x="460" y="513" text-anchor="middle" fill="#a8a8a8" font-size="12" font-family="IBM Plex Mono, monospace">Resend Email</text>
+    </svg>
+  </div>
+
+  <h3>처리 타임라인 (Gantt)</h3>
+  <p class="prose">Seedance 비디오 생성이 전체 시간의 약 73%(180초)를 차지한다. 다른 모든 단계는 이를 가리지 못한다 — 즉 <strong>Seedance가 끝나는 순간 = Job 완료 임박</strong>. 최적화는 무조건 Seedance 단축 또는 자체 호스팅 방향이다.</p>
+
+  <div class="gantt-svg">
+    <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <line x1="120" y1="30" x2="120" y2="310" stroke="#2e2e2e" stroke-dasharray="2,4"/>
+      <line x1="259" y1="30" x2="259" y2="310" stroke="#2e2e2e" stroke-dasharray="2,4"/>
+      <line x1="398" y1="30" x2="398" y2="310" stroke="#2e2e2e" stroke-dasharray="2,4"/>
+      <line x1="538" y1="30" x2="538" y2="310" stroke="#2e2e2e" stroke-dasharray="2,4"/>
+      <line x1="677" y1="30" x2="677" y2="310" stroke="#2e2e2e" stroke-dasharray="2,4"/>
+
+      <text x="120" y="335" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">0s</text>
+      <text x="259" y="335" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">60s</text>
+      <text x="398" y="335" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">120s</text>
+      <text x="538" y="335" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">180s</text>
+      <text x="677" y="335" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">240s</text>
+
+      <text x="110" y="59" text-anchor="end" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">01 Validate</text>
+      <rect x="120" y="44" width="6" height="22" rx="2" fill="#e8ff47" opacity="0.7"/>
+
+      <text x="110" y="99" text-anchor="end" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">02 Claude</text>
+      <rect x="121" y="84" width="8" height="22" rx="2" fill="#5b9fff"/>
+
+      <text x="110" y="139" text-anchor="end" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">03a TTS ×10</text>
+      <rect x="128" y="124" width="23" height="22" rx="2" fill="#2dd4bf"/>
+
+      <text x="110" y="179" text-anchor="end" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">03b Video ×10</text>
+      <rect x="128" y="164" width="418" height="22" rx="2" fill="#ff8c42"/>
+      <text x="335" y="179" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="IBM Plex Mono, monospace">Seedance — 180s (병목)</text>
+
+      <text x="110" y="219" text-anchor="end" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">04 Render ×10</text>
+      <rect x="546" y="204" width="139" height="22" rx="2" fill="#ff5555"/>
+      <text x="615" y="219" text-anchor="middle" fill="#0a0a0a" font-size="10" font-weight="700" font-family="IBM Plex Mono, monospace">60s</text>
+
+      <text x="110" y="259" text-anchor="end" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">05 ffprobe</text>
+      <rect x="685" y="244" width="6" height="22" rx="2" fill="#b794f6"/>
+
+      <text x="110" y="299" text-anchor="end" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">06 Email</text>
+      <rect x="691" y="284" width="6" height="22" rx="2" fill="#e8ff47" opacity="0.7"/>
+
+      <line x1="697" y1="30" x2="697" y2="310" stroke="#e8ff47" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+      <text x="697" y="22" text-anchor="end" fill="#e8ff47" font-size="10" font-family="IBM Plex Mono, monospace">~4분 7초 완료</text>
+    </svg>
+  </div>
+</div>
+
+<!-- 08 DB 스키마 -->
+<div class="section">
+  <div class="section-num">08</div>
+  <h2>DB 스키마</h2>
+
+  <p class="prose">PostgreSQL 5개 테이블이 전부. 영상 파일은 R2에 저장하고 DB는 <strong>메타데이터·상태·결제 정보만</strong> 관리한다. 영상 자체를 BLOB으로 넣는 실수는 절대 하지 않는다.</p>
+
+  <div class="schema-grid">
+    <div class="schema-card">
+      <div class="schema-header">
+        <span class="schema-name">users</span>
+        <span class="schema-meta">Identity</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field"><span class="name pk">id</span><span class="type">UUID PK</span></div>
+        <div class="schema-field"><span class="name">email</span><span class="type">VARCHAR UNIQUE</span></div>
+        <div class="schema-field"><span class="name">password_hash</span><span class="type">VARCHAR</span></div>
+        <div class="schema-field"><span class="name">stripe_customer_id</span><span class="type">VARCHAR</span></div>
+        <div class="schema-field"><span class="name">credits_remaining</span><span class="type">INT DEFAULT 0</span></div>
+        <div class="schema-field"><span class="name">created_at</span><span class="type">TIMESTAMP</span></div>
+      </div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-header">
+        <span class="schema-name">subscriptions</span>
+        <span class="schema-meta">Billing</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field"><span class="name pk">id</span><span class="type">UUID PK</span></div>
+        <div class="schema-field"><span class="name fk">user_id</span><span class="type">UUID FK</span></div>
+        <div class="schema-field"><span class="name">tier</span><span class="type">ENUM</span></div>
+        <div class="schema-field"><span class="name">stripe_sub_id</span><span class="type">VARCHAR UNIQUE</span></div>
+        <div class="schema-field"><span class="name">period_start</span><span class="type">TIMESTAMP</span></div>
+        <div class="schema-field"><span class="name">period_end</span><span class="type">TIMESTAMP</span></div>
+        <div class="schema-field"><span class="name">status</span><span class="type">ENUM</span></div>
+      </div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-header">
+        <span class="schema-name">jobs</span>
+        <span class="schema-meta">Pipeline</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field"><span class="name pk">id</span><span class="type">UUID PK</span></div>
+        <div class="schema-field"><span class="name fk">user_id</span><span class="type">UUID FK</span></div>
+        <div class="schema-field"><span class="name">status</span><span class="type">ENUM (9 states)</span></div>
+        <div class="schema-field"><span class="name">input_video_key</span><span class="type">TEXT</span></div>
+        <div class="schema-field"><span class="name">category</span><span class="type">VARCHAR</span></div>
+        <div class="schema-field"><span class="name">hook_style</span><span class="type">VARCHAR</span></div>
+        <div class="schema-field"><span class="name">variant_count</span><span class="type">INT</span></div>
+        <div class="schema-field"><span class="name">created_at</span><span class="type">TIMESTAMP</span></div>
+        <div class="schema-field"><span class="name">completed_at</span><span class="type">TIMESTAMP NULL</span></div>
+        <div class="schema-field"><span class="name">error_log</span><span class="type">JSONB</span></div>
+      </div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-header">
+        <span class="schema-name">hooks</span>
+        <span class="schema-meta">Variants</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field"><span class="name pk">id</span><span class="type">UUID PK</span></div>
+        <div class="schema-field"><span class="name fk">job_id</span><span class="type">UUID FK</span></div>
+        <div class="schema-field"><span class="name">copy_text</span><span class="type">TEXT</span></div>
+        <div class="schema-field"><span class="name">voice_id</span><span class="type">VARCHAR</span></div>
+        <div class="schema-field"><span class="name">video_prompt</span><span class="type">TEXT</span></div>
+        <div class="schema-field"><span class="name">audio_url</span><span class="type">TEXT</span></div>
+        <div class="schema-field"><span class="name">clip_url</span><span class="type">TEXT</span></div>
+      </div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-header">
+        <span class="schema-name">videos</span>
+        <span class="schema-meta">Output</span>
+      </div>
+      <div class="schema-fields">
+        <div class="schema-field"><span class="name pk">id</span><span class="type">UUID PK</span></div>
+        <div class="schema-field"><span class="name fk">job_id</span><span class="type">UUID FK</span></div>
+        <div class="schema-field"><span class="name fk">hook_id</span><span class="type">UUID FK</span></div>
+        <div class="schema-field"><span class="name">final_url</span><span class="type">TEXT</span></div>
+        <div class="schema-field"><span class="name">duration_s</span><span class="type">FLOAT</span></div>
+        <div class="schema-field"><span class="name">file_bytes</span><span class="type">BIGINT</span></div>
+        <div class="schema-field"><span class="name">validated</span><span class="type">BOOLEAN</span></div>
+        <div class="schema-field"><span class="name">ab_test_id</span><span class="type">VARCHAR</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>관계도</h3>
+  <p class="prose"><span style="font-family:var(--font-mono);font-size:13px;color:var(--accent);">users</span> 1:N <span style="font-family:var(--font-mono);font-size:13px;color:var(--accent);">jobs</span> 1:N <span style="font-family:var(--font-mono);font-size:13px;color:var(--accent);">hooks</span> 1:1 <span style="font-family:var(--font-mono);font-size:13px;color:var(--accent);">videos</span>. 한 user는 여러 job을, 한 job은 10개의 hook을, 한 hook은 한 video를 가진다. subscriptions는 user에 1:N (이력 보존용).</p>
+
+  <h3>인덱싱 전략</h3>
+  <div class="quality-block">
+    <div class="quality-row">
+      <span class="label">jobs</span>
+      <span class="val">(user_id, created_at DESC) — 유저 대시보드 조회</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">jobs (partial)</span>
+      <span class="val">(status) WHERE status IN ('queued','processing') — 큐 모니터링</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">videos</span>
+      <span class="val">(job_id) — Job 결과 일괄 조회</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">subscriptions</span>
+      <span class="val">(stripe_sub_id) UNIQUE — 웹훅 조회 키</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">users</span>
+      <span class="val">(email) UNIQUE, (stripe_customer_id) — 로그인 / Stripe 조회</span>
+    </div>
+  </div>
+</div>
+
+<!-- 09 API + 상태머신 -->
+<div class="section">
+  <div class="section-num">09</div>
+  <h2>API 엔드포인트 &<br>Job 상태 머신</h2>
+
+  <h3>REST 엔드포인트</h3>
+  <table class="endpoint-table">
+    <thead>
+      <tr><th style="width:90px">Method</th><th>Path</th><th>설명</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="method-badge post">POST</span></td><td>/auth/signup</td><td>이메일 가입 + JWT 발급</td></tr>
+      <tr><td><span class="method-badge post">POST</span></td><td>/auth/login</td><td>로그인</td></tr>
+      <tr><td><span class="method-badge get">GET</span></td><td>/me</td><td>현재 유저 + 구독 정보</td></tr>
+      <tr><td><span class="method-badge post">POST</span></td><td>/upload/presign</td><td>R2 업로드용 presigned URL 발급</td></tr>
+      <tr><td><span class="method-badge post">POST</span></td><td>/jobs</td><td>새 영상 생성 작업 시작 (Celery enqueue)</td></tr>
+      <tr><td><span class="method-badge get">GET</span></td><td>/jobs</td><td>내 작업 목록 (페이지네이션)</td></tr>
+      <tr><td><span class="method-badge get">GET</span></td><td>/jobs/{id}</td><td>작업 상태 + 진행률 조회</td></tr>
+      <tr><td><span class="method-badge get">GET</span></td><td>/jobs/{id}/zip</td><td>ZIP 다운로드 URL (24h 유효)</td></tr>
+      <tr><td><span class="method-badge get">GET</span></td><td>/videos/{id}</td><td>개별 영상 서명 URL</td></tr>
+      <tr><td><span class="method-badge patch">PATCH</span></td><td>/videos/{id}/ab-result</td><td>유저가 A/B 성과 기록</td></tr>
+      <tr><td><span class="method-badge post">POST</span></td><td>/webhooks/stripe</td><td>결제 이벤트 수신</td></tr>
+      <tr><td><span class="method-badge post">POST</span></td><td>/webhooks/creatomate</td><td>렌더 완료 콜백</td></tr>
+    </tbody>
+  </table>
+
+  <h3>POST /jobs — 요청 & 응답</h3>
+  <div class="code-block">
+<span class="com"># Request</span><br>
+{<br>
+&nbsp;&nbsp;<span class="str">"input_video_key"</span>: <span class="str">"uploads/abc123.mp4"</span>,<br>
+&nbsp;&nbsp;<span class="str">"selling_points"</span>: <span class="str">"피부 결 개선 + 즉각 효과"</span>,<br>
+&nbsp;&nbsp;<span class="str">"category"</span>: <span class="str">"beauty"</span>,<br>
+&nbsp;&nbsp;<span class="str">"hook_style"</span>: <span class="str">"curiosity"</span>,<br>
+&nbsp;&nbsp;<span class="str">"variant_count"</span>: <span class="num">10</span><br>
+}<br><br>
+<span class="com"># Response 202 Accepted</span><br>
+{<br>
+&nbsp;&nbsp;<span class="str">"job_id"</span>: <span class="str">"job_a1b2c3"</span>,<br>
+&nbsp;&nbsp;<span class="str">"status"</span>: <span class="str">"queued"</span>,<br>
+&nbsp;&nbsp;<span class="str">"estimated_completion"</span>: <span class="str">"2026-05-12T14:32:00Z"</span>,<br>
+&nbsp;&nbsp;<span class="str">"poll_url"</span>: <span class="str">"/jobs/job_a1b2c3"</span><br>
+}
+  </div>
+
+  <h3>Job 상태 머신</h3>
+  <p class="prose">Job은 다음 9개 상태 중 하나에 존재한다. 각 전이는 DB에 기록되며 유저 대시보드에 실시간 반영된다. <strong>terminal 상태</strong>는 3개 — completed / partial / failed.</p>
+
+  <div class="state-machine">
+    <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#4a4a4a"/>
+        </marker>
+        <marker id="arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#ff5555"/>
+        </marker>
+      </defs>
+
+      <rect x="20" y="70" width="90" height="40" rx="20" fill="#141414" stroke="#7a7a7a"/>
+      <text x="65" y="94" text-anchor="middle" fill="#a8a8a8" font-size="11" font-family="IBM Plex Mono, monospace">pending</text>
+      <path d="M110 90 L140 90" stroke="#4a4a4a" marker-end="url(#arrow2)"/>
+
+      <rect x="140" y="70" width="90" height="40" rx="20" fill="#141414" stroke="#5b9fff"/>
+      <text x="185" y="94" text-anchor="middle" fill="#5b9fff" font-size="11" font-family="IBM Plex Mono, monospace">queued</text>
+      <path d="M230 90 L260 90" stroke="#4a4a4a" marker-end="url(#arrow2)"/>
+
+      <rect x="260" y="70" width="140" height="40" rx="20" fill="#141414" stroke="#5b9fff"/>
+      <text x="330" y="94" text-anchor="middle" fill="#5b9fff" font-size="10" font-family="IBM Plex Mono, monospace">generating_hooks</text>
+      <path d="M400 90 L430 90" stroke="#4a4a4a" marker-end="url(#arrow2)"/>
+
+      <rect x="430" y="70" width="140" height="40" rx="20" fill="#141414" stroke="#5b9fff"/>
+      <text x="500" y="94" text-anchor="middle" fill="#5b9fff" font-size="10" font-family="IBM Plex Mono, monospace">generating_assets</text>
+      <path d="M570 90 L600 90" stroke="#4a4a4a" marker-end="url(#arrow2)"/>
+
+      <rect x="600" y="70" width="110" height="40" rx="20" fill="#141414" stroke="#5b9fff"/>
+      <text x="655" y="94" text-anchor="middle" fill="#5b9fff" font-size="11" font-family="IBM Plex Mono, monospace">assembling</text>
+
+      <path d="M655 110 L655 145 L380 145 L380 170" stroke="#4a4a4a" fill="none" marker-end="url(#arrow2)"/>
+
+      <rect x="320" y="170" width="120" height="40" rx="20" fill="#141414" stroke="#b794f6"/>
+      <text x="380" y="194" text-anchor="middle" fill="#b794f6" font-size="11" font-family="IBM Plex Mono, monospace">validating</text>
+
+      <path d="M340 210 L240 230 L140 270" stroke="#4a4a4a" fill="none" marker-end="url(#arrow2)"/>
+      <path d="M380 210 L380 270" stroke="#4a4a4a" marker-end="url(#arrow2)"/>
+      <path d="M420 210 L520 230 L620 270" stroke="#4a4a4a" fill="none" marker-end="url(#arrow2)"/>
+
+      <rect x="80" y="270" width="120" height="40" rx="20" fill="#141414" stroke="#2dd4bf"/>
+      <text x="140" y="294" text-anchor="middle" fill="#2dd4bf" font-size="11" font-family="IBM Plex Mono, monospace">completed</text>
+
+      <rect x="320" y="270" width="120" height="40" rx="20" fill="#141414" stroke="#ff8c42"/>
+      <text x="380" y="294" text-anchor="middle" fill="#ff8c42" font-size="11" font-family="IBM Plex Mono, monospace">partial</text>
+
+      <rect x="560" y="270" width="120" height="40" rx="20" fill="#141414" stroke="#ff5555"/>
+      <text x="620" y="294" text-anchor="middle" fill="#ff5555" font-size="11" font-family="IBM Plex Mono, monospace">failed</text>
+
+      <path d="M620 270 L620 30 L185 30 L185 70" stroke="#ff5555" stroke-dasharray="3,3" fill="none" marker-end="url(#arrow3)" opacity="0.6"/>
+      <text x="400" y="22" text-anchor="middle" fill="#ff5555" font-size="10" font-family="IBM Plex Mono, monospace" font-style="italic" opacity="0.8">retry (max 3)</text>
+    </svg>
+  </div>
+
+  <div class="quality-block">
+    <div class="quality-row">
+      <span class="label">completed</span>
+      <span class="val">10/10 영상 검증 통과 — 이메일 발송 + 크레딧 차감</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">partial</span>
+      <span class="val">3~9/10 성공 — 성공 영상만 즉시 딜리버리 + 실패 분량 백그라운드 재생성</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">failed</span>
+      <span class="val">2/10 이하 또는 fatal 에러 — 크레딧 환불, 최대 3회까지 자동 재시도</span>
+    </div>
+  </div>
+</div>
+
+<!-- 10 에러 처리 & 재시도 -->
+<div class="section">
+  <div class="section-num">10</div>
+  <h2>에러 처리 &<br>재시도 정책</h2>
+
+  <p class="prose">파이프라인의 6개 단계 각각이 실패할 수 있다. <strong>모든 외부 API 호출은 무조건 재시도 가능</strong>하다는 전제로 설계한다. 가장 흔한 실패는 Seedance의 timeout과 ElevenLabs의 rate limit.</p>
+
+  <h3>API별 재시도 정책</h3>
+  <table class="endpoint-table">
+    <thead>
+      <tr>
+        <th>API</th>
+        <th>실패 시나리오</th>
+        <th>재시도</th>
+        <th>폴백</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--blue);">Claude</td>
+        <td>429, 5xx, timeout</td>
+        <td>3회 (2s/4s/8s 백오프)</td>
+        <td>카테고리별 캐시 훅 템플릿</td>
+      </tr>
+      <tr>
+        <td style="color:var(--teal);">ElevenLabs</td>
+        <td>429, voice_id 오류</td>
+        <td>3회</td>
+        <td>대체 voice_id로 재시도</td>
+      </tr>
+      <tr>
+        <td style="color:var(--orange);">Seedance (fal)</td>
+        <td>queue full, timeout 180s+</td>
+        <td>2회 (60s 간격)</td>
+        <td>Kling 3.0 / Runway Gen-4 라우팅</td>
+      </tr>
+      <tr>
+        <td style="color:var(--red);">Creatomate</td>
+        <td>render error, ffmpeg fail</td>
+        <td>2회</td>
+        <td>자체 FFmpeg 큐 (Phase 3)</td>
+      </tr>
+      <tr>
+        <td style="color:var(--purple);">R2</td>
+        <td>일시적 5xx, network</td>
+        <td>5회 (1s 간격)</td>
+        <td>큐 보존, 수동 개입</td>
+      </tr>
+      <tr>
+        <td style="color:var(--white);">Stripe</td>
+        <td>webhook 처리 실패</td>
+        <td>Stripe 자동 재시도 (24h)</td>
+        <td>Slack 알림 + 수동 reconcile</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>부분 실패 (Partial Failure) 처리</h3>
+  <p class="prose">10개 변형 중 일부만 성공하는 케이스가 실무상 가장 흔하다. 임계치별로 명확한 규칙을 둔다.</p>
+
+  <div class="quality-block">
+    <div class="quality-row">
+      <span class="label">10/10 성공</span>
+      <span class="val"><span class="accent">→ completed</span> — 이메일 발송, 크레딧 차감</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">8~9/10 성공</span>
+      <span class="val"><span class="accent">→ partial</span> — 즉시 딜리버리 + 백그라운드 재생성 (실패 분량)</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">3~7/10 성공</span>
+      <span class="val">자동 재생성 1회 후 재평가, 부분 크레딧 차감</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">0~2/10 성공</span>
+      <span class="val"><span class="accent">→ failed</span> — 크레딧 환불, 운영팀 즉시 알림</span>
+    </div>
+  </div>
+
+  <h3>Idempotency & Dead Letter Queue</h3>
+  <p class="prose">모든 Celery 작업은 <strong>job_id</strong>를 멱등 키로 사용한다. 중복 실행 시 기존 결과를 반환한다. 3회 재시도 후에도 실패한 작업은 <strong>DLQ(Dead Letter Queue)</strong>로 이동해 운영팀이 수동 검토한다.</p>
+
+  <div class="code-block">
+<span class="kw">@</span><span class="fn">celery.task</span>(bind=<span class="kw">True</span>, max_retries=<span class="num">3</span>, default_retry_delay=<span class="num">60</span>)<br>
+<span class="kw">def</span> <span class="fn">call_seedance</span>(self, hook_id):<br>
+&nbsp;&nbsp;<span class="kw">try</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;result = <span class="fn">fal_client.run</span>(<span class="str">"seedance-2.0"</span>, prompt=...)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> result.video_url<br>
+&nbsp;&nbsp;<span class="kw">except</span> RateLimitError <span class="kw">as</span> e:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">raise</span> self.<span class="fn">retry</span>(exc=e, countdown=<span class="num">120</span>)<br>
+&nbsp;&nbsp;<span class="kw">except</span> Exception <span class="kw">as</span> e:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> self.request.retries >= <span class="num">2</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">fallback_to_kling</span>(hook_id)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">raise</span> self.<span class="fn">retry</span>(exc=e)
+  </div>
+</div>
+
+<!-- 11 모니터링 & 시크릿 -->
+<div class="section">
+  <div class="section-num">11</div>
+  <h2>모니터링 &<br>시크릿 관리</h2>
+
+  <h3>운영 KPI 대시보드 (Grafana)</h3>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="val">p95</div>
+      <label>Job 처리 시간 — 목표 &lt;6분</label>
+    </div>
+    <div class="stat-card">
+      <div class="val blue">≥98%</div>
+      <label>Job 성공률 (10/10 기준)</label>
+    </div>
+    <div class="stat-card">
+      <div class="val teal">&lt;3%</div>
+      <label>Validate 재생성률</label>
+    </div>
+    <div class="stat-card">
+      <div class="val orange">실시간</div>
+      <label>일일 누적 원가 ($)</label>
+    </div>
+  </div>
+
+  <h3>알람 임계치</h3>
+  <div class="quality-block">
+    <div class="quality-row">
+      <span class="label">처리 시간</span>
+      <span class="val">p95 &gt; 8분 (15분 윈도우) → Slack 경고</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">API 실패율</span>
+      <span class="val">제공자별 &gt; 10% (1h 누적) → Slack 즉시</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">큐 적체</span>
+      <span class="val">Celery queue depth &gt; 200 → PagerDuty</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">일일 원가</span>
+      <span class="val">예상 대비 +30% 초과 → 이메일 + 자동 throttle</span>
+    </div>
+    <div class="quality-row">
+      <span class="label">결제 실패</span>
+      <span class="val">Stripe webhook 5분 내 미수신 → 즉시 PagerDuty</span>
+    </div>
+  </div>
+
+  <h3>관측 스택</h3>
+  <table class="stack-table">
+    <thead>
+      <tr><th>도구</th><th>역할</th><th style="text-align:right">월 비용</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Sentry</td><td>예외 캡처 + 릴리즈 트래킹</td><td class="num">~$26</td></tr>
+      <tr><td>PostHog</td><td>유저 행동 funnel (가입→첫 Job→구독)</td><td class="num">~$0–50</td></tr>
+      <tr><td>Grafana Cloud</td><td>시스템 메트릭, p95, 큐 시각화</td><td class="num">Free tier</td></tr>
+      <tr><td>Better Stack</td><td>uptime 모니터링, status page</td><td class="num">~$24</td></tr>
+    </tbody>
+  </table>
+
+  <h3>환경 변수 & 시크릿</h3>
+  <p class="prose">모두 <strong>1Password Secrets Automation</strong> 또는 Railway/Fly 시크릿 매니저에서 주입. 코드 저장소에 직접 커밋 금지. PR 단계에서 secret-scanner pre-commit hook 작동.</p>
+
+  <div class="code-block">
+<span class="com"># Core APIs</span><br>
+ANTHROPIC_API_KEY=sk-ant-...<br>
+ELEVENLABS_API_KEY=...<br>
+FAL_KEY=...                   <span class="com"># Seedance</span><br>
+CREATOMATE_API_KEY=...<br><br>
+<span class="com"># Storage & Infra</span><br>
+DATABASE_URL=postgresql://...<br>
+REDIS_URL=redis://...<br>
+R2_ACCOUNT_ID=...<br>
+R2_ACCESS_KEY_ID=...<br>
+R2_SECRET_ACCESS_KEY=...<br>
+R2_BUCKET=hookforge-prod<br><br>
+<span class="com"># Payment & Auth</span><br>
+STRIPE_SECRET_KEY=sk_live_...<br>
+STRIPE_WEBHOOK_SECRET=whsec_...<br>
+JWT_SECRET=...<br><br>
+<span class="com"># Delivery & Ops</span><br>
+RESEND_API_KEY=...<br>
+SENTRY_DSN=...<br>
+POSTHOG_API_KEY=...<br>
+SLACK_WEBHOOK_URL=...
+  </div>
+</div>
+
+<!-- 12 원가 -->
+<div class="section">
+  <div class="section-num">12</div>
+  <h2>원가 & 마진 구조</h2>
+
+  <p class="prose">영상 세트 1회 생성 (10개 기준) 변동 원가:</p>
+
+  <table class="stack-table">
+    <thead>
+      <tr>
+        <th>API</th>
+        <th>역할</th>
+        <th>단가 기준</th>
+        <th style="text-align:right">10개 원가</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Claude 3.5 Sonnet</td>
+        <td>훅 + 프롬프트 생성</td>
+        <td>~$0.003/1K tokens</td>
+        <td class="num">~$0.05</td>
+      </tr>
+      <tr>
+        <td>ElevenLabs</td>
+        <td>TTS 더빙 ×10</td>
+        <td>~$0.30/1K chars</td>
+        <td class="num">~$0.60</td>
+      </tr>
+      <tr>
+        <td>Seedance 2.0 (fal.ai)</td>
+        <td>3초 클립 ×10</td>
+        <td>~$0.10/clip</td>
+        <td class="num">~$1.00</td>
+      </tr>
+      <tr>
+        <td>Creatomate</td>
+        <td>최종 합성 ×10</td>
+        <td>~$0.02/render</td>
+        <td class="num">~$0.20</td>
+      </tr>
+      <tr>
+        <td>Storage (R2)</td>
+        <td>영상 저장/전송</td>
+        <td>~$0.015/GB</td>
+        <td class="num">~$0.05</td>
+      </tr>
+      <tr>
+        <td>인프라 (서버 + Redis + DB)</td>
+        <td>월정액 분배</td>
+        <td>~$50/월 ÷ 트래픽</td>
+        <td class="num">~$0.10</td>
+      </tr>
+      <tr class="total">
+        <td colspan="3">세트당 총 원가</td>
+        <td class="num accent">~$2.00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="val">$2</div>
+      <label>세트당 변동원가</label>
+    </div>
+    <div class="stat-card">
+      <div class="val blue">$99</div>
+      <label>Basic 월 구독료</label>
+    </div>
+    <div class="stat-card">
+      <div class="val teal">20회</div>
+      <label>Basic 월 생성 한도</label>
+    </div>
+    <div class="stat-card">
+      <div class="val orange">~60%</div>
+      <label>Basic 마진율 (한도 100% 사용 시)</label>
+    </div>
+  </div>
+
+  <p class="prose">평균 유저는 한도의 60~70%만 사용한다. 실제 마진율은 <strong>75~80% 수준에서 안정화</strong>된다.</p>
+
+  <h3>원가 분포 시각화</h3>
+  <p class="prose">Seedance 단일 항목이 원가의 절반(50%). 자체 호스팅 또는 대체 모델로 전환만 해도 원가가 절반으로 떨어진다.</p>
+
+  <div class="donut-block">
+    <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="width:220px;height:220px;display:block;margin:0 auto;">
+      <circle cx="110" cy="110" r="70" fill="none" stroke="#0a0a0a" stroke-width="32"/>
+      <g transform="rotate(-90 110 110)">
+        <circle cx="110" cy="110" r="70" fill="none" stroke="#ff8c42" stroke-width="32" stroke-dasharray="220 440" stroke-dashoffset="0"/>
+        <circle cx="110" cy="110" r="70" fill="none" stroke="#2dd4bf" stroke-width="32" stroke-dasharray="132 440" stroke-dashoffset="-220"/>
+        <circle cx="110" cy="110" r="70" fill="none" stroke="#ff5555" stroke-width="32" stroke-dasharray="44 440" stroke-dashoffset="-352"/>
+        <circle cx="110" cy="110" r="70" fill="none" stroke="#b794f6" stroke-width="32" stroke-dasharray="22 440" stroke-dashoffset="-396"/>
+        <circle cx="110" cy="110" r="70" fill="none" stroke="#5b9fff" stroke-width="32" stroke-dasharray="11 440" stroke-dashoffset="-418"/>
+        <circle cx="110" cy="110" r="70" fill="none" stroke="#e8ff47" stroke-width="32" stroke-dasharray="11 440" stroke-dashoffset="-429"/>
+      </g>
+      <text x="110" y="102" text-anchor="middle" font-size="10" font-family="IBM Plex Mono, monospace" fill="#7a7a7a" letter-spacing="1">SET COST</text>
+      <text x="110" y="128" text-anchor="middle" font-size="28" font-weight="800" font-family="Syne, sans-serif" fill="#e8ff47">$2.00</text>
+    </svg>
+
+    <div class="donut-legend">
+      <div class="donut-legend-item">
+        <span class="swatch" style="background:#ff8c42"></span>
+        <span class="name">Seedance 2.0</span>
+        <span class="pct">50%</span>
+        <span class="cost">$1.00</span>
+      </div>
+      <div class="donut-legend-item">
+        <span class="swatch" style="background:#2dd4bf"></span>
+        <span class="name">ElevenLabs</span>
+        <span class="pct">30%</span>
+        <span class="cost">$0.60</span>
+      </div>
+      <div class="donut-legend-item">
+        <span class="swatch" style="background:#ff5555"></span>
+        <span class="name">Creatomate</span>
+        <span class="pct">10%</span>
+        <span class="cost">$0.20</span>
+      </div>
+      <div class="donut-legend-item">
+        <span class="swatch" style="background:#b794f6"></span>
+        <span class="name">Infra (서버/Redis/DB)</span>
+        <span class="pct">5%</span>
+        <span class="cost">$0.10</span>
+      </div>
+      <div class="donut-legend-item">
+        <span class="swatch" style="background:#5b9fff"></span>
+        <span class="name">Claude</span>
+        <span class="pct">2.5%</span>
+        <span class="cost">$0.05</span>
+      </div>
+      <div class="donut-legend-item">
+        <span class="swatch" style="background:#e8ff47"></span>
+        <span class="name">R2 Storage</span>
+        <span class="pct">2.5%</span>
+        <span class="cost">$0.05</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 13 프라이싱 -->
+<div class="section">
+  <div class="section-num">13</div>
+  <h2>프라이싱 &<br>수익 모델</h2>
+
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-val"><sup>$</sup>29</div>
+      <div class="price-period">/ 월</div>
+      <ul class="price-features">
+        <li>월 5세트 생성</li>
+        <li>세트당 5개 변형</li>
+        <li>기본 보이스 3종</li>
+        <li>1080p 표준 화질</li>
+        <li>이메일 딜리버리</li>
+      </ul>
+    </div>
+    <div class="price-card featured">
+      <div class="price-badge">Most Popular</div>
+      <div class="price-tier">Basic</div>
+      <div class="price-val"><sup>$</sup>99</div>
+      <div class="price-period">/ 월</div>
+      <ul class="price-features">
+        <li>월 20세트 생성</li>
+        <li>세트당 10개 변형</li>
+        <li>프리미엄 보이스 10종</li>
+        <li>틱톡 최적화 화질</li>
+        <li>우선 처리 큐</li>
+        <li>A/B 성과 트래킹</li>
+      </ul>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">Pro</div>
+      <div class="price-val"><sup>$</sup>249</div>
+      <div class="price-period">/ 월</div>
+      <ul class="price-features">
+        <li>월 무제한 생성</li>
+        <li>세트당 20개 변형</li>
+        <li>커스텀 보이스 클로닝</li>
+        <li>API 직접 연동</li>
+        <li>팀 멤버 3인</li>
+        <li>성과 리포트 자동화</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="revenue-block">
+    <div class="revenue-row">
+      <span class="label">유료 구독 50명 (Month 2)</span>
+      <span class="amount">~$4,000 MRR</span>
+    </div>
+    <div class="revenue-row">
+      <span class="label">유료 구독 200명 (Month 6)</span>
+      <span class="amount">~$16,000 MRR</span>
+    </div>
+    <div class="revenue-row">
+      <span class="label">유료 구독 500명 (Month 12)</span>
+      <span class="amount">~$40,000 MRR</span>
+    </div>
+    <div class="revenue-row highlight">
+      <span class="label">500명 기준 월 순이익 (80% 마진)</span>
+      <span class="amount">~$32,000 / 월</span>
+    </div>
+  </div>
+
+  <h3>MRR 성장 시뮬레이션 (12개월)</h3>
+  <div class="arch-svg">
+    <svg viewBox="0 0 720 290" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+      <defs>
+        <linearGradient id="mrrGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e8ff47" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#e8ff47" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <text x="55" y="34" text-anchor="end" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">$40K</text>
+      <text x="55" y="79" text-anchor="end" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">$30K</text>
+      <text x="55" y="124" text-anchor="end" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">$20K</text>
+      <text x="55" y="169" text-anchor="end" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">$10K</text>
+      <text x="55" y="214" text-anchor="end" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">$0</text>
+
+      <line x1="65" y1="30" x2="700" y2="30" stroke="#1f1f1f"/>
+      <line x1="65" y1="75" x2="700" y2="75" stroke="#1f1f1f"/>
+      <line x1="65" y1="120" x2="700" y2="120" stroke="#1f1f1f"/>
+      <line x1="65" y1="165" x2="700" y2="165" stroke="#1f1f1f"/>
+      <line x1="65" y1="210" x2="700" y2="210" stroke="#2e2e2e"/>
+
+      <path d="M65 205.5 L122.7 192 L180.4 178.5 L238.1 165 L295.8 151.5 L353.5 138 L411.2 120 L468.9 102 L526.6 84 L584.3 66 L642.0 48 L700 30 L700 210 L65 210 Z" fill="url(#mrrGrad)"/>
+      <path d="M65 205.5 L122.7 192 L180.4 178.5 L238.1 165 L295.8 151.5 L353.5 138 L411.2 120 L468.9 102 L526.6 84 L584.3 66 L642.0 48 L700 30" fill="none" stroke="#e8ff47" stroke-width="2"/>
+
+      <circle cx="122.7" cy="192" r="4" fill="#e8ff47" stroke="#0a0a0a" stroke-width="2"/>
+      <circle cx="353.5" cy="138" r="4" fill="#e8ff47" stroke="#0a0a0a" stroke-width="2"/>
+      <circle cx="700" cy="30" r="5" fill="#e8ff47" stroke="#0a0a0a" stroke-width="2"/>
+
+      <text x="122.7" y="184" text-anchor="middle" fill="#e8ff47" font-size="11" font-family="IBM Plex Mono, monospace">$4K · 50명</text>
+      <text x="353.5" y="130" text-anchor="middle" fill="#e8ff47" font-size="11" font-family="IBM Plex Mono, monospace">$16K · 200명</text>
+      <text x="700" y="22" text-anchor="end" fill="#e8ff47" font-size="12" font-family="IBM Plex Mono, monospace" font-weight="500">$40K · 500명</text>
+
+      <text x="65" y="230" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">M1</text>
+      <text x="180.4" y="230" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">M3</text>
+      <text x="353.5" y="230" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">M6</text>
+      <text x="526.6" y="230" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">M9</text>
+      <text x="700" y="230" text-anchor="middle" fill="#7a7a7a" font-size="10" font-family="IBM Plex Mono, monospace">M12</text>
+
+      <line x1="180.4" y1="245" x2="180.4" y2="265" stroke="#2e2e2e"/>
+      <line x1="411.2" y1="245" x2="411.2" y2="265" stroke="#2e2e2e"/>
+      <line x1="700" y1="245" x2="700" y2="265" stroke="#2e2e2e"/>
+
+      <text x="122" y="262" text-anchor="middle" fill="#7a7a7a" font-size="9" font-family="IBM Plex Mono, monospace" letter-spacing="2">PHASE 1 — MVP</text>
+      <text x="295" y="262" text-anchor="middle" fill="#7a7a7a" font-size="9" font-family="IBM Plex Mono, monospace" letter-spacing="2">PHASE 2 — 고도화</text>
+      <text x="555" y="262" text-anchor="middle" fill="#7a7a7a" font-size="9" font-family="IBM Plex Mono, monospace" letter-spacing="2">PHASE 3 — 스케일</text>
+    </svg>
+  </div>
+</div>
+
+<!-- 14 GTM -->
+<div class="section">
+  <div class="section-num">14</div>
+  <h2>GTM 전략</h2>
+
+  <p class="prose">광고비 0으로 첫 200명까지 도달한다. 제품 자체가 시연이고, 시연이 마케팅이다.</p>
+
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="pipe-num">A</div>
+      <div class="pipe-content">
+        <h4>Dogfooding 콘텐츠</h4>
+        <p>HookForge 자체로 생성한 영상을 TikTok에 배포. "같은 제품, 10개 다른 훅 — 어느 게 가장 잘 됐을까?" 포맷. CTR 결과 공개. 영상 자체가 제품 시연 + 광고.</p>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">B</div>
+      <div class="pipe-content">
+        <h4>커뮤니티 침투</h4>
+        <p>r/Affiliatemarketing, r/TikTokmarketing, Affiliate Hustlers Discord, TikTok Shop 셀러 그룹. A/B 결과를 공유하며 자연스럽게 툴 언급. 초기 베타 50명 확보.</p>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">C</div>
+      <div class="pipe-content">
+        <h4>프리 트라이얼</h4>
+        <p>가입 시 무료 세트 3회 제공 (원가 $6). 신용카드 없이 체험. 결과물 받으면 구독 전환율 25%+ 예상.</p>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">D</div>
+      <div class="pipe-content">
+        <h4>데이터 락인</h4>
+        <p>유저가 누적 사용할수록 "어떤 훅이 내 제품에서 잘 됐는지" 데이터가 쌓인다. 이 데이터는 HookForge에만 존재. 이탈할수록 손해.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 15 로드맵 -->
+<div class="section">
+  <div class="section-num">15</div>
+  <h2>개발 로드맵</h2>
+
+  <div class="roadmap">
+    <div class="road-phase active">
+      <div class="road-label">
+        <div class="road-phase-num">Phase 1</div>
+        <div class="road-month">Month 1~2</div>
+        <div class="road-dot"></div>
+      </div>
+      <div class="road-content">
+        <h4>MVP 런칭</h4>
+        <ul>
+          <li>FastAPI + Celery 기본 파이프라인 구축</li>
+          <li>4개 API 연동 (Claude / ElevenLabs / Seedance / Creatomate)</li>
+          <li>퀄리티 게이트 자동 검증 로직</li>
+          <li>Stripe 구독 결제 연동</li>
+          <li>랜딩페이지 + 대시보드 (Next.js)</li>
+          <li>Starter / Basic 2개 플랜으로 런칭</li>
+          <li>베타 유저 50명 확보</li>
+        </ul>
+      </div>
+    </div>
+    <div class="road-phase">
+      <div class="road-label">
+        <div class="road-phase-num">Phase 2</div>
+        <div class="road-month">Month 3~5</div>
+        <div class="road-dot"></div>
+      </div>
+      <div class="road-content">
+        <h4>제품 고도화</h4>
+        <ul>
+          <li>A/B 성과 트래킹 (TikTok Pixel + 자체 단축 URL)</li>
+          <li>커스텀 보이스 클로닝 (ElevenLabs Voice Lab)</li>
+          <li>훅 템플릿 라이브러리 (카테고리별)</li>
+          <li>Pro 플랜 + API 직접 연동 출시</li>
+          <li>유료 구독 200명 목표</li>
+        </ul>
+      </div>
+    </div>
+    <div class="road-phase">
+      <div class="road-label">
+        <div class="road-phase-num">Phase 3</div>
+        <div class="road-month">Month 6~12</div>
+        <div class="road-dot"></div>
+      </div>
+      <div class="road-content">
+        <h4>스케일 & 원가 최적화</h4>
+        <ul>
+          <li>Seedance → 자체 호스팅 모델 (Wan 2.1, AnimateDiff) 전환 검토</li>
+          <li>Creatomate → 자체 FFmpeg 렌더러로 교체 (원가 70% 절감)</li>
+          <li>Agency 플랜 (멀티 브랜드, 화이트라벨)</li>
+          <li>TikTok Shop, Amazon Affiliate 특화 템플릿 마켓</li>
+          <li>MRR $40,000 달성</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 16 리스크 -->
+<div class="section">
+  <div class="section-num">16</div>
+  <h2>리스크 분석</h2>
+
+  <div class="risk-grid">
+    <div class="risk-card">
+      <h5><span class="risk-badge high">High</span>Seedance API 안정성</h5>
+      <p>fal.ai를 통한 써드파티 접근. ByteDance 정책 변경 시 영향. 대응 — Kling 3.0, Runway Gen-4를 API 추상화 레이어로 즉시 교체 가능하게 설계.</p>
+    </div>
+    <div class="risk-card">
+      <h5><span class="risk-badge mid">Mid</span>경쟁사 진입</h5>
+      <p>HeyGen, Opus Clip 등이 유사 기능 추가 가능. 대응 — 어필리에이트 마케터 특화 데이터 락인, A/B 성과 누적 히스토리, 카테고리별 훅 템플릿으로 차별화.</p>
+    </div>
+    <div class="risk-card">
+      <h5><span class="risk-badge mid">Mid</span>원가 급등</h5>
+      <p>Seedance/Creatomate 가격 인상 가능성. 대응 — Phase 3에 오픈소스 모델 + 자체 FFmpeg 렌더러로 전환. 원가 상한선 통제를 위한 한도 요금제 유지.</p>
+    </div>
+    <div class="risk-card">
+      <h5><span class="risk-badge low">Low</span>ToS 리스크</h5>
+      <p>합법적 A/B 테스트 도구로 명확히 포지셔닝. 콘텐츠 배포 방식은 유저 책임. 인프라 제공자 법적 노출 최소화. 약관에 책임 한정 명시.</p>
+    </div>
+    <div class="risk-card">
+      <h5><span class="risk-badge low">Low</span>퀄리티 편차</h5>
+      <p>고객 원본 영상 퀄리티에 의존. 대응 — 업로드 단계에서 자동 검증 + 가이드라인 제공. 결과물 자동 검증으로 실패 영상 차단.</p>
+    </div>
+    <div class="risk-card">
+      <h5><span class="risk-badge low">Low</span>스케일 트래픽</h5>
+      <p>구독자 급증 시 Celery 큐 폭주 가능. 대응 — Cloudflare R2 + Railway 자동 스케일링. 우선 큐 (Pro 플랜) 분리로 유료 유저 보호.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>HookForge — Business Plan v2.0 — Confidential</span>
+  <div class="logo">Hook<span>Forge</span></div>
+  <span>© 2026</span>
+</div>
+
+</div>
+</body>
+</html>

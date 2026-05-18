@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UGCLabs - Affiliate Creative Production Engine</title>
+<style>
+:root {
+  --bg: #080808;
+  --surface: #121212;
+  --surface-2: #1a1a1a;
+  --surface-3: #232323;
+  --line: #303030;
+  --text: #f5f2ea;
+  --muted: #aaa49a;
+  --dim: #747069;
+  --accent: #e3ff42;
+  --accent-soft: rgba(227, 255, 66, .12);
+  --blue: #69a8ff;
+  --teal: #35d2bd;
+  --orange: #ff9a4d;
+  --red: #ff6666;
+  --purple: #b79cff;
+  --font: "Inter", "Pretendard", "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.68;
+}
+
+a { color: inherit; }
+.page {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding-bottom: 96px;
+}
+
+.hero {
+  min-height: 94vh;
+  display: grid;
+  grid-template-columns: 1.12fr .88fr;
+  gap: 52px;
+  align-items: center;
+  padding: 64px 0 56px;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.eyebrow::before {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: var(--accent);
+}
+
+h1 {
+  font-size: clamp(46px, 7.2vw, 92px);
+  line-height: .94;
+  letter-spacing: -.05em;
+  margin-bottom: 22px;
+}
+h1 span { color: var(--accent); }
+
+.hero-copy {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: clamp(18px, 2vw, 23px);
+  line-height: 1.5;
+  margin-bottom: 28px;
+}
+
+.hero-points {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 32px 0;
+}
+.point {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 18px;
+}
+.point strong {
+  display: block;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 9px;
+}
+.point span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.chip {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 7px 10px;
+}
+
+.phone-wall {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: center;
+}
+.phone {
+  position: relative;
+  min-height: 310px;
+  border: 1px solid #3b3b3b;
+  border-radius: 26px;
+  background: #181818;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.36);
+}
+.phone:nth-child(2) { transform: translateY(38px); }
+.phone:nth-child(3) { transform: translateY(-22px); }
+.phone-top {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  z-index: 4;
+  height: 34px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 999px;
+  color: rgba(255,255,255,.74);
+  font-weight: 700;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  backdrop-filter: blur(8px);
+}
+.phone-caption {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 20px;
+  z-index: 3;
+  color: #fff;
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.04;
+  text-shadow: 0 2px 18px rgba(0,0,0,.65);
+}
+.split-a {
+  height: 50%;
+  background:
+    radial-gradient(circle at 48% 28%, #dfb47b 0 9%, transparent 10%),
+    radial-gradient(circle at 48% 36%, #f0d0ad 0 12%, transparent 13%),
+    linear-gradient(145deg, #4a3325, #d39a45);
+}
+.split-b {
+  height: 50%;
+  background:
+    linear-gradient(90deg, transparent 0 12%, rgba(0,255,180,.55) 12% 15%, transparent 15% 26%, rgba(255,70,70,.66) 26% 29%, transparent 29% 44%, rgba(0,255,180,.65) 44% 47%, transparent 47%),
+    linear-gradient(180deg, #171d22, #0d1015);
+}
+.influencer {
+  background:
+    radial-gradient(circle at 50% 34%, #f3d0bd 0 11%, transparent 12%),
+    radial-gradient(circle at 50% 28%, #251511 0 18%, transparent 19%),
+    linear-gradient(180deg, #564536, #1a1715);
+}
+.product-bag {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 16px;
+  height: 46%;
+  border-radius: 12px 12px 4px 4px;
+  background: linear-gradient(135deg, #f2f2f2, #7b7b7b 34%, #f8f8f8 55%, #6d6d6d);
+  opacity: .96;
+}
+.product {
+  background:
+    radial-gradient(circle at 20% 26%, rgba(130,255,230,.8) 0 5%, transparent 6%),
+    radial-gradient(circle at 77% 42%, rgba(255,172,218,.75) 0 6%, transparent 7%),
+    linear-gradient(180deg, #5a351c, #d8aa70);
+}
+.bottle {
+  position: absolute;
+  width: 42%;
+  height: 43%;
+  left: 29%;
+  bottom: 18%;
+  border-radius: 20px 20px 28px 28px;
+  background: linear-gradient(180deg, #f6dbc9 0 35%, #ef7d67 36% 100%);
+  box-shadow: 0 20px 60px rgba(0,0,0,.32);
+}
+.bottle::before {
+  content: "";
+  position: absolute;
+  left: 35%;
+  top: -28%;
+  width: 30%;
+  height: 34%;
+  border-radius: 18px 18px 6px 6px;
+  background: #f5e0cf;
+}
+
+.toc {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 9px;
+  margin: 24px 0 0;
+}
+.toc a {
+  text-decoration: none;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 11px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.toc a:hover { color: var(--text); border-color: rgba(227,255,66,.45); }
+
+.section {
+  padding: 76px 0;
+  border-bottom: 1px solid var(--line);
+}
+.section-num {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  margin-bottom: 12px;
+}
+h2 {
+  font-size: clamp(31px, 4.5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+  margin-bottom: 26px;
+}
+h3 {
+  margin: 36px 0 14px;
+  font-size: 22px;
+  line-height: 1.24;
+}
+p {
+  color: var(--muted);
+  margin-bottom: 15px;
+}
+strong { color: var(--text); font-weight: 700; }
+
+.lead-block {
+  border: 1px solid rgba(227,255,66,.35);
+  background: linear-gradient(135deg, rgba(227,255,66,.1), rgba(18,18,18,1) 54%);
+  border-radius: 10px;
+  padding: 30px;
+  margin: 24px 0;
+}
+.lead-block .line {
+  color: var(--text);
+  font-size: clamp(24px, 3.2vw, 38px);
+  line-height: 1.16;
+  letter-spacing: -.025em;
+  margin-bottom: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 22px;
+}
+.card h4 {
+  font-size: 17px;
+  line-height: 1.25;
+  margin-bottom: 9px;
+}
+.card p, .card li {
+  color: var(--muted);
+  font-size: 14px;
+}
+.metric {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 31px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+ul { padding-left: 18px; color: var(--muted); }
+li { margin: 7px 0; }
+
+.format-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.format-card {
+  min-height: 330px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.format-visual {
+  position: relative;
+  height: 180px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+}
+.format-body { padding: 18px; }
+.format-body h4 {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.format-body p {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+}
+.mini-person {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f0c5ae;
+  left: calc(50% - 21px);
+  top: 35px;
+  box-shadow: 0 -12px 0 10px #21140f;
+}
+.mini-product {
+  position: absolute;
+  width: 78px;
+  height: 84px;
+  left: calc(50% - 39px);
+  bottom: 20px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f3dac9, #f37d6b);
+}
+.mini-app {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50%;
+  background:
+    linear-gradient(90deg, rgba(55,255,188,.8) 0 7%, transparent 7% 19%, rgba(255,82,82,.75) 19% 24%, transparent 24% 42%, rgba(55,255,188,.78) 42% 46%, transparent 46%),
+    #111821;
+}
+.mini-caption {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 72px;
+  text-align: center;
+  color: #fff;
+  font-weight: 800;
+  line-height: 1.1;
+  text-shadow: 0 3px 18px rgba(0,0,0,.55);
+}
+.before-after {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.before-after div:first-child { background: linear-gradient(180deg, #46312a, #171717); }
+.before-after div:last-child { background: linear-gradient(180deg, #d8b470, #453015); }
+.before-after span {
+  position: absolute;
+  top: 18px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #fff;
+}
+.before-after .before { left: 18px; }
+.before-after .after { right: 18px; }
+.box {
+  position: absolute;
+  width: 82px;
+  height: 64px;
+  left: calc(50% - 41px);
+  bottom: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #c89b59, #7e5730);
+}
+.box::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: -26px;
+  height: 26px;
+  transform: skewX(-18deg);
+  background: #e0b574;
+  transform-origin: bottom;
+}
+
+.flow {
+  display: grid;
+  gap: 12px;
+}
+.step {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 20px;
+}
+.step-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(227,255,66,.38);
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  font-family: var(--mono);
+}
+.api {
+  display: inline-block;
+  margin: 6px 6px 10px 0;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.blue { color: var(--blue); border-color: rgba(105,168,255,.38); }
+.teal { color: var(--teal); border-color: rgba(53,210,189,.38); }
+.orange { color: var(--orange); border-color: rgba(255,154,77,.38); }
+.red { color: var(--red); border-color: rgba(255,102,102,.38); }
+.purple { color: var(--purple); border-color: rgba(183,156,255,.38); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 8px;
+  overflow: hidden;
+}
+th, td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  vertical-align: top;
+}
+th {
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: left;
+}
+td:last-child, th:last-child { text-align: right; }
+tr:last-child td { border-bottom: 0; }
+.total td {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.price {
+  position: relative;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 24px;
+}
+.price.featured { border-color: rgba(227,255,66,.55); }
+.badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: 1px solid rgba(227,255,66,.45);
+  border-radius: 999px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 8px;
+}
+.tier {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.amount {
+  font-size: 44px;
+  letter-spacing: -.04em;
+  line-height: 1;
+  margin: 12px 0 18px;
+}
+.amount sup {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.do-dont {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.do-dont .card:first-child { border-color: rgba(255,102,102,.35); }
+.do-dont .card:last-child { border-color: rgba(53,210,189,.35); }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 44px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+@media (max-width: 960px) {
+  .hero { grid-template-columns: 1fr; }
+  .phone-wall { max-width: 520px; }
+  .toc { grid-template-columns: repeat(3, 1fr); }
+  .format-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .page { width: min(100% - 28px, 1120px); }
+  .hero { min-height: auto; padding-top: 44px; }
+  .hero-points, .grid, .grid.two, .grid.four, .format-grid, .pricing, .do-dont, .toc {
+    grid-template-columns: 1fr;
+  }
+  .phone-wall { grid-template-columns: 1fr; }
+  .phone:nth-child(2), .phone:nth-child(3) { transform: none; }
+  .step { grid-template-columns: 1fr; }
+  td:last-child, th:last-child { text-align: left; }
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Affiliate Creative Production Engine</div>
+      <h1>UGCLabs는 숏폼 광고를 <span>대량 생산</span>한다</h1>
+      <p class="hero-copy">어필리에이트 마케터와 커머스 팀이 참고 영상 하나로 0~30초짜리 TikTok/Reels 홍보 영상 10~30개를 몇 분 안에 뽑아내는 AI 크리에이티브 생산성 툴.</p>
+      <div class="hero-points">
+        <div class="point"><strong>0-30s</strong><span>틱톡, 릴스, 쇼츠에 맞춘 짧은 영상만 다룬다.</span></div>
+        <div class="point"><strong>5</strong><span>검증된 어필리에이트 영상 포맷만 제공한다.</span></div>
+        <div class="point"><strong>10-30</strong><span>한 번에 업로드 가능한 영상팩을 생성한다.</span></div>
+      </div>
+      <div class="hero-meta">
+        <span class="chip">Reference video in</span>
+        <span class="chip">Format selected</span>
+        <span class="chip">Creative variants out</span>
+        <span class="chip">Creator-ready delivery</span>
+      </div>
+      <nav class="toc">
+        <a href="#definition">01 Definition</a>
+        <a href="#formats">02 Formats</a>
+        <a href="#workflow">03 Workflow</a>
+        <a href="#system">04 System</a>
+        <a href="#pricing">05 Pricing</a>
+        <a href="#positioning">06 Positioning</a>
+        <a href="#execution">07 Execution</a>
+      </nav>
+    </div>
+
+    <div class="phone-wall" aria-label="UGCLabs format examples">
+      <div class="phone">
+        <div class="phone-top">Split App Promo</div>
+        <div class="split-a"></div>
+        <div class="split-b"></div>
+        <div class="phone-caption">New AI tool<br>made this in seconds</div>
+      </div>
+      <div class="phone influencer">
+        <div class="phone-top">Influencer + Product</div>
+        <div class="product-bag"></div>
+        <div class="phone-caption">Premium quality<br>first impression</div>
+      </div>
+      <div class="phone product">
+        <div class="phone-top">Product Focus</div>
+        <div class="bottle"></div>
+        <div class="phone-caption">Organic UGC<br>product video</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="definition">
+    <div class="section-num">01 / PRODUCT DEFINITION</div>
+    <h2>영상 편집기가 아니라 업로드용 크리에이티브 묶음 생산기</h2>
+    <div class="lead-block">
+      <div class="line">참고 영상 1개를 넣으면, 선택한 포맷에 맞춰 서로 다른 숏폼 홍보 영상 10~30개가 나온다.</div>
+      <p>UGCLabs의 고객은 편집 자체를 즐기는 사람이 아니다. 이들은 제품, 앱, SaaS, 드랍쉬핑 상품, TikTok Shop 아이템을 빠르게 테스트해야 하는 어필리에이트 마케터다. 이 시장에서는 완벽한 영상 1개보다, 충분히 괜찮은 영상 30개를 빠르게 배포하고 반응을 보는 능력이 더 중요하다.</p>
+    </div>
+    <div class="grid four">
+      <div class="card">
+        <div class="metric">01</div>
+        <h4>Reference</h4>
+        <p>유저가 참고 영상, 제품 링크, 앱 설명, 핵심 소구점을 넣는다.</p>
+      </div>
+      <div class="card">
+        <div class="metric">02</div>
+        <h4>Format</h4>
+        <p>5가지 숏폼 포맷 중 하나를 고른다. 포맷이 결과물의 구조를 통제한다.</p>
+      </div>
+      <div class="card">
+        <div class="metric">03</div>
+        <h4>Variants</h4>
+        <p>훅, 자막, 컷 리듬, 보이스, CTA, B-roll을 바꿔 10~30개를 만든다.</p>
+      </div>
+      <div class="card">
+        <div class="metric">04</div>
+        <h4>Delivery</h4>
+        <p>크리에이터는 완성본을 받아 업로드만 하면 된다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="formats">
+    <div class="section-num">02 / FIVE SHORT-FORM FORMATS</div>
+    <h2>처음부터 모든 영상을 만들지 않는다. 잘 팔리는 5가지 포맷만 만든다</h2>
+    <p>초기 제품의 승부처는 자유도보다 재현성이다. UGCLabs는 어필리에이트 숏폼에서 자주 쓰이는 구조를 5개로 제한해 결과물 품질과 생성 속도를 통제한다.</p>
+
+    <div class="format-grid">
+      <div class="format-card">
+        <div class="format-visual">
+          <div class="split-a"></div>
+          <div class="mini-app"></div>
+          <div class="mini-caption">This app<br>changed everything</div>
+        </div>
+        <div class="format-body">
+          <h4>01. 스플릿형</h4>
+          <p>위에는 인물/해설/리액션, 아래에는 앱 화면, 서비스 데모, 차트, 게임플레이를 배치한다. 앱, AI툴, SaaS 홍보에 강하다.</p>
+        </div>
+      </div>
+
+      <div class="format-card">
+        <div class="format-visual" style="background:linear-gradient(180deg,#4a392f,#171514);">
+          <div class="mini-person"></div>
+          <div class="product-bag"></div>
+          <div class="mini-caption">I tried this<br>for 7 days</div>
+        </div>
+        <div class="format-body">
+          <h4>02. 인플루언서 + 제품형</h4>
+          <p>사람이 제품을 들고 설명하거나 착용, 사용, 반응한다. 패션, 뷰티, 생활용품, 건강기능식품에 적합하다.</p>
+        </div>
+      </div>
+
+      <div class="format-card">
+        <div class="format-visual" style="background:linear-gradient(180deg,#603916,#e0aa6e);">
+          <div class="mini-product"></div>
+          <div class="mini-caption">Organic UGC<br>product shot</div>
+        </div>
+        <div class="format-body">
+          <h4>03. 제품 위주형</h4>
+          <p>얼굴 없이 제품 클로즈업, 감성 B-roll, 텍스트 오버레이 중심으로 만든다. 대량 생성과 브랜드 통제가 쉽다.</p>
+        </div>
+      </div>
+
+      <div class="format-card">
+        <div class="format-visual">
+          <div class="before-after">
+            <div></div>
+            <div></div>
+            <span class="before">BEFORE</span>
+            <span class="after">AFTER</span>
+          </div>
+          <div class="mini-caption">The result<br>after one use</div>
+        </div>
+        <div class="format-body">
+          <h4>04. Before & After</h4>
+          <p>문제 상황, 제품 사용, 결과 변화를 한 번에 보여준다. 뷰티, 청소, 피트니스, 생산성 앱에 강하다.</p>
+        </div>
+      </div>
+
+      <div class="format-card">
+        <div class="format-visual" style="background:linear-gradient(180deg,#3d3327,#151413);">
+          <div class="box"></div>
+          <div class="mini-caption">Unboxing<br>first impression</div>
+        </div>
+        <div class="format-body">
+          <h4>05. 언박싱 / 첫인상</h4>
+          <p>패키지 개봉, 첫 사용감, 예상 밖의 반응을 만든다. 구매 직전 고객에게 실제 사용감을 전달하기 좋다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="workflow">
+    <div class="section-num">03 / CREATOR WORKFLOW</div>
+    <h2>고객은 생성하고, 크리에이터는 업로드한다</h2>
+    <div class="grid two">
+      <div class="card">
+        <h4>Input</h4>
+        <ul>
+          <li>참고 영상 1개 또는 제품/앱 링크</li>
+          <li>제품명, 카테고리, 타깃 고객</li>
+          <li>핵심 소구점 1~3개</li>
+          <li>영상 포맷 5개 중 선택</li>
+          <li>생성 개수 10 / 20 / 30개</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Output</h4>
+        <ul>
+          <li>0~30초 세로형 9:16 MP4</li>
+          <li>업로드 가능한 영상팩 ZIP</li>
+          <li>각 영상별 훅, 캡션, CTA 메타데이터</li>
+          <li>크리에이터별 전달 링크</li>
+          <li>대시보드 상태와 이메일 알림</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>변형되는 요소</h3>
+    <div class="grid four">
+      <div class="card"><h4>Hook</h4><p>첫 1~3초의 문제제기, 결과 약속, 호기심 문구를 바꾼다.</p></div>
+      <div class="card"><h4>Script</h4><p>같은 메시지를 다른 말투와 순서로 다시 구성한다.</p></div>
+      <div class="card"><h4>Visual Rhythm</h4><p>컷 길이, 화면 분할, B-roll, 제품 노출 타이밍을 바꾼다.</p></div>
+      <div class="card"><h4>Voice & Caption</h4><p>TTS 톤, 자막 스타일, CTA 문장을 다르게 만든다.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="system">
+    <div class="section-num">04 / SYSTEM ARCHITECTURE</div>
+    <h2>서버는 영상 편집자가 아니라 API 오케스트레이터</h2>
+    <p>초기 버전은 자체 영상 연산을 최소화하고, 외부 AI/렌더링 API를 병렬로 지휘한다. 무거운 렌더링은 큐 기반 비동기 작업으로 처리한다.</p>
+
+    <div class="flow">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div>
+          <h4>Job 생성</h4>
+          <span class="api">Next.js</span><span class="api">FastAPI</span><span class="api">Cloudflare R2</span>
+          <p>영상과 제품 정보를 업로드하면 파일 검증 후 작업 ID를 발급한다. 유저는 즉시 작업 시작 상태를 본다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <h4>참고 영상 분석</h4>
+          <span class="api blue">Gemini Video Understanding</span>
+          <p>참고 영상의 포맷, 장면 구조, 자막, 제품 노출 타이밍, 훅, CTA를 분석한다. 결과는 이후 생성 단계에서 쓰기 좋은 구조화 JSON으로 저장한다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <h4>카피, 대본, 프롬프트 생성</h4>
+          <span class="api blue">Claude / GPT</span>
+          <p>Gemini 분석 결과와 제품 소구점을 기준으로 10~30개 변형용 훅, 대본, 자막, Seedance 프롬프트, Creatomate 렌더링 플랜을 만든다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div>
+          <h4>영상/오디오 자산 생성</h4>
+          <span class="api orange">Seedance via fal.ai</span><span class="api teal">ElevenLabs</span><span class="api purple">Celery + Redis</span>
+          <p>10~30개 변형에 필요한 B-roll과 보이스를 병렬 생성한다. 실패 항목은 개별 재시도하고 전체 작업은 계속 진행한다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div>
+          <h4>합성, 검증, 전달</h4>
+          <span class="api red">Creatomate</span><span class="api">ffprobe</span><span class="api">Resend</span>
+          <p>선택 포맷 템플릿에 맞춰 최종 MP4를 만들고, 해상도/길이/오디오/파일 크기를 검증한 뒤 다운로드 링크를 발송한다.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>MVP 기술 스택</h3>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Tool</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Frontend</td><td>Next.js</td><td>랜딩, 대시보드, 업로드, 결제</td></tr>
+        <tr><td>Backend</td><td>FastAPI</td><td>작업 생성, 상태 조회, API 라우팅</td></tr>
+        <tr><td>Queue</td><td>Celery + Redis</td><td>10~30개 영상 비동기 병렬 처리</td></tr>
+        <tr><td>Storage</td><td>Cloudflare R2</td><td>원본/결과 영상 저장과 만료 링크</td></tr>
+        <tr><td>AI Analysis</td><td>Gemini</td><td>참고 영상 분석, 포맷 판별, 장면표 생성</td></tr>
+        <tr><td>AI Text</td><td>Claude / GPT</td><td>훅, 대본, 프롬프트, CTA, 렌더 플랜 생성</td></tr>
+        <tr><td>AI Video</td><td>Seedance via fal.ai</td><td>B-roll과 장면 변형 생성</td></tr>
+        <tr><td>AI Voice</td><td>ElevenLabs</td><td>TTS 보이스 생성</td></tr>
+        <tr><td>Render</td><td>Creatomate</td><td>포맷별 영상 합성</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="section-num">05 / UNIT ECONOMICS</div>
+    <h2>겉으로는 영상 개수 과금, 내부는 포맷별 원가 관리</h2>
+    <p>UGCLabs는 사용자에게는 단순하게 “월 몇 개 영상”으로 팔지만, 내부 원가는 포맷별로 다르게 관리해야 한다. 스플릿형과 제품 위주형은 보이스오버 중심이라 안정적이고, 인플루언서형과 언박싱은 사람/손/제품 상호작용이 많아 실패율과 원가가 올라간다.</p>
+
+    <h3>공통 배치 원가</h3>
+    <p>Gemini의 참고영상 분석과 Claude/GPT의 카피·대본·프롬프트 생성은 보통 <strong>10~30개 배치당 1~2회 호출</strong>이므로, 영상 개수로 나눠 계산한다.</p>
+    <table>
+      <thead>
+        <tr><th>API</th><th>역할</th><th>과금 기준</th><th>영상 1개당 가정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Gemini</td><td>참고 영상 분석, 포맷 판별, 장면표 생성</td><td>배치당 1회</td><td>$0.001~0.006</td></tr>
+        <tr><td>Claude / GPT</td><td>카피, 대본, 프롬프트, 렌더 플랜 생성</td><td>배치당 1~2회</td><td>$0.003~0.010</td></tr>
+        <tr><td>Infra</td><td>스토리지, 큐, DB, 이메일</td><td>영상당/배치당 혼합</td><td>$0.01~0.03</td></tr>
+        <tr class="total"><td colspan="3">공통 원가 소계</td><td>$0.014~0.046</td></tr>
+      </tbody>
+    </table>
+
+    <h3>포맷별 생성 방식과 원가 리스크</h3>
+    <table>
+      <thead>
+        <tr><th>포맷</th><th>메인 생성 방식</th><th>오디오 전략</th><th>립싱크 리스크</th><th>원가</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>스플릿형</td><td>상단 인물/리액션 + 하단 앱/데모 합성</td><td>ElevenLabs 보이스오버 기본, Seedance native audio는 짧은 리액션/SFX 옵션</td><td>낮음</td><td>중간</td></tr>
+        <tr><td>인플루언서 + 제품형</td><td>인물 제품 사용 장면 생성/참조</td><td>Seedance native audio 또는 립싱크 옵션</td><td>높음</td><td>높음</td></tr>
+        <tr><td>제품 위주형</td><td>제품 B-roll + 자막 + 보이스오버</td><td>ElevenLabs + SFX</td><td>낮음</td><td>낮음~중간</td></tr>
+        <tr><td>Before & After</td><td>전후 장면 + 비교 자막</td><td>ElevenLabs 보이스오버</td><td>낮음</td><td>중간</td></tr>
+        <tr><td>Unboxing</td><td>손/제품/패키지 장면</td><td>Seedance SFX + ElevenLabs VO</td><td>중간</td><td>중간~높음</td></tr>
+      </tbody>
+    </table>
+
+    <h3>MVP 렌더링 전략</h3>
+    <div class="lead-block">
+      <div class="line">처음에는 Creatomate를 쓴다. 집객 후 Python 렌더러로 갈아탄다.</div>
+      <p>초기에는 자체 FFmpeg 렌더러보다 Creatomate가 낫다. 5개 포맷의 자막, 레이어, 화면 분할, 오디오 믹싱, 9:16 출력 품질을 빠르게 안정화할 수 있기 때문이다. 집객과 결제 전환이 확인된 뒤, 사용량이 큰 포맷부터 Python + FFmpeg로 이전해 원가를 줄인다.</p>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h4>오디오 원칙</h4>
+      <p>메인 광고 메시지는 ElevenLabs 보이스오버로 통제한다. Seedance native audio는 분위기용 SFX, 환경음, 짧은 리액션처럼 영상 내부의 자연스러운 소리가 필요할 때 보조 옵션으로 사용한다.</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>항목</th><th>역할</th><th>초기 전략</th><th>영상 1개당 가정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Seedance</td><td>B-roll, 제품 장면, 손/인물 장면 생성</td><td>포맷별 필요 길이만 생성</td><td>$0.15~상향 검증 필요</td></tr>
+        <tr><td>ElevenLabs</td><td>통제 가능한 보이스오버</td><td>메인 광고 VO</td><td>$0.075</td></tr>
+        <tr><td>Seedance Audio</td><td>환경음, 효과음, 짧은 native audio</td><td>보조 옵션</td><td>Seedance 비용에 포함 또는 별도 검증</td></tr>
+        <tr><td>Creatomate</td><td>최종 합성, 자막, 레이아웃, 오디오 믹싱</td><td>MVP 기본 렌더러</td><td>$0.033</td></tr>
+        <tr class="total"><td colspan="3">MVP 보수적 변동원가</td><td>포맷별 약 $0.28~0.40+</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid two" style="margin-top:14px;">
+      <div class="card">
+        <h4>MVP 우선 포맷</h4>
+        <p>스플릿형, 제품 위주형, Before & After. 립싱크 의존도가 낮고 보이스오버 + 자막 + 컷 타이밍만 맞춰도 품질이 나온다.</p>
+      </div>
+      <div class="card">
+        <h4>프리미엄/후순위 포맷</h4>
+        <p>인플루언서 + 제품형, Unboxing. 사람, 손, 제품 상호작용과 립싱크 리스크가 있어 실패율과 원가를 따로 관리한다.</p>
+      </div>
+    </div>
+
+    <h3>수익 구조: 구독 + 크레딧 + 추가 과금</h3>
+    <div class="lead-block">
+      <div class="line">UGCLabs는 영상 개수 구독제가 아니라 숏폼 생성 크레딧 SaaS로 설계한다.</div>
+      <p>모든 유료 플랜에서 5개 포맷을 사용할 수 있고, 워터마크는 제거한다. 대신 포맷별 원가와 실패율 차이는 크레딧 차감량으로 통제한다. 비동기 렌더링 제품이므로 우선 큐보다는 배치 크기, 팀 기능, 브랜드 워크스페이스, 크리에이터 전달 기능으로 업셀한다.</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>포맷</th><th>크레딧 차감</th><th>이유</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>제품 위주형</td><td>1 credit</td><td>립싱크 리스크가 낮고 B-roll + 자막 + VO 중심</td></tr>
+        <tr><td>스플릿형</td><td>1 credit</td><td>상하 합성 구조가 안정적이고 보이스오버 중심</td></tr>
+        <tr><td>Before & After</td><td>1.25 credits</td><td>전후 장면 구성과 비교 자막이 필요</td></tr>
+        <tr><td>Unboxing</td><td>1.5~2 credits</td><td>손/제품/패키지 상호작용과 SFX 품질 관리 필요</td></tr>
+        <tr><td>인플루언서 + 제품형</td><td>2~3 credits</td><td>인물, 제품 사용 장면, native audio/립싱크 리스크가 큼</td></tr>
+      </tbody>
+    </table>
+
+    <h3>초기 플랜</h3>
+    <div class="pricing">
+      <div class="price">
+        <div class="tier">Starter</div>
+        <div class="amount"><sup>$</sup>29</div>
+        <ul>
+          <li>월 30 credits</li>
+          <li>5개 포맷 전체 사용</li>
+          <li>워터마크 제거</li>
+          <li>한 번에 최대 10개 생성</li>
+          <li>ZIP 다운로드</li>
+          <li>추가 크레딧 구매 가능</li>
+        </ul>
+      </div>
+      <div class="price featured">
+        <div class="badge">Core</div>
+        <div class="tier">Pro</div>
+        <div class="amount"><sup>$</sup>79</div>
+        <ul>
+          <li>월 100 credits</li>
+          <li>5개 포맷 전체 사용</li>
+          <li>워터마크 제거</li>
+          <li>한 번에 최대 30개 생성</li>
+          <li>캡션/해시태그 자동 생성</li>
+          <li>크리에이터 전달 링크</li>
+          <li>추가 크레딧 할인</li>
+        </ul>
+      </div>
+      <div class="price">
+        <div class="tier">Agency</div>
+        <div class="amount"><sup>$</sup>199</div>
+        <ul>
+          <li>월 300 credits</li>
+          <li>브랜드별 워크스페이스</li>
+          <li>팀 멤버 관리</li>
+          <li>크리에이터 전달 링크</li>
+          <li>캠페인별 영상팩 관리</li>
+          <li>포맷별 사용량 리포트</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>추가 크레딧</h3>
+    <table>
+      <thead>
+        <tr><th>추가 크레딧</th><th>가격</th><th>크레딧당 매출</th><th>역할</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>20 credits</td><td>$25</td><td>$1.25</td><td>Starter 사용자의 첫 업셀</td></tr>
+        <tr><td>50 credits</td><td>$59</td><td>$1.18</td><td>Pro 사용자의 반복 구매</td></tr>
+        <tr><td>100 credits</td><td>$109</td><td>$1.09</td><td>소규모 팀/캠페인 단위 구매</td></tr>
+        <tr><td>300 credits</td><td>$299</td><td>$0.99</td><td>Agency 대량 운영용</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid two" style="margin-top:14px;">
+      <div class="card">
+        <h4>구독의 역할</h4>
+        <p>첫 결제를 낮은 마찰로 만들고 매달 기본 사용량을 확보한다. Starter는 고마진 상품이 아니라 사용 습관을 만드는 진입 상품이다.</p>
+      </div>
+      <div class="card">
+        <h4>추가 크레딧의 역할</h4>
+        <p>헤비유저의 사용량을 매출로 전환한다. 원가가 높은 포맷은 더 많은 크레딧을 차감해 마진을 방어한다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="positioning">
+    <div class="section-num">06 / MARKET POSITIONING</div>
+    <h2>외부 포지션은 크리에이티브 생산성으로 간다</h2>
+    <p>내부 문제의식은 물량과 속도지만, 외부 메시지는 플랫폼과 충돌하지 않는 언어로 설계해야 한다. 결제사, API 제공사, 파트너, 크리에이터에게 오래 갈 수 있는 표현은 “어필리에이트 크리에이티브 생산성”이다.</p>
+
+    <div class="do-dont">
+      <div class="card">
+        <h4>말하지 않을 것</h4>
+        <ul>
+          <li>스팸 탐지 회피</li>
+          <li>섀도우밴 방지 보장</li>
+          <li>해시값 세탁</li>
+          <li>무차별 업로드 자동화</li>
+          <li>플랫폼 정책 우회</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>말할 것</h4>
+        <ul>
+          <li>숏폼 어필리에이트 크리에이티브 생산성 툴</li>
+          <li>참고 영상 기반 UGC 변형 생성</li>
+          <li>0~30초 업로드 준비 완료 영상팩</li>
+          <li>5개 검증 포맷 기반 빠른 테스트</li>
+          <li>크리에이터 전달용 배치 생성</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>한 줄 설명</h3>
+    <div class="lead-block">
+      <div class="line">UGCLabs는 어필리에이트 마케터가 참고 영상 하나로 TikTok/Reels용 숏폼 광고 변형본 10~30개를 몇 분 안에 생성해 크리에이터에게 바로 전달할 수 있게 해주는 AI 영상 생산성 툴입니다.</div>
+    </div>
+
+  </section>
+
+  <section class="section" id="execution">
+    <div class="section-num">07 / EXECUTION PLAN</div>
+    <h2>빠르게 출시하려면 랜딩이 아니라 업로드-생성-다운로드 루프를 먼저 만든다</h2>
+    <p>UGCLabs의 첫 출시는 완성형 SaaS가 아니라 판매 가능한 얇은 MVP여야 한다. 목표는 5개 포맷을 모두 완벽하게 만드는 것이 아니라, 한 포맷에서 유료 사용자가 실제로 영상을 생성하고 다운로드하는 흐름을 끝까지 검증하는 것이다.</p>
+
+    <h3>MVP Scope</h3>
+    <div class="grid two">
+      <div class="card">
+        <h4>포함</h4>
+        <ul>
+          <li>제품 위주형 포맷 먼저 출시</li>
+          <li>참고 영상 업로드</li>
+          <li>제품/앱 설명 입력</li>
+          <li>Gemini 참고 영상 분석</li>
+          <li>Claude/GPT 생성 플랜</li>
+          <li>Seedance + ElevenLabs + Creatomate 파이프라인</li>
+          <li>10개 배치 생성</li>
+          <li>ZIP 다운로드</li>
+          <li>Stripe 결제와 크레딧 차감</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>제외</h4>
+        <ul>
+          <li>TikTok/Instagram 자동 업로드</li>
+          <li>고퀄 립싱크 인플루언서 생성</li>
+          <li>Unboxing 고난도 손/제품 상호작용</li>
+          <li>Python 자체 FFmpeg 렌더러</li>
+          <li>팀 권한 세부 관리</li>
+          <li>성과 추적 대시보드</li>
+          <li>커스텀 보이스 클로닝</li>
+          <li>Agency 워크스페이스 고도화</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>14-Day Sprint</h3>
+    <div class="grid">
+      <div class="card">
+        <h4>Week 1 - Product Shell</h4>
+        <ul>
+          <li>Next.js 앱 생성</li>
+          <li>랜딩페이지와 가격표 제작</li>
+          <li>로그인/대시보드 뼈대</li>
+          <li>새 작업 만들기 화면</li>
+          <li>참고 영상 업로드</li>
+          <li>포맷 선택 UI</li>
+          <li>Job 생성과 상태 UI</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Week 2 - Generation Loop</h4>
+        <ul>
+          <li>FastAPI 백엔드 구성</li>
+          <li>R2 업로드/다운로드 연결</li>
+          <li>Gemini 분석 JSON 생성</li>
+          <li>Claude/GPT 플랜 JSON 생성</li>
+          <li>Seedance 단일 영상 생성</li>
+          <li>ElevenLabs 보이스 생성</li>
+          <li>Creatomate 합성 템플릿 연결</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Launch Checklist</h4>
+        <ul>
+          <li>10개 배치 생성</li>
+          <li>ZIP 다운로드</li>
+          <li>Stripe 구독 결제</li>
+          <li>크레딧 차감 로직</li>
+          <li>실패 작업 재시도</li>
+          <li>베타 유저 10명 테스트</li>
+          <li>유료 런칭 카피 배포</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>첫 출시 카피</h3>
+    <div class="lead-block">
+      <div class="line">Turn one reference video into 10-30 TikTok/Reels affiliate creatives in minutes.</div>
+      <p>한국어 버전: 참고 영상 하나로 TikTok/Reels용 어필리에이트 숏폼 10~30개를 몇 분 안에 생성하세요.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>UGCLabs - Affiliate Creative Production Engine</span>
+    <span>Internal planning draft</span>
+  </footer>
+</main>
+</body>
+</html>

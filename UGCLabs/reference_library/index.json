@@ -1,0 +1,183 @@
+﻿{
+    "generatedAt":  "2026-05-13T07:57:29.547Z",
+    "summary":  {
+                    "totalVideos":  17,
+                    "readyVideos":  17,
+                    "missingPromptVideos":  0,
+                    "byFormat":  {
+                                     "ugc":  {
+                                                 "total":  9,
+                                                 "ready":  9,
+                                                 "missingPrompt":  0
+                                             },
+                                     "ugc_virtual_try_on":  {
+                                                                "total":  4,
+                                                                "ready":  4,
+                                                                "missingPrompt":  0
+                                                            },
+                                     "unboxing":  {
+                                                      "total":  4,
+                                                      "ready":  4,
+                                                      "missingPrompt":  0
+                                                  }
+                                 }
+                },
+    "issues":  [
+
+               ],
+    "records":  [
+                    {
+                        "id":  "ugc_001",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "媛먭컖???몃컯?깆냼???뷀뀒?쇳삎 UGC",
+                        "videoPath":  "video_formats/ugc/媛먭컖???몃컯?깆냼???뷀뀒?쇳삎 UGC?꾨＼?꾪듃.mp4",
+                        "promptPath":  "video_formats/ugc/媛먭컖???몃컯?깆냼???뷀뀒?쇳삎 UGC?꾨＼?꾪듃.txt",
+                        "status":  "ready",
+                        "promptLayout":  "detail_asmr"
+                    },
+                    {
+                        "id":  "ugc_002",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?뷀뀒??諛쒓껄李⑹슜 諛섏쓳?뷫GC",
+                        "videoPath":  "video_formats/ugc/?뷀뀒??諛쒓껄李⑹슜 諛섏쓳?뷫GC ?꾨＼?꾪듃.mp4",
+                        "promptPath":  "video_formats/ugc/?뷀뀒??諛쒓껄李⑹슜 諛섏쓳?뷫GC ?꾨＼?꾪듃.txt",
+                        "status":  "ready",
+                        "promptLayout":  "try_on"
+                    },
+                    {
+                        "id":  "ugc_003",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?깅뒫?ъ슜媛?寃利앺삎 UGC",
+                        "videoPath":  "video_formats/ugc/?깅뒫?ъ슜媛?寃利앺삎 UGC ?꾨＼?꾪듃.mp4",
+                        "promptPath":  "video_formats/ugc/?깅뒫?ъ슜媛?寃利앺삎 UGC ?꾨＼?꾪듃.txt",
+                        "status":  "ready",
+                        "promptLayout":  "performance_use_test"
+                    },
+                    {
+                        "id":  "ugc_004",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?ㅽ궓耳???ъ슜 諛섏쓳?띿뒪泥?利앸챸??UGC",
+                        "videoPath":  "video_formats/ugc/?ㅽ궓耳???ъ슜 諛섏쓳?띿뒪泥?利앸챸??UGC.mp4",
+                        "promptPath":  "video_formats/ugc/?ㅽ궓耳???ъ슜 諛섏쓳?띿뒪泥?利앸챸??UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "performance_use_test"
+                    },
+                    {
+                        "id":  "ugc_005",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?쒓컖??留뚯”媛륚SMR ?뷀뀒?쇳삎 UGC",
+                        "videoPath":  "video_formats/ugc/?쒓컖??留뚯”媛륚SMR ?뷀뀒?쇳삎 UGC?꾨＼?꾪듃.mp4",
+                        "promptPath":  "video_formats/ugc/?쒓컖??留뚯”媛륚SMR ?뷀뀒?쇳삎 UGC?꾨＼?꾪듃.txt",
+                        "status":  "ready",
+                        "promptLayout":  "detail_asmr"
+                    },
+                    {
+                        "id":  "ugc_006",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?쒓컖??留뚯”媛륚SMR ?뷀뀒?쇳삎 UGC",
+                        "videoPath":  "video_formats/ugc/?쒓컖??留뚯”媛륚SMR ?뷀뀒?쇳삎 UGC?꾨＼?꾪듃2.mp4",
+                        "promptPath":  "video_formats/ugc/?쒓컖??留뚯”媛륚SMR ?뷀뀒?쇳삎 UGC?꾨＼?꾪듃.txt",
+                        "status":  "ready",
+                        "promptLayout":  "detail_asmr"
+                    },
+                    {
+                        "id":  "ugc_007",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?ㅼ젣 ?ъ슜 寃곌낵 利앸챸??UGC",
+                        "videoPath":  "video_formats/ugc/?ㅼ젣 ?ъ슜 寃곌낵 利앸챸??UGC ?꾨＼?꾪듃.mp4",
+                        "promptPath":  "video_formats/ugc/?ㅼ젣 ?ъ슜 寃곌낵 利앸챸??UGC ?꾨＼?꾪듃.txt",
+                        "status":  "ready",
+                        "promptLayout":  "performance_use_test"
+                    },
+                    {
+                        "id":  "ugc_008",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?쇱긽 ?ъ슜 ?꾧린?쇱씠?꾩뒪???異붿쿇??UGC",
+                        "videoPath":  "video_formats/ugc/?쇱긽 ?ъ슜 ?꾧린?쇱씠?꾩뒪???異붿쿇??UGC.mp4",
+                        "promptPath":  "video_formats/ugc/?쇱긽 ?ъ슜 ?꾧린?쇱씠?꾩뒪???異붿쿇??UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "face_review"
+                    },
+                    {
+                        "id":  "ugc_009",
+                        "videoFormat":  "ugc",
+                        "subtypeLabel":  "?쒗뭹 由щ럭 + ?곕え??UGC",
+                        "videoPath":  "video_formats/ugc/?쒗뭹 由щ럭 + ?곕え??UGC.mp4",
+                        "promptPath":  "video_formats/ugc/?쒗뭹 由щ럭 + ?곕え??UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "face_review"
+                    },
+                    {
+                        "id":  "ugc_virtual_try_on_010",
+                        "videoFormat":  "ugc_virtual_try_on",
+                        "subtypeLabel":  "GRWM 湲곕컲 李⑹슜 ??寃利앺삎 UGC Virtual Try On",
+                        "videoPath":  "video_formats/ugc_virtual_try_on/GRWM 湲곕컲 李⑹슜 ??寃利앺삎 UGC Virtual Try On ?꾨＼?꾪듃.mp4",
+                        "promptPath":  "video_formats/ugc_virtual_try_on/GRWM 湲곕컲 李⑹슜 ??寃利앺삎 UGC Virtual Try On ?꾨＼?꾪듃.txt",
+                        "status":  "ready",
+                        "promptLayout":  "try_on"
+                    },
+                    {
+                        "id":  "ugc_virtual_try_on_011",
+                        "videoFormat":  "ugc_virtual_try_on",
+                        "subtypeLabel":  "?④퀎蹂?李⑹옣 蹂?좉굅??Try-On??UGC",
+                        "videoPath":  "video_formats/ugc_virtual_try_on/?④퀎蹂?李⑹옣 蹂?좉굅??Try-On??UGC.mp4",
+                        "promptPath":  "video_formats/ugc_virtual_try_on/?④퀎蹂?李⑹옣 蹂?좉굅??Try-On??UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "try_on"
+                    },
+                    {
+                        "id":  "ugc_virtual_try_on_012",
+                        "videoFormat":  "ugc_virtual_try_on",
+                        "subtypeLabel":  "??뀛由??≪꽭?쒕━ 李⑹슜?쇱긽 ?꾧린??UGC",
+                        "videoPath":  "video_formats/ugc_virtual_try_on/??뀛由??≪꽭?쒕━ 李⑹슜?쇱긽 ?꾧린??UGC.mp4",
+                        "promptPath":  "video_formats/ugc_virtual_try_on/??뀛由??≪꽭?쒕━ 李⑹슜?쇱긽 ?꾧린??UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "try_on"
+                    },
+                    {
+                        "id":  "ugc_virtual_try_on_013",
+                        "videoFormat":  "ugc_virtual_try_on",
+                        "subtypeLabel":  "?ㅽ듃由ы듃 ?ㅽ???猷⑸턿?≪꽭?쒕━ ?ㅽ??쇰쭅??UGC",
+                        "videoPath":  "video_formats/ugc_virtual_try_on/?ㅽ듃由ы듃 ?ㅽ???猷⑸턿?≪꽭?쒕━ ?ㅽ??쇰쭅??UGC.mp4",
+                        "promptPath":  "video_formats/ugc_virtual_try_on/?ㅽ듃由ы듃 ?ㅽ???猷⑸턿?≪꽭?쒕━ ?ㅽ??쇰쭅??UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "try_on"
+                    },
+                    {
+                        "id":  "unboxing_014",
+                        "videoFormat":  "unboxing",
+                        "subtypeLabel":  "??뀛由?鍮꾩＜??ASMR湲고봽???몃컯?깊삎 UGC",
+                        "videoPath":  "video_formats/unboxing/??뀛由?鍮꾩＜??ASMR湲고봽???몃컯?깊삎 UGC.mp4",
+                        "promptPath":  "video_formats/unboxing/??뀛由?鍮꾩＜??ASMR湲고봽???몃컯?깊삎 UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "unboxing"
+                    },
+                    {
+                        "id":  "unboxing_015",
+                        "videoFormat":  "unboxing",
+                        "subtypeLabel":  "?ㅼ떆媛??ъ슜 泥닿컧?대룞 由ъ븸?섑삎 UGC",
+                        "videoPath":  "video_formats/unboxing/?ㅼ떆媛??ъ슜 泥닿컧?대룞 由ъ븸?섑삎 UGC.mp4",
+                        "promptPath":  "video_formats/unboxing/?ㅼ떆媛??ъ슜 泥닿컧?대룞 由ъ븸?섑삎 UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "unboxing"
+                    },
+                    {
+                        "id":  "unboxing_016",
+                        "videoFormat":  "unboxing",
+                        "subtypeLabel":  "議곗슜???꾨━誘몄뾼 ?몃컯?깅뵒?뚯씪 媛먰깂??UGC",
+                        "videoPath":  "video_formats/unboxing/議곗슜???꾨━誘몄뾼 ?몃컯?깅뵒?뚯씪 媛먰깂??UGC.mp4",
+                        "promptPath":  "video_formats/unboxing/議곗슜???꾨━誘몄뾼 ?몃컯?깅뵒?뚯씪 媛먰깂??UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "unboxing"
+                    },
+                    {
+                        "id":  "unboxing_017",
+                        "videoFormat":  "unboxing",
+                        "subtypeLabel":  "?묐떎??ASMR ?몃컯?깆뺄?됲꽣 ?붿뒪?뚮젅?댄삎 UGC",
+                        "videoPath":  "video_formats/unboxing/?묐떎??ASMR ?몃컯?깆뺄?됲꽣 ?붿뒪?뚮젅?댄삎 UGC.mp4",
+                        "promptPath":  "video_formats/unboxing/?묐떎??ASMR ?몃컯?깆뺄?됲꽣 ?붿뒪?뚮젅?댄삎 UGC.txt",
+                        "status":  "ready",
+                        "promptLayout":  "unboxing"
+                    }
+                ]
+}

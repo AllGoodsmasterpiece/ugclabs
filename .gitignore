@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+logs
+.obsidian
+*.canvas
+스크린샷 *.png
+환영합니다!.md
+.env*
+!.env.example
+public/outputs/*
+public/uploads/*
+!public/outputs/.gitkeep
+!public/uploads/.gitkeep

@@ -1,0 +1,11 @@
+(박스 오픈→ 제품 꺼냄→ 짧은 감탄→ 디테일 바라봄→ “군더더기 없이 고급스럽다”는 식의 정리)
+
+Man influencer @avatar:48b5553f-4bad-4b87-9a39-4f0088664ed7 first opens the box @image_1 then takes the product with its packaging out of the box @product:8897c656-c053-4af3-8b11-5e97b6a424ac
+
+Dialogue (quiet, impressed, natural):
+"Okay… wow.
+This is actually beautiful.
+It feels… really refined.
+Like, nothing extra — just clean, perfect details."
+
+NO MUSIC, ONLY SFX
