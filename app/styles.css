@@ -2067,6 +2067,80 @@ h3 {
   color: var(--danger);
 }
 
+.accessGate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  padding: 24px;
+}
+
+.accessGatePanel {
+  display: grid;
+  width: min(420px, 100%);
+  gap: 14px;
+  justify-items: start;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 24px 70px rgba(16, 18, 22, 0.12);
+  padding: 28px;
+}
+
+.accessGateLogo {
+  width: 42px;
+  height: 42px;
+}
+
+.accessGatePanel > span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.accessGatePanel h1 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.accessGatePanel p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.accessGatePanel label {
+  display: grid;
+  width: 100%;
+  gap: 7px;
+}
+
+.accessGatePanel label span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.accessGatePanel input {
+  min-height: 48px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--ink);
+  padding: 0 14px;
+}
+
+.accessGatePanel .primaryButton {
+  width: 100%;
+  justify-content: center;
+}
+
+.accessGateError {
+  color: var(--danger) !important;
+  font-weight: 720;
+}
+
 .promptDetails {
   padding-top: 6px;
   border-top: 1px solid var(--line);

@@ -253,6 +253,10 @@ const modelModeOptions = [
 
 export default function Home() {
   const formRef = useRef<HTMLFormElement>(null);
+  const [unlocked, setUnlocked] = useState(false);
+  const [accessPassword, setAccessPassword] = useState("");
+  const [accessError, setAccessError] = useState("");
+  const [accessLoading, setAccessLoading] = useState(false);
   const [result, setResult] = useState<GenerateResponse | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -316,6 +320,10 @@ export default function Home() {
   const activeProductFeatureNotes = productAnalysisMode === "guided" ? guidedProductNotes : "";
   const outputVideos = result?.videos.slice(0, 30) ?? [];
   const generationComplete = outputVideos.length > 0 && outputVideos.every((video) => video.status === "completed");
+
+  useEffect(() => {
+    setUnlocked(!new URLSearchParams(window.location.search).has("locked"));
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -694,6 +702,59 @@ export default function Home() {
       setError(err instanceof Error ? err.message : errorLabel);
       return null;
     }
+  }
+
+  async function onAccessSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setAccessError("");
+    setAccessLoading(true);
+
+    try {
+      const form = new FormData();
+      form.set("password", accessPassword);
+      const response = await fetch("/api/access", {
+        method: "POST",
+        body: form
+      });
+      const payload = await readJsonResponse(response, "Access failed");
+
+      if (!response.ok) {
+        throw new Error(payload.error ?? "Wrong password.");
+      }
+
+      window.location.href = "/";
+    } catch (err) {
+      setAccessError(err instanceof Error ? err.message : "Access failed.");
+    } finally {
+      setAccessLoading(false);
+    }
+  }
+
+  if (!unlocked) {
+    return (
+      <main className="accessGate">
+        <form className="accessGatePanel" onSubmit={onAccessSubmit}>
+          <img className="accessGateLogo" alt="" src="/ugc-logo-icon.png" />
+          <span>Private MVP</span>
+          <h1>UGCDay is locked</h1>
+          <p>Enter the access password to use the studio.</p>
+          <label htmlFor="accessPassword">
+            <span>Password</span>
+            <input
+              id="accessPassword"
+              autoFocus
+              type="password"
+              value={accessPassword}
+              onChange={(event) => setAccessPassword(event.currentTarget.value)}
+            />
+          </label>
+          {accessError ? <p className="accessGateError">{accessError}</p> : null}
+          <button className="primaryButton" disabled={accessLoading || !accessPassword} type="submit">
+            {accessLoading ? "Checking..." : "Unlock"}
+          </button>
+        </form>
+      </main>
+    );
   }
 
   return (
