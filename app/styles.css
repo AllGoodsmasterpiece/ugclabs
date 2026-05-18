@@ -3,15 +3,19 @@
   --bg: #ffffff;
   --surface: #ffffff;
   --surface-soft: #f7f8fa;
-  --surface-tint: #f1f5ff;
+  --surface-tint: #fff0f7;
   --ink: #101216;
   --muted: #69707d;
   --soft: #8c94a3;
   --line: #e5e7eb;
   --line-strong: #d2d6de;
-  --accent: #1652f0;
-  --accent-dark: #0b3ec9;
-  --accent-soft: #eaf0ff;
+  --brand: #ff2f92;
+  --brand-dark: #f4147d;
+  --brand-deep: #3b071e;
+  --brand-soft: #fff0f7;
+  --accent: var(--brand);
+  --accent-dark: var(--brand-dark);
+  --accent-soft: var(--brand-soft);
   --success: #087b40;
   --warning: #925400;
   --danger: #b42318;
@@ -30,7 +34,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   letter-spacing: 0;
 }
 
@@ -56,6 +60,336 @@ a {
   padding: 10px 0 48px;
 }
 
+.studioShell {
+  display: grid;
+  grid-template-columns: 244px minmax(0, 1fr);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fbfcff 0, #ffffff 42%);
+}
+
+.studioMain {
+  min-width: 0;
+  padding: 0 18px 48px;
+}
+
+.projectSidebar {
+  position: sticky;
+  top: 0;
+  display: grid;
+  height: 100vh;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
+  gap: 18px;
+  padding: 18px 14px;
+  border-right: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.sidebarBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+}
+
+.sidebarNav {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 8px;
+}
+
+.sidebarNavItem {
+  display: grid;
+  width: 100%;
+  min-height: 42px;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 720;
+  text-align: left;
+}
+
+.sidebarNavItem:hover,
+.sidebarNavItem.selected {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.sidebarNavIcon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.historyToggle {
+  grid-template-columns: 22px minmax(0, 1fr) auto auto;
+  gap: 8px;
+}
+
+.historyToggle span {
+  color: inherit;
+}
+
+.historyToggle em {
+  display: inline-grid;
+  min-width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 760;
+}
+
+.sidebarChevron {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+  transition: transform 160ms ease;
+}
+
+.historyToggle[aria-expanded="true"] .sidebarChevron {
+  transform: rotate(180deg);
+}
+
+.sidebarHistoryMenu {
+  display: grid;
+  margin-top: auto;
+  gap: 8px;
+}
+
+.projectHistoryList {
+  display: grid;
+  max-height: 410px;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.historyCard {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--ink);
+  padding: 8px;
+  text-align: left;
+}
+
+.historyThumb {
+  display: block;
+  width: 42px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.historyThumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.historyMeta {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.historyMeta strong,
+.historyMeta span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyMeta strong {
+  font-size: 13px;
+}
+
+.historyMeta span,
+.sidebarEmpty {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1.35;
+}
+
+.historyActions {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.historyActions button,
+.historyActions a,
+.historyActions span {
+  display: inline-grid;
+  min-height: 28px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 720;
+  text-align: center;
+}
+
+.historyActions a {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.historyActions span {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.studioHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  align-items: end;
+  justify-items: center;
+  width: min(100%, 1480px);
+  margin: 0 auto;
+  padding: 42px 0 14px;
+  text-align: center;
+}
+
+.studioHero h1 {
+  max-width: 980px;
+  margin-right: auto;
+  margin-bottom: 8px;
+  margin-left: auto;
+  font-size: clamp(26px, 3.2vw, 44px);
+  line-height: 1.02;
+}
+
+.studioHeroSubcopy {
+  max-width: 560px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: clamp(14px, 1.25vw, 17px);
+  font-weight: 560;
+  line-height: 1.45;
+}
+
+.studioHeroTagline {
+  margin: 6px auto 0;
+  color: var(--accent);
+  font-size: clamp(13px, 1vw, 15px);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.heroQuickControl {
+  display: grid;
+  gap: 7px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.heroQuickControl label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 780;
+  text-transform: uppercase;
+}
+
+.heroQuickControl select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 10px 12px;
+}
+
+.heroQuickControl p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.floatingTopActions {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.floatingAssetButton,
+.floatingProfileButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
+  box-shadow: 0 12px 28px rgba(16, 18, 22, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.floatingAssetButton {
+  min-height: 38px;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 730;
+}
+
+.floatingProfileButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.floatingProfileButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .topBar {
   position: sticky;
   top: 0;
@@ -68,6 +402,10 @@ a {
   background: rgba(255, 255, 255, 0.88);
   border-bottom: 1px solid rgba(229, 231, 235, 0.76);
   backdrop-filter: blur(14px);
+}
+
+.studioMain .topBar .brandMark {
+  visibility: hidden;
 }
 
 .brandMark,
@@ -85,12 +423,11 @@ a {
   font-weight: 760;
 }
 
-.brandDot {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #9fc0ff 0 24%, var(--accent) 25% 100%);
-  box-shadow: 0 0 0 6px var(--accent-soft);
+.brandLogo {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .topNav {
@@ -253,6 +590,13 @@ h3 {
   opacity: 0.62;
 }
 
+.sidebarNavItem:focus,
+.heroQuickControl select:focus {
+  outline: 3px solid rgba(255, 47, 146, 0.18);
+  outline-offset: 2px;
+  border-color: var(--accent);
+}
+
 .heroPanel,
 .metricCard,
 .strategyPanel,
@@ -364,12 +708,75 @@ h3 {
 }
 
 .workspace {
-  display: block;
+  display: grid;
+  justify-items: center;
 }
 
 .generatorPanel,
 .summaryCard {
   padding: 16px;
+}
+
+.generatorPanel {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: 12px;
+  box-shadow: var(--shadow);
+}
+
+.generatorPanel > * {
+  grid-column: 1 / -1;
+}
+
+.generatorPanel .panelHeader {
+  margin-bottom: 0;
+}
+
+.generatorPanel .panelHeader h2 {
+  font-size: clamp(22px, 2.2vw, 34px);
+}
+
+.generatorPanel .sectionBlock {
+  margin: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.generatorPanel #formats {
+  grid-column: 1 / 9;
+}
+
+.productNameField {
+  grid-column: 9 / -1;
+  align-self: start;
+}
+
+.modelAssignmentField {
+  grid-column: 9 / -1;
+  align-self: start;
+}
+
+.runControls {
+  grid-column: 9 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-self: start;
+}
+
+.generatorPanel .costPanel {
+  grid-column: 9 / -1;
+  margin: 0;
+  align-self: start;
+}
+
+.generatorPanel > .primaryButton {
+  grid-column: 9 / -1;
+  align-self: start;
+}
+
+.generatorPanel .primaryButton {
+  min-height: 52px;
 }
 
 .panelHeader,
@@ -382,6 +789,12 @@ h3 {
 .panelHeader {
   align-items: center;
   margin-bottom: 14px;
+}
+
+.panelActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .modeBadge,
@@ -409,6 +822,70 @@ h3 {
 
 .uploadGrid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.composerControlGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.compactControl {
+  margin-bottom: 0;
+}
+
+.compactControl > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.controlLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.infoTooltip {
+  position: relative;
+  display: inline-grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  cursor: help;
+  font-size: 10px;
+  font-weight: 820;
+  line-height: 1;
+  text-transform: none;
+}
+
+.infoTooltip [role="tooltip"] {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 9px);
+  z-index: 20;
+  display: none;
+  width: min(280px, 70vw);
+  transform: translateX(-50%);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: #111827;
+  color: #ffffff;
+  padding: 9px 10px;
+  font-size: 12px;
+  font-weight: 560;
+  line-height: 1.35;
+  text-align: left;
+  text-transform: none;
+  box-shadow: 0 14px 34px rgba(16, 18, 22, 0.18);
+}
+
+.infoTooltip:hover [role="tooltip"],
+.infoTooltip:focus [role="tooltip"] {
+  display: block;
 }
 
 .modeGrid {
@@ -512,10 +989,58 @@ h3 {
   font-size: 14px;
 }
 
-.formatGrid {
+.formatGrid,
+.creativeTypeGrid,
+.subFormatGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
+}
+
+.subFormatGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.subFormatPanel,
+.templateStylePanel {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.generatorPanel .subFormatPanel {
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.generatorPanel .formatInfoPanel {
+  display: none;
+}
+
+.generatorPanel .templateStylePanel {
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.generatorPanel .templateStylePanel .miniHeader {
+  margin-bottom: 0;
+}
+
+.generatorPanel .templateStylePanel h3 {
+  font-size: 14px;
+}
+
+.generatorPanel .templateStylePanel .miniHeader p {
+  font-size: 12px;
+}
+
+.compactMiniHeader {
+  margin-bottom: 0;
 }
 
 .presetPreview {
@@ -527,6 +1052,8 @@ h3 {
 }
 
 .formatCard,
+.creativeTypeCard,
+.subFormatCard,
 .segmentButton,
 .presetCard {
   display: grid;
@@ -538,11 +1065,21 @@ h3 {
   cursor: pointer;
 }
 
-.formatCard {
+.formatCard,
+.creativeTypeCard,
+.subFormatCard {
   min-height: 42px;
   place-items: center start;
   padding: 9px 10px;
   border-radius: 10px;
+}
+
+.creativeTypeCard {
+  min-height: 54px;
+}
+
+.subFormatCard {
+  min-height: 58px;
 }
 
 .presetCard {
@@ -551,7 +1088,9 @@ h3 {
   border-radius: 14px;
 }
 
-.formatCard span {
+.formatCard span,
+.creativeTypeCard span,
+.subFormatCard span {
   font-weight: 760;
   font-size: 13px;
 }
@@ -564,6 +1103,8 @@ h3 {
 }
 
 .formatCard em,
+.creativeTypeCard em,
+.subFormatCard em,
 .segmentButton em,
 .presetCard em {
   font-size: 12px;
@@ -571,11 +1112,158 @@ h3 {
 }
 
 .formatCard.selected,
+.creativeTypeCard.selected,
+.subFormatCard.selected,
 .segmentButton.selected,
 .presetCard.selected {
   border-color: var(--accent);
   background: var(--accent-soft);
   box-shadow: 0 0 0 1px var(--accent);
+}
+
+.formatInfoPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.formatInfoPanel div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.formatInfoPanel span {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.formatInfoPanel strong,
+.formatInfoPanel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.formatInfoPanel strong {
+  color: var(--ink);
+  font-weight: 680;
+}
+
+.templateStyleControl {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.generatorPanel .templateStyleControl {
+  grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.templateStyleSelect {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+.templateStyleSelect span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.templateStyleSelect select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 10px 12px;
+}
+
+.templateStyleInfo {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.generatorPanel .templateStyleInfo {
+  min-height: 42px;
+  align-content: center;
+}
+
+.templateStyleInfo.withPreview {
+  grid-template-columns: minmax(96px, 150px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.generatorPanel .templateStyleInfo.withPreview {
+  grid-template-columns: 76px minmax(0, 1fr);
+}
+
+.templatePreviewLarge,
+.missingPreview {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f0f2f6;
+  object-fit: cover;
+}
+
+.templatePreviewLarge {
+  max-height: 220px;
+  background: #0d1117;
+}
+
+.generatorPanel .templatePreviewLarge {
+  max-height: 84px;
+}
+
+.missingPreview {
+  display: grid;
+  max-height: 78px;
+  place-items: center;
+}
+
+.missingPreview span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.templateStyleInfo strong,
+.templateStyleInfo p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.templateStyleInfo strong {
+  color: var(--ink);
+  font-weight: 680;
+}
+
+.templateStyleInfo p {
+  color: var(--muted);
 }
 
 .field {
@@ -655,13 +1343,16 @@ h3 {
 
 .field input:focus,
 .field select:focus,
+.templateStyleSelect select:focus,
 .formatCard:focus,
+.creativeTypeCard:focus,
+.subFormatCard:focus,
 .modeButton:focus,
 .segmentButton:focus,
 .primaryButton:focus,
 .primaryLink:focus,
 .secondaryLink:focus {
-  outline: 3px solid rgba(22, 82, 240, 0.18);
+  outline: 3px solid rgba(255, 47, 146, 0.18);
   outline-offset: 2px;
   border-color: var(--accent);
 }
@@ -712,6 +1403,14 @@ h3 {
   border: 0;
   font-size: 16px;
   cursor: pointer;
+}
+
+.topGenerateButton {
+  width: auto;
+  min-width: 128px;
+  min-height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
 }
 
 .primaryButton:disabled {
@@ -789,10 +1488,18 @@ h3 {
   font-size: 18px;
 }
 
+.generatorPanel .costPanel strong {
+  font-size: 16px;
+}
+
 .costPanel p {
   margin: 0;
   color: var(--muted);
   line-height: 1.45;
+}
+
+.generatorPanel .costPanel .draftNote {
+  display: none;
 }
 
 .qualityConfirm {
@@ -927,15 +1634,121 @@ h3 {
 }
 
 .results {
-  margin-top: 42px;
-  padding-top: 26px;
-  border-top: 1px solid var(--line);
+  margin-top: 34px;
+}
+
+.gallerySection {
+  width: min(100%, 1480px);
+  margin-right: auto;
+  margin-left: auto;
+  padding: 28px;
+  border-radius: 22px;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.gallerySection + .gallerySection {
+  margin-top: 22px;
+}
+
+.gallerySection .eyebrow {
+  color: var(--accent);
+}
+
+.gallerySection h2 {
+  color: var(--ink);
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: 1.08;
+}
+
+.sectionTitle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sectionTitleButton {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+.sectionTitleButton:hover span {
+  color: var(--accent);
+}
+
+.sectionTitleIcon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.sectionToggleChevron {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.45;
+  color: var(--ink);
+  margin-left: -2px;
+  transition: transform 160ms ease, color 160ms ease;
+}
+
+.sectionTitleButton:hover .sectionToggleChevron {
+  color: var(--accent);
+}
+
+.sectionTitleButton[aria-expanded="true"] .sectionToggleChevron {
+  transform: rotate(180deg);
 }
 
 .sectionHeader {
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
   margin-bottom: 16px;
+  text-align: center;
+}
+
+.sectionHeader > div {
+  display: grid;
+  justify-items: center;
+}
+
+.resultsHeader {
+  position: relative;
+}
+
+.resultsStatus {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.completeBadge {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  border: 1px solid rgba(8, 123, 64, 0.18);
+  border-radius: 999px;
+  background: rgba(8, 123, 64, 0.08);
+  color: var(--success);
+  padding: 0 11px;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.centeredSectionHeader {
+  justify-content: center;
+  text-align: center;
 }
 
 .emptyState {
@@ -944,6 +1757,12 @@ h3 {
   place-content: center;
   text-align: center;
   background: var(--surface-soft);
+}
+
+.galleryEmptyState {
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  color: var(--muted);
 }
 
 .emptyState strong {
@@ -977,6 +1796,204 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin-top: 16px;
+}
+
+.mediaGalleryGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mediaGalleryCard {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #09090b;
+  aspect-ratio: 9 / 16;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
+.referenceVideoCard,
+.outputVideoCard video {
+  cursor: zoom-in;
+}
+
+.mediaGalleryCard video,
+.mediaGalleryCard .missingVideo {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.mediaGalleryCard video {
+  display: block;
+}
+
+.mediaGalleryCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.36), transparent 34%, rgba(0, 0, 0, 0.62));
+  pointer-events: none;
+}
+
+.mediaCardOverlay,
+.mediaCardLinks {
+  position: absolute;
+  z-index: 2;
+}
+
+.mediaCardOverlay {
+  inset: 12px 12px auto;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  text-align: center;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+}
+
+.outputVideoCard .mediaCardOverlay {
+  inset: auto 12px 12px;
+  justify-items: start;
+  text-align: left;
+}
+
+.mediaCardOverlay span,
+.mediaCardOverlay em {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.mediaCardOverlay strong {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.18;
+}
+
+.mediaCardOverlay em.completed {
+  color: #7cf7a3;
+}
+
+.mediaCardOverlay em.partial {
+  color: #ffd28a;
+}
+
+.mediaCardOverlay em.failed {
+  color: #ff9b93;
+}
+
+.mediaCardLinks {
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.mediaGalleryCard:hover .mediaCardLinks {
+  opacity: 1;
+}
+
+.mediaCardLinks a,
+.mediaCardLinks button {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #101216;
+  cursor: pointer;
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.videoLightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.86);
+}
+
+.videoLightboxPanel {
+  position: relative;
+  display: grid;
+  max-width: min(92vw, 760px);
+  max-height: calc(100vh - 56px);
+  gap: 12px;
+}
+
+.videoLightboxPanel video {
+  display: block;
+  max-width: min(92vw, 760px);
+  max-height: calc(100vh - 122px);
+  border-radius: 12px;
+  background: #000000;
+}
+
+.videoLightboxClose {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(16, 18, 22, 0.88);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.videoLightboxMeta {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.videoLightboxMeta strong {
+  max-width: min(92vw, 760px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.videoLightboxMeta span {
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 12px;
+}
+
+.diagnosticsPanel {
+  margin-top: 18px;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.diagnosticsPanel pre {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.formatReferenceSection {
+  margin-bottom: 36px;
 }
 
 .videoCard {
@@ -1055,7 +2072,1049 @@ h3 {
   border-top: 1px solid var(--line);
 }
 
+.composerDeck {
+  --composer-col: 152px;
+  --composer-gap: 8px;
+  --generate-col: 128px;
+  width: min(100%, 1180px);
+  justify-self: center;
+  position: relative;
+  isolation: isolate;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  row-gap: 14px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.composerDeck:has(.productModal.open) {
+  z-index: 1000;
+}
+
+.composerDeck::before {
+  content: "";
+  z-index: 0;
+  grid-column: 1 / -1;
+  grid-row: 1 / 6;
+  align-self: stretch;
+  border: 1px solid transparent;
+  border-radius: 22px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.composerDeck::after {
+  display: none;
+}
+
+.composerDeck > * {
+  grid-column: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.composerDeck .composerTypeRail {
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 2;
+}
+
+.composerTypeRail {
+  display: inline-flex;
+  width: fit-content;
+  gap: 6px;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 28px rgba(16, 18, 22, 0.06);
+}
+
+.typeRailButton {
+  display: inline-grid;
+  min-height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0 12px;
+  text-align: center;
+}
+
+.typeRailButton span {
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1.1;
+}
+
+.typeRailButton.selected {
+  background: var(--brand-deep);
+  color: #ffffff;
+}
+
+.composerDeck .panelHeader {
+  display: none;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-bottom: 0;
+}
+
+.composerDeck .panelHeader h2 {
+  color: var(--ink);
+  font-size: clamp(24px, 2.2vw, 34px);
+}
+
+.composerBriefCopy {
+  max-width: 620px;
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.4;
+}
+
+.composerDeck .eyebrow {
+  color: #ff7bb2;
+}
+
+.composerDeck .modeBadge {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.composerDeck .topGenerateButton {
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  box-shadow: 0 14px 34px rgba(255, 20, 122, 0.32);
+}
+
+.composerDeck .uploadGrid {
+  grid-column: 1;
+  grid-row: 3;
+  grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
+  grid-template-rows: 104px;
+  justify-content: start;
+  align-items: stretch;
+  column-gap: var(--composer-gap);
+  row-gap: var(--composer-gap);
+}
+
+.composerDeck .analysisPreviewPanel {
+  grid-column: 4 / 6;
+  margin-left: 0;
+}
+
+.composerDeck .referenceAsset {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.composerDeck .deckGenerateButton {
+  display: inline-flex;
+  grid-column: auto;
+  grid-row: auto;
+  width: var(--generate-col);
+  min-width: 0;
+  height: 52px;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  box-shadow: 0 14px 34px rgba(255, 20, 122, 0.32);
+  padding: 0 14px;
+  align-self: start;
+  margin-top: 25px;
+}
+
+.generateButtonIcon {
+  display: block;
+  width: 13px;
+  height: 18px;
+  object-fit: contain;
+  margin-top: 1px;
+  pointer-events: none;
+}
+
+.composerDeck .productAsset {
+  grid-column: 2;
+  grid-row: 1;
+  z-index: 2;
+}
+
+.composerDeck .modelAsset {
+  grid-column: 3;
+  grid-row: 1;
+  z-index: 2;
+}
+
+.composerDeck .uploadCard {
+  overflow: hidden;
+  min-height: 104px;
+  border-color: rgba(210, 214, 222, 0.9);
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--ink);
+  padding: 10px;
+  isolation: isolate;
+  text-align: left;
+}
+
+.composerDeck .uploadCard:hover {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.composerDeck .uploadCard span,
+.composerDeck .uploadCard em {
+  color: var(--muted);
+}
+
+.composerDeck .uploadCard em {
+  display: none;
+}
+
+.composerDeck .uploadCard strong {
+  font-size: 13px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.composerDeck .uploadCard.hasPreview {
+  align-content: end;
+  border-style: solid;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.composerDeck .uploadCard.hasPreview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.58));
+  pointer-events: none;
+}
+
+.assetPreviewMedia {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.composerDeck .uploadCard.hasPreview span,
+.composerDeck .uploadCard.hasPreview strong {
+  position: relative;
+  z-index: 2;
+  color: #ffffff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+}
+
+.composerDeck .uploadCard.hasPreview strong {
+  display: -webkit-box;
+  max-height: 2.3em;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 11px;
+}
+
+.composerDeck .uploadCard input {
+  z-index: 3;
+}
+
+.productModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: none;
+  place-items: center;
+  padding: 28px;
+  background: rgba(16, 18, 22, 0.52);
+}
+
+.productModal.open {
+  display: grid;
+}
+
+.productModalPanel {
+  display: grid;
+  width: min(860px, calc(100vw - 40px));
+  max-height: min(720px, calc(100vh - 40px));
+  overflow: auto;
+  gap: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: #151719;
+  color: #ffffff;
+  padding: 20px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.32);
+}
+
+.productModalTop,
+.productModalHero,
+.productModalFields,
+.productModalActions,
+.productModalTabs,
+.productModeToggle {
+  display: flex;
+}
+
+.productModalTop,
+.productModalActions {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.productModalTabs {
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.productModalTabs button,
+.modalCloseButton {
+  border: 0;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.productModalTabs button {
+  min-height: 30px;
+  border-radius: 9px;
+  background: transparent;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.productModalTabs button.selected {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.productModalTabs button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.modalCloseButton {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 50%;
+  background: transparent;
+  font-size: 18px;
+}
+
+.productModalHero {
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+.productModalHero h2 {
+  color: #ffffff;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.productModalHero p {
+  max-width: 430px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.45;
+}
+
+.productImageDrop {
+  position: relative;
+  display: grid;
+  width: 168px;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px dashed rgba(255, 255, 255, 0.24);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  font-weight: 760;
+}
+
+.productImageDrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.productImageDrop input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.productModalFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.productModalFields > .field:first-child,
+.productModalFields .productModeField,
+.productModalFields .productFeatureField,
+.productModalFields .savedProductSection {
+  grid-column: 1 / -1;
+}
+
+.productModal .field {
+  margin: 0;
+}
+
+.productModal .field span,
+.productModeField > span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.productModal input,
+.productModal textarea {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.productModal input::placeholder,
+.productModal textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.productModeField {
+  display: grid;
+  gap: 8px;
+}
+
+.productModeToggle {
+  gap: 8px;
+}
+
+.productModeToggle label {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 12px;
+}
+
+.productModeToggle input {
+  width: auto;
+}
+
+.productFeatureField {
+  grid-column: 1 / -1;
+}
+
+.productFeatureField textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.productFeatureList {
+  display: grid;
+  gap: 8px;
+}
+
+.productFeatureRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px;
+  gap: 8px;
+}
+
+.productFeatureRow button {
+  min-height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 740;
+}
+
+.addFeatureRow button {
+  background: #ffffff;
+  color: #101216;
+}
+
+.savedProductSection {
+  display: grid;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.savedProductHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.savedProductHeader span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.savedProductHeader small,
+.savedProductEmpty {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 12px;
+}
+
+.savedProductEmpty {
+  margin: 0;
+}
+
+.savedProductGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.savedProductCard {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.savedProductThumb {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.savedProductThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.savedProductCard strong {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.productModalActions {
+  gap: 10px;
+  justify-content: end;
+}
+
+.productModalActions .primaryButton,
+.productModalActions .secondaryButton {
+  min-width: 120px;
+}
+
+.creatorHeroPreview {
+  display: grid;
+  width: 148px;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border: 1px dashed rgba(255, 255, 255, 0.24);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.72);
+  padding: 12px;
+  text-align: center;
+  font-weight: 760;
+}
+
+.creatorHeroPreview img,
+.creatorUploadDrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.creatorModeCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.creatorModeCard {
+  display: grid;
+  gap: 6px;
+  min-height: 116px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  cursor: pointer;
+  padding: 13px;
+}
+
+.creatorModeCard.selected {
+  border-color: var(--accent);
+  background: rgba(255, 74, 162, 0.16);
+}
+
+.creatorModeCard input {
+  width: auto;
+}
+
+.creatorModeCard strong {
+  font-size: 14px;
+}
+
+.creatorModeCard span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.creatorModalSection {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.creatorUploadDrop {
+  position: relative;
+  display: grid;
+  width: 150px;
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border: 1px dashed rgba(255, 255, 255, 0.24);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  font-weight: 760;
+}
+
+.creatorUploadDrop input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.creatorModalSection p,
+.creatorAutoNote p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.45;
+}
+
+.creatorAccountModels {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.creatorAccountModels .field label {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.creatorAccountModels select,
+.creatorAccountModels input {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.creatorAccountModels .accountModelRow label {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.composerDeck #formats {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.composerDeck .miniHeader h3,
+.composerDeck .templateStylePanel h3 {
+  color: var(--ink);
+}
+
+.composerDeck .miniHeader p,
+.composerDeck .templateStyleInfo p,
+.composerDeck .templateStyleInfo strong {
+  color: var(--muted);
+}
+
+.composerDeck .composerControlGrid {
+  grid-template-columns: repeat(2, var(--composer-col));
+  grid-column: 1 / span 2;
+  justify-content: start;
+  gap: var(--composer-gap);
+}
+
+.formatActionRow {
+  display: grid;
+  grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
+  align-items: start;
+  justify-content: start;
+  column-gap: var(--composer-gap);
+  row-gap: var(--composer-gap);
+}
+
+.formatActionRow .runControls {
+  grid-column: 3 / span 2;
+  position: relative;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.formatActionRow .deckGenerateButton {
+  grid-column: 5;
+}
+
+.formatActionRow select {
+  height: 58px;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.composerDeck .field label,
+.composerDeck .compactControl > span,
+.composerDeck .controlLabel,
+.composerDeck .templateStyleSelect span,
+.composerDeck .costPanel span {
+  color: var(--muted);
+}
+
+.composerDeck .infoTooltip [role="tooltip"] {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: #ffffff;
+  color: #101216;
+}
+
+.composerDeck select,
+.composerDeck input {
+  border-color: rgba(210, 214, 222, 0.9);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink);
+}
+
+.composerDeck .productModal input,
+.composerDeck .productModal textarea {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.composerDeck select option {
+  color: #101216;
+}
+
+.composerDeck .subFormatPanel,
+.composerDeck .templateStylePanel {
+  border-color: rgba(210, 214, 222, 0.8);
+}
+
+.composerDeck .templateStyleInfo {
+  display: none;
+}
+
+.composerDeck .productNameField {
+  grid-column: 2;
+  grid-row: 3;
+  max-width: 500px;
+}
+
+.composerDeck .modelAssignmentField {
+  grid-column: 1;
+  grid-row: 3;
+  max-width: 500px;
+}
+
+.composerDeck .runControls {
+  grid-column: auto;
+  grid-row: auto;
+  display: grid;
+  grid-template-columns: repeat(2, var(--composer-col));
+  gap: var(--composer-gap);
+  max-width: none;
+  align-self: start;
+}
+
+.composerDeck .runControls .field {
+  align-self: start;
+  margin-bottom: 0;
+}
+
+.analysisPreviewPanel {
+  position: relative;
+  display: grid;
+  grid-column: 4;
+  grid-row: 1;
+  align-self: start;
+  min-height: 104px;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.74);
+  cursor: pointer;
+  padding: 14px;
+  text-align: left;
+}
+
+.analysisPreviewPanel::after {
+  content: "Open";
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.analysisPreviewPanel:hover {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.analysisPreviewSummary {
+  display: grid;
+  min-height: 74px;
+  align-content: center;
+  gap: 7px;
+}
+
+.analysisPreviewSummary > span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.analysisPreviewSummary strong {
+  margin: 0;
+  font-size: 16px;
+}
+
+.analysisPreviewSummary em {
+  max-width: 260px;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.layerPreviewModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(16, 18, 22, 0.62);
+}
+
+.layerPreviewPanel {
+  display: grid;
+  width: min(980px, calc(100vw - 44px));
+  max-height: calc(100vh - 44px);
+  overflow: auto;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--ink);
+  padding: 20px;
+  box-shadow: 0 30px 90px rgba(16, 18, 22, 0.28);
+}
+
+.layerPreviewTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.layerPreviewTop span,
+.layerPreviewBody section > span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.layerPreviewTop h2 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 38px);
+}
+
+.layerPreviewBody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.layerPreviewBody section,
+.layerPreviewEmpty {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-soft);
+  padding: 14px;
+}
+
+.layerPreviewBody section > p,
+.layerPreviewEmpty p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.layerPreviewBody dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.layerPreviewBody dt {
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.layerPreviewBody dd {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.layerVariantSection {
+  grid-column: 1 / -1;
+}
+
+.layerVariantList {
+  display: grid;
+  gap: 8px;
+}
+
+.layerVariantList article {
+  display: grid;
+  gap: 5px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.layerVariantList p,
+.layerVariantList em {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.layerVariantList em {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  font-style: normal;
+}
+
+.composerDeck .costPanel {
+  grid-column: 2;
+  grid-row: 3 / 5;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  display: none;
+}
+
+.composerDeck .costPanel strong,
+.composerDeck .costPanel p {
+  color: #ffffff;
+}
+
+.composerDeck > .primaryButton:not(.topGenerateButton) {
+  display: none;
+}
+
+.composerDeck .starterPanel,
+.composerDeck .accountModels,
+.composerDeck .compactBlock {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 1120px) {
+  .composerDeck {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .composerDeck .composerTypeRail,
+  .composerDeck #formats,
+  .composerDeck .uploadGrid,
+  .composerDeck .analysisPreviewPanel,
+  .composerDeck .modelAssignmentField,
+  .composerDeck .runControls,
+  .composerDeck .costPanel {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .studioShell {
+    grid-template-columns: 1fr;
+  }
+
+  .projectSidebar {
+    position: static;
+    height: auto;
+    grid-template-rows: auto;
+  }
+
+  .projectHistoryList {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(190px, 240px);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
   .hero {
     grid-template-columns: 1fr;
   }
@@ -1069,10 +3128,34 @@ h3 {
   }
 }
 
+@media (max-width: 1320px) {
+  .formatActionRow {
+    grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
+  }
+
+  .formatActionRow .composerControlGrid {
+    grid-column: 1 / span 2;
+  }
+
+  .formatActionRow .runControls {
+    grid-column: 3 / span 2;
+  }
+
+  .formatActionRow .deckGenerateButton {
+    grid-column: 5;
+  }
+}
+
 @media (max-width: 860px) {
   .topBar,
+  .studioHero,
   .metricsGrid,
   .formatGrid,
+  .creativeTypeGrid,
+  .subFormatGrid,
+  .templateStyleControl,
+  .composerControlGrid,
+  .formatInfoPanel,
   .modeGrid,
   .videoGrid,
   .uploadGrid,
@@ -1088,6 +3171,82 @@ h3 {
   .topBar {
     position: static;
     justify-items: start;
+  }
+
+  .gallerySection {
+    padding: 18px;
+  }
+
+  .mediaGalleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .studioMain {
+    padding: 0 10px 38px;
+  }
+
+  .studioMain .topBar .brandMark {
+    visibility: visible;
+  }
+
+  .projectSidebar {
+    padding: 12px 10px;
+  }
+
+  .generatorPanel #formats,
+  .productNameField,
+  .modelAssignmentField,
+  .runControls,
+  .generatorPanel .costPanel {
+    grid-column: 1 / -1;
+  }
+
+  .composerDeck {
+    grid-template-columns: 1fr;
+  }
+
+  .composerDeck::before {
+    grid-column: 1 / -1;
+    grid-row: 2 / 8;
+  }
+
+  .composerDeck .composerTypeRail,
+  .composerDeck .panelHeader,
+  .composerDeck #formats,
+  .composerDeck .uploadGrid,
+  .composerDeck .analysisPreviewPanel,
+  .composerDeck .productNameField,
+  .composerDeck .modelAssignmentField,
+  .composerDeck .runControls {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .composerDeck .composerControlGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formatActionRow,
+  .composerDeck .uploadGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .composerDeck .productNameField,
+  .composerDeck .modelAssignmentField,
+  .composerDeck .runControls {
+    max-width: none;
+  }
+
+  .formatActionRow .runControls,
+  .composerDeck .analysisPreviewPanel {
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .formatActionRow .runControls::before,
+  .composerDeck .analysisPreviewPanel::before,
+  .composerDeck::after {
+    display: none;
   }
 
   .topStatus {
@@ -1106,8 +3265,23 @@ h3 {
     display: grid;
   }
 
+  .resultsStatus {
+    position: static;
+    justify-self: center;
+    transform: none;
+  }
+
   .costPanel {
     grid-template-columns: 1fr;
+  }
+
+  .templateStyleInfo.withPreview {
+    grid-template-columns: 1fr;
+  }
+
+  .templatePreviewLarge {
+    max-height: none;
+    max-width: 220px;
   }
 
   .starterHeader,

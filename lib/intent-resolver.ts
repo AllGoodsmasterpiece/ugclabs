@@ -106,13 +106,19 @@ export function buildAssetBindingDebug(input: ProductFocusInput): AssetBindingDe
 }
 
 export async function writeIntentDebug(jobId: string, intent: ResolvedIntent): Promise<void> {
-  const logsDir = path.join(process.cwd(), "logs");
-  await mkdir(logsDir, { recursive: true });
-  await writeFile(
-    path.join(logsDir, `intent-resolver-${jobId}.json`),
-    JSON.stringify(intent, null, 2),
-    "utf8"
-  );
+  try {
+    const logsDir = process.env.VERCEL
+      ? path.join("/tmp", "ugclabs", "logs")
+      : path.join(process.cwd(), "logs");
+    await mkdir(logsDir, { recursive: true });
+    await writeFile(
+      path.join(logsDir, `intent-resolver-${jobId}.json`),
+      JSON.stringify(intent, null, 2),
+      "utf8"
+    );
+  } catch {
+    // Debug files are best-effort and should not block generation.
+  }
 }
 
 function productModeIntent(input: ProductFocusInput): ResolvedIntent["productMode"] {

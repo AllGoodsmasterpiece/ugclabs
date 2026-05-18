@@ -338,7 +338,7 @@ async function submitFalQueue(body: unknown): Promise<{ statusUrl: string; respo
 
 async function pollFalQueue(statusUrl: string, responseUrl: string): Promise<FalKlingResponse> {
   const startedAt = Date.now();
-  const timeoutMs = 10 * 60 * 1000;
+  const timeoutMs = process.env.VERCEL ? 4.5 * 60 * 1000 : 10 * 60 * 1000;
 
   while (Date.now() - startedAt < timeoutMs) {
     await sleep(3000);
@@ -390,13 +390,19 @@ async function writeFalDebugPayload(
 ): Promise<void> {
   if (!debug) return;
 
-  const logsDir = path.join(process.cwd(), "logs");
-  await mkdir(logsDir, { recursive: true });
-  await writeFile(
-    path.join(logsDir, `fal-kling-request-${debug.jobId}-${debug.index}.json`),
-    JSON.stringify(body, null, 2),
-    "utf8"
-  );
+  try {
+    const logsDir = process.env.VERCEL
+      ? path.join("/tmp", "ugclabs", "logs")
+      : path.join(process.cwd(), "logs");
+    await mkdir(logsDir, { recursive: true });
+    await writeFile(
+      path.join(logsDir, `fal-kling-request-${debug.jobId}-${debug.index}.json`),
+      JSON.stringify(body, null, 2),
+      "utf8"
+    );
+  } catch {
+    // Debug files are best-effort and should not block generation.
+  }
 }
 
 function falApiKey(): string {

@@ -4,6 +4,7 @@ import { getNonUgcFormatStrategy, type FormatStrategy } from "./format-strategie
 import { resolveGenerationIntent } from "./intent-resolver";
 import { extractJsonObject } from "./json";
 import type { CreativePlan, ProductFocusInput, ReferenceAnalysis, ResolvedIntent } from "./types";
+import { getUgcTemplateStyle } from "./video-formats";
 
 type PlannerResponse = {
   variants: CreativePlan[];
@@ -122,11 +123,14 @@ User Intent:
 - Product mode instruction: ${intent.productMode.instruction}
 - Video format: ${intent.videoFormat.name}
 - Video format intent: ${intent.videoFormat.intent}
+${formatSubFormatIntent(input)}
 - Duration: ${input.duration}s
 - Audio mode: fal Kling native audio, generate_audio=true
 - Creator/model setting: ${creatorModeLabel(input)}
 - Model reference image provided: ${input.creatorReferenceProvided ? "yes" : "no"}
 - Product name: ${input.productName}
+- Product analysis mode: ${input.productAnalysisMode}
+- User product feature/use notes: ${input.productFeatureNotes || "not provided"}
 
 Asset Binding:
 - Product token: ${PRODUCT_ASSET_TOKEN}
@@ -139,6 +143,7 @@ ${formatProductAsset(input)}
 
 Product Use Director:
 ${formatProductUseDirector(input)}
+${formatUgcTemplateStyleBlock(input)}
 
 Avatar Asset Understanding:
 ${formatAvatarAsset(input)}
@@ -271,11 +276,14 @@ User Intent:
 - Product mode instruction: ${intent.productMode.instruction}
 - Video format: ${intent.videoFormat.name}
 - Video format intent: ${intent.videoFormat.intent}
+${formatSubFormatIntent(input)}
 - Duration: ${input.duration}s
 - Audio mode: fal Kling native audio, generate_audio=true
 - Creator/model setting: ${creatorModeLabel(input)}
 - Model reference image provided: ${input.creatorReferenceProvided ? "yes" : "no"}
 - Product name: ${input.productName}
+- Product analysis mode: ${input.productAnalysisMode}
+- User product feature/use notes: ${input.productFeatureNotes || "not provided"}
 
 Asset Binding:
 - Product token: ${PRODUCT_ASSET_TOKEN}
@@ -306,6 +314,7 @@ ${JSON.stringify(intent, null, 2)}
 
 Format Strategy:
 ${formatStrategyBlock(strategy)}
+${formatUgcTemplateStyleBlock(input)}
 
 Hard rules:
 - Return strict JSON only.
@@ -404,6 +413,40 @@ function formatStrategyBlock(strategy: FormatStrategy): string {
   }, null, 2);
 }
 
+function formatUgcTemplateStyleBlock(input: ProductFocusInput): string {
+  const style = getUgcTemplateStyle(input.ugcTemplateStyle);
+
+  if (!style) {
+    return "";
+  }
+
+  if (!style.appliesTo.includes(input.videoFormat)) {
+    return "";
+  }
+
+  return `
+UGC Template Style:
+${JSON.stringify({
+  id: style.id,
+  name: style.name,
+  explanation: style.explanation,
+  promptBias: style.promptBias,
+  avoid: style.avoid,
+  priorityRule:
+    "Use this as a soft creative bias only. Product Analysis, Product Use Director, product visual lock, physicalUseModel, and selected video format rules still have higher priority."
+}, null, 2)}
+`;
+}
+
+function formatSubFormatIntent(input: ProductFocusInput): string {
+  if (!input.subFormatName && !input.subFormatIntent) {
+    return "- Sub format: not specified";
+  }
+
+  return `- Sub format: ${input.subFormatName ?? "Selected sub format"}
+- Sub format intent: ${input.subFormatIntent ?? "Use the selected sub format as the primary creative structure."}`;
+}
+
 function creatorModeLabel(input: ProductFocusInput): string {
   if (input.creatorMode === "model_reference") return "Use model reference image";
   if (input.creatorMode === "new_creator") return "New creator";
@@ -431,6 +474,8 @@ function formatProductAsset(input: ProductFocusInput): string {
     id: profile.id,
     token: profile.token,
     label: profile.label,
+    userFeatureNotes: input.productFeatureNotes || undefined,
+    analysisMode: input.productAnalysisMode,
     promptNounPhrase: profile.promptNounPhrase,
     description: profile.description,
     keyDetails: profile.keyDetails,

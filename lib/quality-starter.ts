@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { optionalEnv, requireEnv } from "./env";
+import { hasR2Config, publicObjectKey, uploadPublicObject } from "./r2";
 import { runtimeOutputPath, runtimeOutputUrl } from "./runtime-storage";
 import type { AssetProfile } from "./types";
 
@@ -13,6 +14,7 @@ type QualityStarterOptions = {
   productName: string;
   productAssetProfile?: AssetProfile;
   generationMode: string;
+  videoFormatId?: string;
   videoFormatName?: string;
 };
 
@@ -77,7 +79,21 @@ export async function createQualityStarterImage(
     throw new Error(`Starter image generation returned no image data: ${JSON.stringify(json)}`);
   }
 
-  await writeFile(target, Buffer.from(b64, "base64"));
+  const bytes = Buffer.from(b64, "base64");
+  await writeFile(target, bytes);
+
+  if (hasR2Config()) {
+    const publicUrl = await uploadPublicObject(
+      publicObjectKey(options.jobId, filename),
+      bytes,
+      "image/png"
+    );
+
+    return {
+      localPath: target,
+      localUrl: publicUrl
+    };
+  }
 
   return {
     localPath: target,
@@ -93,6 +109,7 @@ async function fileBlob(filePath: string, mimeType: string): Promise<Blob> {
 function buildQualityStarterPrompt(productName: string, options: QualityStarterOptions): string {
   const hasSceneReference = Boolean(options.referenceFramePath);
   const placement = productUseDirectorBrief(options.productAssetProfile, productName);
+  const formatGuidance = formatStarterGuidance(options);
 
   return [
     "Create one vertical 9:16 photorealistic UGC video starting frame.",
@@ -106,10 +123,37 @@ function buildQualityStarterPrompt(productName: string, options: QualityStarterO
       : "Do not invent a second person or use a generic stock-photo pose.",
     "Do not copy the creator reference photo's original background, outfit, pose, or static studio composition.",
     "Do not default to a straight-on passport pose with the product held at chest height unless the Product Use Director says that pose is natural.",
+    formatGuidance,
     placement,
     `Show the creator naturally using, presenting, or interacting with the ${productName || "uploaded product"} in the first frame.`,
     "The frame must already look like the opening frame of a native TikTok/Reels UGC ad, not a product mockup, not a collage, not a side-by-side comparison.",
     "No captions, no UI overlays, no watermarks, no extra products, no extra logos."
+  ].join(" ");
+}
+
+function formatStarterGuidance(options: QualityStarterOptions): string {
+  if (options.videoFormatId === "tutorial") {
+    return [
+      "Tutorial starter guidance:",
+      "The first frame must look like the beginning of a step-by-step product demonstration, not a generic pose or final beauty shot.",
+      "Show the product clearly with the correct access point, control, applicator, opening, screen, handle, or use surface visible.",
+      "Place the creator's hand, finger, tool, or body position so the next frame can naturally perform step one from the Product Use Director and physicalUseModel.",
+      "If the product needs setup before use, show the setup state. If it is applied, worn, opened, pressed, tapped, placed, or operated, stage the product ready for that exact action.",
+      "Avoid face-only intros and avoid showing a physically impossible action starting point."
+    ].join(" ");
+  }
+
+  if (options.videoFormatId !== "ugc_virtual_try_on") {
+    return "";
+  }
+
+  return [
+    "UGC Virtual Try On starter guidance:",
+    "The first frame must feel like a try-on or application setup, not a generic product holding shot.",
+    "Place the product on, near, or moving toward the correct fit/application area defined by Product Use Director and physicalUseModel.",
+    "For apparel or accessories, show the item being worn, adjusted, paired, or held next to the relevant body area.",
+    "For beauty, skincare, hair, nail, or fragrance, show controlled application, swatch, texture, or placement near the relevant face/body/hair/hand area.",
+    "Do not force non-wearable products onto the body."
   ].join(" ");
 }
 

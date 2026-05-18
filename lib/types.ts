@@ -79,8 +79,14 @@ export type AssetProfile = {
 export type ProductFocusInput = {
   generationMode: "fast_ugc" | "reference_match" | "winning_ad_remix";
   videoFormat: VideoFormatId;
+  subFormatId?: string;
+  subFormatName?: string;
+  subFormatIntent?: string;
+  ugcTemplateStyle?: string;
   productName: string;
   productUrl: string;
+  productFeatureNotes?: string;
+  productAnalysisMode: "auto" | "guided";
   productImageProvided: boolean;
   modelMode: "auto_generated" | "shared_model" | "per_account_models";
   creatorMode: "auto" | "model_reference" | "new_creator" | "hand_only";

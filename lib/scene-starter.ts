@@ -1,16 +1,12 @@
 import { spawn } from "node:child_process";
-import { mkdir } from "node:fs/promises";
-import path from "node:path";
-
-const outputDir = path.join(process.cwd(), "public", "outputs");
+import { runtimeOutputPath } from "./runtime-storage";
 
 export async function createReferenceStarterFrame(
   referenceVideoPath: string,
   jobId: string,
   warnings: string[]
 ): Promise<string | undefined> {
-  const target = path.join(outputDir, `${jobId}-reference-starter.jpg`);
-  await mkdir(outputDir, { recursive: true });
+  const target = await runtimeOutputPath(`${jobId}-reference-starter.jpg`);
 
   try {
     await runFfmpeg([

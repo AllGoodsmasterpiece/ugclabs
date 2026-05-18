@@ -1,8 +1,7 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
-
-const uploadDir = path.join(process.cwd(), "public", "uploads");
-const outputDir = path.join(process.cwd(), "public", "outputs");
+import { hasR2Config, publicObjectKey, uploadPublicObject } from "./r2";
+import { contentTypeFromFilename, runtimeOutputPath, runtimeOutputUrl, runtimeUploadPath } from "./runtime-storage";
 
 export async function saveUpload(file: File, jobId: string): Promise<string> {
   return saveNamedUpload(file, jobId, "reference");
@@ -17,10 +16,9 @@ export async function saveCreatorImage(file: File, jobId: string, label = "creat
 }
 
 async function saveNamedUpload(file: File, jobId: string, label: string): Promise<string> {
-  await mkdir(uploadDir, { recursive: true });
   const extension = extensionFromFile(file.name, file.type);
   const safeName = `${jobId}-${label}${extension}`;
-  const target = path.join(uploadDir, safeName);
+  const target = await runtimeUploadPath(safeName);
   const bytes = Buffer.from(await file.arrayBuffer());
   await writeFile(target, bytes);
   return target;
@@ -31,13 +29,26 @@ export async function saveOutputBuffer(
   jobId: string,
   filename: string
 ): Promise<{ localPath: string; localUrl: string }> {
-  await mkdir(outputDir, { recursive: true });
   const safeName = `${jobId}-${filename}`;
-  const target = path.join(outputDir, safeName);
+  const target = await runtimeOutputPath(safeName);
   await writeFile(target, bytes);
+
+  if (hasR2Config()) {
+    const publicUrl = await uploadPublicObject(
+      publicObjectKey(jobId, safeName),
+      bytes,
+      contentTypeFromFilename(safeName)
+    );
+
+    return {
+      localPath: target,
+      localUrl: publicUrl
+    };
+  }
+
   return {
     localPath: target,
-    localUrl: `/outputs/${safeName}`
+    localUrl: runtimeOutputUrl(safeName)
   };
 }
 

@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -13,16 +14,20 @@ import { analyzeReferenceVideo } from "@/lib/gemini";
 import { buildAssetBindingDebug, resolveGenerationIntent, writeIntentDebug } from "@/lib/intent-resolver";
 import { createProductFocusPlans } from "@/lib/planner";
 import { createQualityStarterImage } from "@/lib/quality-starter";
-import { legacyPublicOutputCandidatePath, runtimeOutputCandidatePath } from "@/lib/runtime-storage";
+import { hasR2Config, publicGlobalObjectKey, publicObjectKey, readPublicObject, uploadPublicObject } from "@/lib/r2";
+import { legacyPublicOutputCandidatePath, runtimeOutputCandidatePath, runtimeOutputUrl } from "@/lib/runtime-storage";
 import { createReferenceStarterFrame } from "@/lib/scene-starter";
 import type { AssetProfile, GeneratedVideo, PipelineResult, ProductFocusInput } from "@/lib/types";
-import { getVideoFormat } from "@/lib/video-formats";
+import { getVideoFormat, getVideoSubFormat } from "@/lib/video-formats";
 
 export const runtime = "nodejs";
-export const maxDuration = 600;
+export const maxDuration = 300;
 
 const validDurations = new Set([5, 10, 15]);
-const logsDir = path.join(process.cwd(), "logs");
+const logsDir = process.env.VERCEL
+  ? path.join("/tmp", "ugclabs", "logs")
+  : path.join(process.cwd(), "logs");
+const historyIndexPath = path.join(logsDir, "history-index.json");
 const outputDir = path.join(process.cwd(), "public", "outputs");
 
 type CreatorReference = {
@@ -40,6 +45,16 @@ type StarterPreviewContext = {
   creatorReferences: CreatorReference[];
 };
 
+type ProjectHistoryEntry = {
+  jobId: string;
+  title: string;
+  createdAt: string;
+  formatName: string;
+  styleName: string;
+  videoCount: number;
+  thumbnailUrl?: string;
+};
+
 export async function POST(request: Request) {
   let jobId = randomUUID().slice(0, 8);
 
@@ -48,8 +63,8 @@ export async function POST(request: Request) {
     jobId = parseJobId(form.get("clientJobId")) ?? jobId;
     const runMode = String(form.get("runMode") || "video");
     const referenceVideo = form.get("referenceVideo");
-    const productImage = form.get("productImage");
     const input = parseInput(form);
+    const productImage = productImageFromForm(form.get("productImage"), form, input.productName);
     const usableReferenceVideo = referenceVideo instanceof File && referenceVideo.size > 0
       ? referenceVideo
       : undefined;
@@ -58,7 +73,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "referenceVideo is required." }, { status: 400 });
     }
 
-    if (!(productImage instanceof File) || productImage.size === 0) {
+    if (!productImage) {
       return NextResponse.json({ error: "productImage is required." }, { status: 400 });
     }
 
@@ -146,7 +161,9 @@ export async function POST(request: Request) {
       kind: "product",
       filePath: productImagePath,
       mimeType: productImage.type || "image/png",
-      label: input.productName
+      label: input.productName,
+      userGuidance: input.productFeatureNotes,
+      analysisMode: input.productAnalysisMode
     });
     const profiledCreatorReferences = await buildCreatorAssetProfiles(creatorReferences);
 
@@ -166,6 +183,14 @@ export async function POST(request: Request) {
       warnings.push(...assetProfileWarnings("Reference video", referenceVideoAssetProfile));
     }
     warnings.push(...assetProfileWarnings("Product", productAssetProfile));
+    const tryOnCompatibility = validateTryOnCompatibility(input, productAssetProfile);
+    warnings.push(...tryOnCompatibility.warnings);
+    if (!tryOnCompatibility.ok) {
+      return NextResponse.json(
+        { error: tryOnCompatibility.message, warnings: dedupe(warnings) },
+        { status: 400 }
+      );
+    }
     for (const reference of profiledCreatorReferences) {
       if (reference.assetProfile) {
         warnings.push(...assetProfileWarnings(`Model ${reference.accountName}`, reference.assetProfile));
@@ -247,6 +272,20 @@ export async function POST(request: Request) {
     };
 
     await writePipelineResult(payload);
+    await writeHistoryEntry({
+      jobId,
+      title: input.productName || "Untitled product",
+      createdAt: new Date().toISOString(),
+      formatName: input.subFormatName ?? getVideoFormat(input.videoFormat).name,
+      styleName: input.generationMode === "fast_ugc"
+        ? "Fast UGC"
+        : input.generationMode === "reference_match"
+          ? "Reference Match"
+          : "Winning Ad Remix",
+      videoCount: videos.length,
+      thumbnailUrl: videos.find((video) => video.playbackUrl || video.sourceUrl)?.playbackUrl
+        ?? videos.find((video) => video.playbackUrl || video.sourceUrl)?.sourceUrl
+    });
     return NextResponse.json(payload);
   } catch (error) {
     await writeApiErrorDebug(jobId, "POST /api/product-focus/generate", error);
@@ -305,14 +344,27 @@ async function createStarterPreviewResponse(context: StarterPreviewContext) {
     "Quality gate: generated starter preview only. No fal Kling video generation was run."
   ];
   const productImagePath = await saveProductImage(context.productImage, context.jobId);
-  const productAssetProfile = await buildImageAssetProfile({
-    kind: "product",
-    filePath: productImagePath,
-    mimeType: context.productImage.type || "image/png",
-    label: context.input.productName
-  });
+    const productAssetProfile = await buildImageAssetProfile({
+      kind: "product",
+      filePath: productImagePath,
+      mimeType: context.productImage.type || "image/png",
+      label: context.input.productName,
+      userGuidance: context.input.productFeatureNotes,
+      analysisMode: context.input.productAnalysisMode
+    });
   context.input.productAssetProfile = productAssetProfile;
   warnings.push(...assetProfileWarnings("Product", productAssetProfile));
+
+  const tryOnCompatibility = validateTryOnCompatibility(context.input, productAssetProfile);
+  if (!tryOnCompatibility.ok) {
+    return NextResponse.json(
+      {
+        error: tryOnCompatibility.message,
+        warnings: [...warnings, ...tryOnCompatibility.warnings]
+      },
+      { status: 400 }
+    );
+  }
 
   const referenceVideoPath = context.referenceVideo
     ? await saveUpload(context.referenceVideo, context.jobId)
@@ -334,7 +386,7 @@ async function createStarterPreviewResponse(context: StarterPreviewContext) {
     return NextResponse.json({
       jobId: context.jobId,
       starterImageUrl: referenceFramePath
-        ? `/outputs/${context.jobId}-reference-starter.jpg`
+        ? runtimeOutputUrl(`${context.jobId}-reference-starter.jpg`)
         : "",
       warnings: [
         ...warnings,
@@ -362,13 +414,14 @@ async function createStarterPreviewResponse(context: StarterPreviewContext) {
     productName: context.input.productName,
     productAssetProfile,
     generationMode: context.input.generationMode,
+    videoFormatId: context.input.videoFormat,
     videoFormatName: getVideoFormat(context.input.videoFormat).name
   });
 
   return NextResponse.json({
     jobId: context.jobId,
     starterImageUrl: starter.localUrl,
-    referenceFrameUrl: referenceFramePath ? `/outputs/${context.jobId}-reference-starter.jpg` : undefined,
+    referenceFrameUrl: referenceFramePath ? runtimeOutputUrl(`${context.jobId}-reference-starter.jpg`) : undefined,
     warnings: [
       ...warnings,
       "Quality gate: starter image combines uploaded model identity, uploaded product, Product Use Director placement, and reference-video scene composition."
@@ -379,9 +432,18 @@ async function createStarterPreviewResponse(context: StarterPreviewContext) {
 function parseInput(form: FormData): ProductFocusInput {
   const productName = String(form.get("productName") || "").trim();
   const productUrl = String(form.get("productUrl") || "").trim();
+  const productFeatureNotes = englishOnlyText(String(form.get("productFeatureNotes") || "")).trim();
+  const productAnalysisMode = productFeatureNotes
+    ? "guided"
+    : String(form.get("productAnalysisMode") || "auto") === "guided"
+      ? "guided"
+      : "auto";
   const tone = String(form.get("tone") || "TikTok native").trim();
   const generationMode = parseGenerationMode(String(form.get("generationMode") || "fast_ugc"));
-  const videoFormat = getVideoFormat(String(form.get("videoFormat") || "ugc_beauty_product")).id;
+  const requestedSubFormat = getVideoSubFormat(String(form.get("subFormatId") || ""));
+  const videoFormat = getVideoFormat(String(form.get("videoFormat") || requestedSubFormat?.videoFormat || "ugc_beauty_product")).id;
+  const subFormat = requestedSubFormat?.videoFormat === videoFormat ? requestedSubFormat : undefined;
+  const ugcTemplateStyle = parseUgcTemplateStyle(String(form.get("ugcTemplateStyle") || "auto"));
   const modelMode = parseModelMode(String(form.get("modelMode") || "auto_generated"));
   const referenceProductMode = parseReferenceProductMode(String(form.get("referenceProductMode") || "replace_product"));
   const explicitCreatorMode = parseCreatorMode(String(form.get("creatorMode") || "auto"));
@@ -404,8 +466,14 @@ function parseInput(form: FormData): ProductFocusInput {
   return {
     generationMode,
     videoFormat,
+    subFormatId: subFormat?.id,
+    subFormatName: subFormat?.name,
+    subFormatIntent: subFormat?.explanation,
+    ugcTemplateStyle,
     productName,
     productUrl,
+    productFeatureNotes,
+    productAnalysisMode,
     productImageProvided: false,
     modelMode,
     creatorMode,
@@ -416,6 +484,59 @@ function parseInput(form: FormData): ProductFocusInput {
     duration: duration as 5 | 10 | 15,
     count
   };
+}
+
+function productImageFromForm(
+  productImage: FormDataEntryValue | null,
+  form: FormData,
+  productName: string
+): File | undefined {
+  if (productImage instanceof File && productImage.size > 0) {
+    return productImage;
+  }
+
+  const dataUrl = String(form.get("productImageDataUrl") || "");
+  const match = dataUrl.match(/^data:([^;,]+);base64,(.+)$/);
+
+  if (!match) return undefined;
+
+  const mimeType = match[1] || "image/png";
+  const buffer = Buffer.from(match[2], "base64");
+
+  if (!buffer.length) return undefined;
+
+  return new File([new Uint8Array(buffer)], `${safeAssetName(productName)}.${extensionForMimeType(mimeType)}`, {
+    type: mimeType
+  });
+}
+
+function safeAssetName(value: string) {
+  return (value || "saved-product")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    || "saved-product";
+}
+
+function extensionForMimeType(mimeType: string) {
+  if (mimeType.includes("jpeg") || mimeType.includes("jpg")) return "jpg";
+  if (mimeType.includes("webp")) return "webp";
+  if (mimeType.includes("gif")) return "gif";
+  return "png";
+}
+
+function parseUgcTemplateStyle(value: string): string | undefined {
+  const normalized = value.trim().toLowerCase();
+
+  if (!normalized || normalized === "auto") {
+    return undefined;
+  }
+
+  return /^[a-z0-9_-]{2,48}$/.test(normalized) ? normalized : undefined;
+}
+
+function englishOnlyText(value: string): string {
+  return value.replace(/[^\x20-\x7E]/g, "").replace(/\s{2,}/g, " ");
 }
 
 function parseGenerationMode(value: string): ProductFocusInput["generationMode"] {
@@ -568,6 +689,66 @@ function generationModeWarning(input: ProductFocusInput): string {
   return "Generation mode: Reference Match. Reference video is analyzed for style, pacing, framing, gestures, and scene mood, but is not sent to the video model.";
 }
 
+function validateTryOnCompatibility(
+  input: ProductFocusInput,
+  productAssetProfile: AssetProfile
+): { ok: boolean; message?: string; warnings: string[] } {
+  if (input.videoFormat !== "ugc_virtual_try_on") {
+    return { ok: true, warnings: [] };
+  }
+
+  const understanding = productAssetProfile.productUnderstanding;
+  const physicalUseModel = understanding?.physicalUseModel;
+  const haystack = [
+    input.productName,
+    productAssetProfile.label,
+    productAssetProfile.promptNounPhrase,
+    productAssetProfile.description,
+    understanding?.productType,
+    understanding?.productCategory,
+    understanding?.primaryUseCase,
+    physicalUseModel?.physicalForm,
+    physicalUseModel?.interactionModel,
+    physicalUseModel?.activationOrAccessPoint,
+    physicalUseModel?.outputOrEffectSource,
+    physicalUseModel?.plannerDirective,
+    ...(understanding?.naturalUseEnvironments ?? []),
+    ...(understanding?.typicalUserActions ?? []),
+    ...(understanding?.copyAngles ?? []),
+    ...(understanding?.allowedActionVerbs ?? []),
+    ...(understanding?.proofWords ?? []),
+    ...(physicalUseModel?.validInteractionPoints ?? []),
+    ...(physicalUseModel?.naturalUseSequence ?? [])
+  ].join(" ").toLowerCase();
+
+  const compatiblePattern =
+    /\b(apparel|clothing|clothes|garment|outfit|dress|shirt|top|pants|jeans|skirt|jacket|coat|hoodie|sweater|shoe|sneaker|boot|sandal|sock|hat|cap|beanie|eyewear|glasses|sunglasses|contact lens|jewelry|jewellery|earring|necklace|bracelet|ring|watch|bag|purse|handbag|backpack|wearable|accessory|makeup|cosmetic|lipstick|lip gloss|lip tint|foundation|concealer|blush|eyeshadow|mascara|skincare|serum|cream|lotion|sunscreen|cleanser|toner|essence|ampoule|fragrance|perfume|hair|nail|worn|wear|try on|fit|fitting|style|styling|pair|apply|applied|swatch|blend)\b/;
+  const incompatiblePattern =
+    /\b(toaster|oven|microwave|air fryer|blender|kettle|coffee maker|appliance|furniture|chair|table|sofa|lamp|software|app screen|dashboard|website|platform|saas|screen workflow|phone case|tumbler|cup|mug|bottle|straw|lid|food|snack|tool|device|charger|cable|keyboard|mouse|speaker|countertop|kitchen counter)\b/;
+
+  const compatible = compatiblePattern.test(haystack);
+  const incompatible = incompatiblePattern.test(haystack) && !compatible;
+
+  if (compatible && !incompatible) {
+    return {
+      ok: true,
+      warnings: [
+        "Fit Director: product appears suitable for UGC Virtual Try On based on Product Analysis / physicalUseModel."
+      ]
+    };
+  }
+
+  return {
+    ok: false,
+    message:
+      "UGC Virtual Try On is only available for wearable, styleable, or applicable products such as apparel, accessories, beauty, skincare, makeup, hair, nail, or fragrance. Use UGC, Tutorial, or Product Only for this product.",
+    warnings: [
+      "Fit Director: blocked UGC Virtual Try On before paid starter/video generation because Product Analysis did not identify a wearable, styleable, or applicable product.",
+      `Fit Director evidence: ${haystack.slice(0, 500)}`
+    ]
+  };
+}
+
 function buildFastUgcReferenceAnalysis(input: ProductFocusInput) {
   const format = getVideoFormat(input.videoFormat);
 
@@ -702,15 +883,52 @@ function mimeTypeFromPath(filePath: string): string {
 
 async function writePipelineResult(payload: PipelineResult): Promise<void> {
   await mkdir(logsDir, { recursive: true });
+  const bytes = Buffer.from(JSON.stringify(payload, null, 2));
   await writeFile(
     path.join(logsDir, `pipeline-result-${payload.jobId}.json`),
-    JSON.stringify(payload, null, 2),
+    bytes,
     "utf8"
   );
+
+  if (hasR2Config()) {
+    await uploadPublicObject(
+      publicObjectKey(payload.jobId, `pipeline-result-${payload.jobId}.json`),
+      bytes,
+      "application/json"
+    );
+  }
+}
+
+async function writeHistoryEntry(entry: ProjectHistoryEntry): Promise<void> {
+  await mkdir(logsDir, { recursive: true });
+
+  let previous: ProjectHistoryEntry[] = [];
+
+  try {
+    const remoteHistory = await readPublicObject(publicGlobalObjectKey("history-index.json"));
+    previous = JSON.parse(remoteHistory?.toString("utf8") ?? await readFile(historyIndexPath, "utf8")) as ProjectHistoryEntry[];
+  } catch {
+    previous = [];
+  }
+
+  const next = [entry, ...previous.filter((item) => item.jobId !== entry.jobId)].slice(0, 100);
+  const bytes = Buffer.from(JSON.stringify(next, null, 2));
+  await writeFile(historyIndexPath, bytes, "utf8");
+
+  if (hasR2Config()) {
+    await uploadPublicObject(
+      publicGlobalObjectKey("history-index.json"),
+      bytes,
+      "application/json"
+    );
+  }
 }
 
 async function readPipelineResult(jobId: string): Promise<PipelineResult | undefined> {
   try {
+    const remote = await readPublicObject(publicObjectKey(jobId, `pipeline-result-${jobId}.json`));
+    if (remote) return JSON.parse(remote.toString("utf8")) as PipelineResult;
+
     const raw = await readFile(path.join(logsDir, `pipeline-result-${jobId}.json`), "utf8");
     return JSON.parse(raw) as PipelineResult;
   } catch {

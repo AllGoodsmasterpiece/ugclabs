@@ -3,9 +3,12 @@ import path from "node:path";
 
 const storageRoot = process.env.UGCLABS_STORAGE_DIR
   ? path.resolve(process.env.UGCLABS_STORAGE_DIR)
-  : path.join(process.cwd(), ".storage");
+  : process.env.VERCEL
+    ? path.join("/tmp", "ugclabs")
+    : path.join(process.cwd(), ".storage");
 
 const outputDir = path.join(storageRoot, "outputs");
+const uploadDir = path.join(storageRoot, "uploads");
 const legacyPublicOutputDir = path.join(process.cwd(), "public", "outputs");
 
 export async function runtimeOutputPath(filename: string): Promise<string> {
@@ -25,6 +28,11 @@ export function legacyPublicOutputCandidatePath(filename: string): string {
   return path.join(legacyPublicOutputDir, sanitizeAssetFilename(filename));
 }
 
+export async function runtimeUploadPath(filename: string): Promise<string> {
+  await mkdir(uploadDir, { recursive: true });
+  return path.join(uploadDir, sanitizeUploadFilename(filename));
+}
+
 export async function readRuntimeOutput(filename: string): Promise<Buffer> {
   const safeName = sanitizeAssetFilename(filename);
   const runtimePath = path.join(outputDir, safeName);
@@ -41,6 +49,16 @@ export function sanitizeAssetFilename(filename: string): string {
 
   if (!/^[a-z0-9_-]+\.(png|jpe?g|webp|mp4|mov|webm)$/i.test(base)) {
     throw new Error("Invalid asset filename.");
+  }
+
+  return base;
+}
+
+export function sanitizeUploadFilename(filename: string): string {
+  const base = path.basename(filename);
+
+  if (!/^[a-z0-9_-]+\.(png|jpe?g|webp|gif|mp4|mov|webm)$/i.test(base)) {
+    throw new Error("Invalid upload filename.");
   }
 
   return base;

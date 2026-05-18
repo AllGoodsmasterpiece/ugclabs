@@ -18,6 +18,8 @@ type BuildImageAssetProfileOptions = {
   filePath: string;
   mimeType: string;
   label: string;
+  userGuidance?: string;
+  analysisMode?: "auto" | "guided";
 };
 
 type BuildReferenceVideoAssetProfileOptions = {
@@ -122,13 +124,19 @@ export async function writeAssetProfilesDebug(
   jobId: string,
   profiles: Array<AssetProfile | undefined>
 ): Promise<void> {
-  const logsDir = path.join(process.cwd(), "logs");
-  await mkdir(logsDir, { recursive: true });
-  await writeFile(
-    path.join(logsDir, `asset-profiles-${jobId}.json`),
-    JSON.stringify(profiles.filter(Boolean), null, 2),
-    "utf8"
-  );
+  try {
+    const logsDir = process.env.VERCEL
+      ? path.join("/tmp", "ugclabs", "logs")
+      : path.join(process.cwd(), "logs");
+    await mkdir(logsDir, { recursive: true });
+    await writeFile(
+      path.join(logsDir, `asset-profiles-${jobId}.json`),
+      JSON.stringify(profiles.filter(Boolean), null, 2),
+      "utf8"
+    );
+  } catch {
+    // Debug files are best-effort and should not block generation.
+  }
 }
 
 function fallbackImageProfile(
@@ -219,7 +227,7 @@ async function analyzeImageWithOpenAI(
           content: [
             {
               type: "input_text",
-              text: buildImageAnalysisPrompt(options.kind, options.label)
+              text: buildImageAnalysisPrompt(options.kind, options.label, options)
             },
             {
               type: "input_image",
@@ -255,12 +263,14 @@ async function analyzeImageWithOpenAI(
   };
 }
 
-function buildImageAnalysisPrompt(kind: "product" | "avatar", label: string): string {
+function buildImageAnalysisPrompt(kind: "product" | "avatar", label: string, options?: BuildImageAssetProfileOptions): string {
   if (kind === "product") {
     return `
 Analyze this uploaded target product image for a UGC video generation asset profile.
 
 Product label from user: ${label || "not provided"}
+Product analysis mode: ${options?.analysisMode || "auto"}
+User-provided product feature/use notes: ${options?.userGuidance || "not provided"}
 
 Return strict JSON only. Do not include markdown.
 
@@ -322,6 +332,8 @@ Schema:
 
 Rules:
 - be literal about visible details; do not invent non-visible claims
+- if user-provided product feature/use notes are present, use them as helpful product context for primaryUseCase, functionalBenefitsToDemonstrate, copyAngles, allowedActionVerbs, proofWords, and starterComposition
+- visible product image wins over user notes when they conflict about physical form, label, color, shape, or use constraints
 - identify the product's real-world physical use before suggesting creator poses
 - physicalUseModel is mandatory: infer the product's physical affordances from the image and label, including which part is used first, where results/effects can originate, and which motions would be physically wrong
 - do not write generic physicalUseModel values; make validInteractionPoints, invalidInteractionPoints, requiredPreconditions, naturalUseSequence, and failureModesToAvoid specific to the visible product
