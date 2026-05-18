@@ -316,7 +316,7 @@ a {
   width: auto;
   height: 1.45em;
   object-fit: contain;
-  transform: translateY(0.08em);
+  transform: translate(0.05em, 0.08em);
 }
 
 .studioHeroSubcopy {
@@ -329,11 +329,28 @@ a {
 }
 
 .studioHeroTagline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   margin: 6px auto 0;
   color: var(--accent);
   font-size: clamp(13px, 1vw, 15px);
   font-weight: 700;
   line-height: 1.35;
+}
+
+.taglineClickIcon {
+  display: block;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  transform: translateY(-1px);
+}
+
+.accessChecking {
+  min-height: 100vh;
+  background: #ffffff;
 }
 
 .heroQuickControl {
@@ -2164,6 +2181,336 @@ h3 {
   font-weight: 720;
 }
 
+.siteFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: min(100%, 1180px);
+  margin: 56px auto 0;
+  border-top: 1px solid var(--line);
+  padding: 22px 0 0;
+}
+
+.siteFooter div {
+  display: grid;
+  gap: 6px;
+}
+
+.siteFooter img {
+  width: 112px;
+  height: auto;
+}
+
+.siteFooter p {
+  max-width: 430px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.siteFooter nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 16px;
+}
+
+.siteFooter a {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.siteFooter a:hover {
+  color: var(--accent);
+}
+
+.sitePageShell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 72% 8%, rgba(255, 47, 146, 0.13), transparent 28%),
+    linear-gradient(180deg, #ffffff 0, #fbfcff 60%, #ffffff 100%);
+  color: var(--ink);
+  padding: 18px clamp(16px, 4vw, 54px) 34px;
+}
+
+.sitePageTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.sitePageLogo img {
+  display: block;
+  width: 138px;
+  height: auto;
+}
+
+.sitePageTop nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sitePageTop nav a {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--muted);
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.sitePageTop nav a:hover {
+  border-color: rgba(255, 47, 146, 0.34);
+  color: var(--accent);
+}
+
+.sitePageHero {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: min(900px, 100%);
+  margin: 64px auto 34px;
+  text-align: center;
+}
+
+.sitePageHero > span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.sitePageHero h1 {
+  max-width: 820px;
+  margin: 0;
+  font-size: clamp(34px, 5vw, 62px);
+  line-height: 1.02;
+}
+
+.sitePageHero p {
+  max-width: 670px;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.45;
+}
+
+.siteInfoGrid,
+.profileSummaryGrid {
+  display: grid;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.siteInfoCard,
+.profileSummaryGrid article,
+.siteCallout,
+.siteLoginPanel,
+.historyPageTable {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 42px rgba(16, 18, 22, 0.06);
+}
+
+.siteInfoCard,
+.profileSummaryGrid article {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 180px;
+  padding: 20px;
+}
+
+.siteInfoCard span,
+.profileSummaryGrid span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.siteInfoCard h2,
+.siteCallout h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.siteInfoCard p,
+.profileSummaryGrid p,
+.siteCallout p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.profileSummaryGrid {
+  margin-bottom: 12px;
+}
+
+.profileSummaryGrid strong {
+  font-size: 28px;
+}
+
+.siteCallout,
+.siteLoginPanel {
+  display: grid;
+  width: min(720px, 100%);
+  margin: 14px auto 0;
+  gap: 12px;
+  padding: 22px;
+  text-align: center;
+}
+
+.siteCallout a,
+.siteLoginPanel button,
+.historyPageActions a {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 16px;
+  font-weight: 800;
+}
+
+.siteLoginPanel {
+  width: min(460px, 100%);
+  text-align: left;
+}
+
+.siteLoginPanel label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.siteLoginPanel input {
+  min-height: 48px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 0 14px;
+}
+
+.siteLoginPanel p,
+.siteInlineNotice {
+  margin: 0 auto 12px;
+  color: var(--danger);
+  font-weight: 720;
+  text-align: center;
+}
+
+.historyPageTable {
+  display: grid;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.historyPageHead,
+.historyPageRow {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 88px 80px 92px 220px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+}
+
+.historyPageHead {
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.historyPageRow {
+  border-top: 1px solid var(--line);
+}
+
+.historyPageRow div {
+  min-width: 0;
+}
+
+.historyPageRow strong,
+.historyPageRow span {
+  display: block;
+}
+
+.historyPageRow span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.historyPageThumb {
+  width: 70px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.historyPageThumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.historyStatus {
+  color: var(--success) !important;
+  font-weight: 800;
+}
+
+.historyPageActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.historyPageActions a,
+.historyPageActions span {
+  min-height: 32px;
+  border-radius: 8px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.historyPageActions span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.historyPageEmpty {
+  padding: 30px;
+  color: var(--muted);
+  text-align: center;
+}
+
 .promptDetails {
   padding-top: 6px;
   border-top: 1px solid var(--line);
@@ -2216,6 +2563,7 @@ h3 {
   grid-column: 1;
   grid-row: 1;
   z-index: 2;
+  justify-self: center;
 }
 
 .composerTypeRail {
@@ -2293,7 +2641,7 @@ h3 {
   grid-row: 3;
   grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
   grid-template-rows: 104px;
-  justify-content: start;
+  justify-content: center;
   align-items: stretch;
   column-gap: var(--composer-gap);
   row-gap: var(--composer-gap);
@@ -2865,6 +3213,7 @@ h3 {
 .composerDeck #formats {
   grid-column: 1;
   grid-row: 2;
+  justify-self: center;
 }
 
 .composerDeck .miniHeader h3,
@@ -2881,7 +3230,7 @@ h3 {
 .composerDeck .composerControlGrid {
   grid-template-columns: repeat(2, var(--composer-col));
   grid-column: 1 / span 2;
-  justify-content: start;
+  justify-content: center;
   gap: var(--composer-gap);
 }
 
@@ -2889,7 +3238,7 @@ h3 {
   display: grid;
   grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
   align-items: start;
-  justify-content: start;
+  justify-content: center;
   column-gap: var(--composer-gap);
   row-gap: var(--composer-gap);
 }
@@ -3280,6 +3629,54 @@ h3 {
 
   .studioMain {
     padding: 0 10px 38px;
+  }
+
+  .siteFooter,
+  .sitePageTop {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .siteFooter nav,
+  .sitePageTop nav {
+    justify-content: flex-start;
+  }
+
+  .sitePageHero {
+    justify-items: start;
+    margin: 42px auto 24px;
+    text-align: left;
+  }
+
+  .siteInfoGrid,
+  .profileSummaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .historyPageHead {
+    display: none;
+  }
+
+  .historyPageRow {
+    grid-template-columns: 70px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .historyPageThumb {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+  }
+
+  .historyPageRow > div:first-child,
+  .historyPageRow > div:nth-child(2),
+  .historyPageRow > strong,
+  .historyPageRow > .historyStatus,
+  .historyPageActions {
+    grid-column: 2;
+  }
+
+  .historyPageActions {
+    grid-template-columns: 1fr;
   }
 
   .studioMain .topBar .brandMark {

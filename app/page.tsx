@@ -201,19 +201,23 @@ type GalleryVideoCard = {
   posterUrl?: string;
 };
 
+function assetUrl(filename: string) {
+  return `/api/assets/${encodeURIComponent(filename)}`;
+}
+
 const formatReferenceCards: GalleryVideoCard[] = [
-  { title: "UGC", subtitle: "Review", videoUrl: "/outputs/8c088aec-fal-kling-1.mp4", posterUrl: "/outputs/starter8c088aec-quality-starter.png" },
-  { title: "Unboxing", subtitle: "Reveal", videoUrl: "/outputs/0bd56b9be1b9-fal-kling-1.mp4", posterUrl: "/uploads/0bd56b9be1b9-product.png" },
-  { title: "Tutorial", subtitle: "Step demo", videoUrl: "/outputs/b74228c4be2c-fal-kling-1.mp4", posterUrl: "/uploads/b1adc4265cef-product.png" },
-  { title: "Product Only", subtitle: "B-roll", videoUrl: "/outputs/b9a121525ce0-fal-kling-1.mp4", posterUrl: "/uploads/8c088aec-product.png" },
-  { title: "Before & After", subtitle: "Comparison", videoUrl: "/outputs/b69c58dba608-fal-kling-1.mp4", posterUrl: "/outputs/5908b572d594-quality-starter.png" },
-  { title: "UGC Virtual Try On", subtitle: "Fit", videoUrl: "/outputs/bf27b4235a30-fal-kling-1.mp4", posterUrl: "/outputs/31bff124ffcd-quality-starter.png" },
-  { title: "App UGC", subtitle: "Creator + screen", videoUrl: "/outputs/d23297e7-fal-kling-1.mp4", posterUrl: "/outputs/5c195a641e4f-quality-starter.png" },
-  { title: "Reference Match", subtitle: "Motion match", videoUrl: "/outputs/145c567c-fal-kling-1.mp4", posterUrl: "/outputs/8c088aec-reference-starter.jpg" },
-  { title: "Winning Ad Remix", subtitle: "Ad structure", videoUrl: "/outputs/379975b5-fal-kling-1.mp4", posterUrl: "/uploads/379975b5-product.png" },
-  { title: "ASMR Detail", subtitle: "Close detail", videoUrl: "/outputs/ee663ca62084-fal-kling-1.mp4", posterUrl: "/outputs/33645175c641-quality-starter.png" },
-  { title: "Performance Proof", subtitle: "Use proof", videoUrl: "/outputs/4e7353eb85f4-fal-kling-1.mp4", posterUrl: "/outputs/69ba71ae9c0f-quality-starter.png" },
-  { title: "Lifestyle UGC", subtitle: "Daily use", videoUrl: "/outputs/0f003c3c6a91-fal-kling-1.mp4", posterUrl: "/outputs/b1adc4265cef-quality-starter.png" }
+  { title: "UGC", subtitle: "Review", videoUrl: assetUrl("8c088aec-fal-kling-1.mp4"), posterUrl: assetUrl("starter8c088aec-quality-starter.png") },
+  { title: "Unboxing", subtitle: "Reveal", videoUrl: assetUrl("0bd56b9be1b9-fal-kling-1.mp4") },
+  { title: "Tutorial", subtitle: "Step demo", videoUrl: assetUrl("b74228c4be2c-fal-kling-1.mp4") },
+  { title: "Product Only", subtitle: "B-roll", videoUrl: assetUrl("b9a121525ce0-fal-kling-1.mp4") },
+  { title: "Before & After", subtitle: "Comparison", videoUrl: assetUrl("b69c58dba608-fal-kling-1.mp4"), posterUrl: assetUrl("5908b572d594-quality-starter.png") },
+  { title: "UGC Virtual Try On", subtitle: "Fit", videoUrl: assetUrl("bf27b4235a30-fal-kling-1.mp4"), posterUrl: assetUrl("31bff124ffcd-quality-starter.png") },
+  { title: "App UGC", subtitle: "Creator + screen", videoUrl: assetUrl("d23297e7-fal-kling-1.mp4"), posterUrl: assetUrl("5c195a641e4f-quality-starter.png") },
+  { title: "Reference Match", subtitle: "Motion match", videoUrl: assetUrl("145c567c-fal-kling-1.mp4"), posterUrl: assetUrl("8c088aec-reference-starter.jpg") },
+  { title: "Winning Ad Remix", subtitle: "Ad structure", videoUrl: assetUrl("379975b5-fal-kling-1.mp4") },
+  { title: "ASMR Detail", subtitle: "Close detail", videoUrl: assetUrl("ee663ca62084-fal-kling-1.mp4"), posterUrl: assetUrl("33645175c641-quality-starter.png") },
+  { title: "Performance Proof", subtitle: "Use proof", videoUrl: assetUrl("4e7353eb85f4-fal-kling-1.mp4"), posterUrl: assetUrl("69ba71ae9c0f-quality-starter.png") },
+  { title: "Lifestyle UGC", subtitle: "Daily use", videoUrl: assetUrl("0f003c3c6a91-fal-kling-1.mp4"), posterUrl: assetUrl("b1adc4265cef-quality-starter.png") }
 ];
 
 const generationModeOptions = [
@@ -253,6 +257,7 @@ const modelModeOptions = [
 
 export default function Home() {
   const formRef = useRef<HTMLFormElement>(null);
+  const [accessChecked, setAccessChecked] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const [accessPassword, setAccessPassword] = useState("");
   const [accessError, setAccessError] = useState("");
@@ -323,6 +328,7 @@ export default function Home() {
 
   useEffect(() => {
     setUnlocked(!new URLSearchParams(window.location.search).has("locked"));
+    setAccessChecked(true);
   }, []);
 
   useEffect(() => {
@@ -730,6 +736,10 @@ export default function Home() {
     }
   }
 
+  if (!accessChecked) {
+    return <main className="accessChecking" aria-label="Loading UGCDay" />;
+  }
+
   if (!unlocked) {
     return (
       <main className="accessGate">
@@ -768,11 +778,11 @@ export default function Home() {
             <SidebarIcon name="studio" />
             <span>Studio</span>
           </a>
-          <a className="sidebarNavItem" href="#pricing">
+          <a className="sidebarNavItem" href="/pricing">
             <SidebarIcon name="pricing" />
             <span>Pricing</span>
           </a>
-          <a className="sidebarNavItem" href="#login">
+          <a className="sidebarNavItem" href="/login">
             <SidebarIcon name="login" />
             <span>Login</span>
           </a>
@@ -831,12 +841,12 @@ export default function Home() {
 
       <div className="studioMain">
       <div className="floatingTopActions" aria-label="Account shortcuts">
-        <button className="floatingAssetButton" type="button">
+        <a className="floatingAssetButton" href="/profile#assets">
           <span aria-hidden="true">Assets</span>
-        </button>
-        <button className="floatingProfileButton" type="button" aria-label="Profile">
+        </a>
+        <a className="floatingProfileButton" href="/profile" aria-label="Profile">
           <img alt="" src="/ugc-logo-icon.png" />
-        </button>
+        </a>
       </div>
 
       <section className="studioHero" id="generate">
@@ -847,7 +857,10 @@ export default function Home() {
             <span>ads.</span>
           </h1>
           <p className="studioHeroSubcopy">Turn one reference video into endless UGC variations.</p>
-          <p className="studioHeroTagline">No editing. More UGC. Faster growth. Just click.</p>
+          <p className="studioHeroTagline">
+            <span>More UGC. Faster growth. No editing. Just click</span>
+            <img className="taglineClickIcon" alt="" src="/just-click-icon.png" />
+          </p>
         </div>
       </section>
 
@@ -1568,7 +1581,7 @@ export default function Home() {
                 muted
                 playsInline
                 poster={card.posterUrl}
-                preload="metadata"
+                preload="auto"
                 src={card.videoUrl}
               />
               <div className="mediaCardOverlay">
@@ -1631,6 +1644,19 @@ export default function Home() {
           </div>
         </div>
       ) : null}
+      <footer className="siteFooter">
+        <div>
+          <img alt="UGCDay" src="/ugcday-wordmark.png" />
+          <p>Drop in a reference video and turn it into reusable UGC ad variations.</p>
+        </div>
+        <nav aria-label="Footer">
+          <a href="/pricing">Pricing</a>
+          <a href="/history">History</a>
+          <a href="/profile">Profile</a>
+          <a href="/policy">Policy</a>
+          <a href="/affiliate">Affiliate</a>
+        </nav>
+      </footer>
       </div>
     </main>
   );

@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "UGCLabs Product Focus MVP",
-  description: "Internal product-focused short-form generator for UGCLabs."
+  title: "UGCDay",
+  description: "Turn one reference video into UGC ad variations."
 };
 
 export default function RootLayout({

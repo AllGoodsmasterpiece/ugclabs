@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 const accessCookieName = "ugcday_access";
+const publicPages = new Set(["/login", "/pricing", "/policy", "/affiliate"]);
 
 export function proxy(request: NextRequest) {
   const password = process.env.UGCDAY_ACCESS_PASSWORD;
@@ -12,6 +13,7 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
+    publicPages.has(pathname) ||
     pathname === "/api/access" ||
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/favicon") ||
