@@ -1,3 +1,4 @@
+import { LoginForm } from "./login-form";
 import { MarketingPageShell } from "../site-pages";
 
 const errorMessages: Record<string, string> = {
@@ -18,21 +19,11 @@ export default async function LoginPage({
   return (
     <MarketingPageShell
       eyebrow="Login"
-      title="Sign in to UGCDay."
-      description="Use Google login to manage your account, subscription, credits, assets, and generated videos."
+      title="Sign in or create an account."
+      description="Use Google or email signup. Studio is visible to everyone, but generation requires login and an active subscription."
       selected="login"
     >
-      <section className="siteLoginPanel">
-        <div>
-          <span>Google account</span>
-          <h2>Continue with Google</h2>
-          <p>Studio access is available only for accounts with an active subscription. The master account bypasses billing.</p>
-        </div>
-        {message ? <p className="loginError">{message}</p> : null}
-        <a className="googleLoginButton" href="/api/auth/google/start">
-          Continue with Google
-        </a>
-      </section>
+      <LoginForm message={message} />
     </MarketingPageShell>
   );
 }

@@ -32,7 +32,7 @@ export function googleClientSecret() {
   return envValue("GOOGLE_CLIENT_SECRET", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_AUTH_CLIENT_SECRET");
 }
 
-function authSecret() {
+export function authSecret() {
   return envValue("UGCDAY_AUTH_SECRET", "AUTH_SECRET", "NEXTAUTH_SECRET", "UGCDAY_ACCESS_PASSWORD");
 }
 

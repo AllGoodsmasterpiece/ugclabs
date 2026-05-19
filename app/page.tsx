@@ -507,6 +507,9 @@ export default function Home() {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const allowed = await ensureGenerationAccess();
+    if (!allowed) return;
+
     setError("");
     setResult(null);
     setResultsOpen(false);
@@ -532,6 +535,16 @@ export default function Home() {
 
       const payload = await readJsonResponse(response, "Generation failed");
 
+      if (response.status === 401) {
+        window.location.href = "/login?next=%2F";
+        return;
+      }
+
+      if (response.status === 402) {
+        window.location.href = "/pricing?subscription=required";
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(payload.error ?? "Generation failed");
       }
@@ -553,6 +566,9 @@ export default function Home() {
   }
 
   async function onStarterPreview() {
+    const allowed = await ensureGenerationAccess();
+    if (!allowed) return;
+
     setError("");
     setResult(null);
     setResultsOpen(false);
@@ -577,6 +593,16 @@ export default function Home() {
         body: form
       });
       const payload = await readJsonResponse(response, "Starter preview failed");
+
+      if (response.status === 401) {
+        window.location.href = "/login?next=%2F";
+        return;
+      }
+
+      if (response.status === 402) {
+        window.location.href = "/pricing?subscription=required";
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(payload.error ?? "Starter preview failed");
@@ -605,6 +631,28 @@ export default function Home() {
       return {
         error: `${fallback} with status ${response.status}: ${text.slice(0, 300)}`
       };
+    }
+  }
+
+  async function ensureGenerationAccess() {
+    try {
+      const response = await fetch("/api/auth/session", { cache: "no-store" });
+      const payload = await response.json() as { authenticated?: boolean; subscribed?: boolean };
+
+      if (!payload.authenticated) {
+        window.location.href = "/login?next=%2F";
+        return false;
+      }
+
+      if (!payload.subscribed) {
+        window.location.href = "/pricing?subscription=required";
+        return false;
+      }
+
+      return true;
+    } catch {
+      window.location.href = "/login?next=%2F";
+      return false;
     }
   }
 

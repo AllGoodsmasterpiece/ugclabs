@@ -19,17 +19,11 @@ function loginRedirect(request: NextRequest) {
   return NextResponse.redirect(loginUrl);
 }
 
-function pricingRedirect(request: NextRequest) {
-  const pricingUrl = request.nextUrl.clone();
-  pricingUrl.pathname = "/pricing";
-  pricingUrl.searchParams.set("subscription", "required");
-  return NextResponse.redirect(pricingUrl);
-}
-
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
+    pathname === "/" ||
     publicPages.has(pathname) ||
     pathname.startsWith("/api/auth/") ||
     pathname === "/api/access" ||
@@ -48,14 +42,10 @@ export async function proxy(request: NextRequest) {
     return loginRedirect(request);
   }
 
-  const requiresSubscription = pathname === "/" || pathname.startsWith("/api/product-focus/generate");
+  const requiresSubscription = pathname.startsWith("/api/product-focus/generate");
 
   if (requiresSubscription && !session.subscribed) {
-    if (pathname.startsWith("/api/")) {
-      return NextResponse.json({ error: "Active subscription required." }, { status: 402 });
-    }
-
-    return pricingRedirect(request);
+    return NextResponse.json({ error: "Active subscription required." }, { status: 402 });
   }
 
   return NextResponse.next();
