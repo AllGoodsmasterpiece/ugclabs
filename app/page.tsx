@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type MouseEvent,
+  type ReactNode
+} from "react";
 import {
   videoFormatGroups,
   type CreativeTypeId,
@@ -66,6 +74,12 @@ type ActiveVideoModal = {
   url: string;
 };
 
+type ComposerSelectOption = {
+  value: string;
+  label: string;
+  title?: string;
+};
+
 const subFormatTemplateStyleMap: Record<string, string> = {
   beauty_review: "review_demo",
   beauty_before_after: "performance_proof",
@@ -118,6 +132,87 @@ function mergeHistoryItems(...groups: ProjectHistoryItem[][]) {
 
 function stripHistoryResults(items: ProjectHistoryItem[]) {
   return items.map(({ result: _result, ...item }) => item);
+}
+
+function ComposerSelect({
+  id,
+  value,
+  options,
+  onChange
+}: {
+  id: string;
+  value: string;
+  options: ComposerSelectOption[];
+  onChange: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const selectedOption = options.find((option) => option.value === value) ?? options[0];
+
+  useEffect(() => {
+    if (!open) return;
+
+    function onPointerDown(event: PointerEvent) {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  function onButtonKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    if (event.key === "Escape") {
+      setOpen(false);
+      return;
+    }
+
+    if (event.key === "Enter" || event.key === " " || event.key === "ArrowDown") {
+      event.preventDefault();
+      setOpen((current) => !current);
+    }
+  }
+
+  return (
+    <div className={open ? "composerSelect open" : "composerSelect"} ref={rootRef}>
+      <button
+        aria-controls={`${id}Menu`}
+        aria-expanded={open}
+        className="composerSelectButton"
+        id={id}
+        title={selectedOption?.title}
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        onKeyDown={onButtonKeyDown}
+      >
+        <span>{selectedOption?.label ?? "Select"}</span>
+        <svg aria-hidden="true" viewBox="0 0 20 20">
+          <path d="m5 7 5 5 5-5" />
+        </svg>
+      </button>
+      {open ? (
+        <div className="composerSelectMenu" id={`${id}Menu`} role="listbox">
+          {options.map((option) => (
+            <button
+              aria-selected={option.value === value}
+              className={option.value === value ? "composerSelectOption selected" : "composerSelectOption"}
+              key={option.value}
+              role="option"
+              title={option.title}
+              type="button"
+              onClick={() => {
+                onChange(option.value);
+                setOpen(false);
+              }}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 function englishOnlyText(value: string) {
@@ -795,6 +890,8 @@ export default function Home() {
           <input name="subFormatName" type="hidden" value={selectedTemplate.name} />
           <input name="ugcTemplateStyle" type="hidden" value={selectedUgcTemplateStyle} />
           <input name="generationMode" type="hidden" value={generationMode} />
+          <input name="duration" type="hidden" value={duration} />
+          <input name="count" type="hidden" value={count} />
           <input name="referenceProductMode" type="hidden" value="replace_product" />
           <input name="tone" type="hidden" value="TikTok native" />
           <input name="productImageDataUrl" type="hidden" value={productImageDataUrl} />
@@ -808,114 +905,107 @@ export default function Home() {
           <div className="sectionBlock" id="formats">
             <div className="formatActionRow">
               <div className="composerControlGrid">
-                <label className="field compactControl" htmlFor="creativeTypeSelect">
-                <span className="controlLabel">
-                  <span>Creative format</span>
-                  <span className="infoTooltip" tabIndex={0} aria-label={selectedFormatGroup.explanation}>
-                    i
-                    <span role="tooltip">{selectedFormatGroup.explanation}</span>
+                <div className="field compactControl">
+                  <span className="controlLabel">
+                    <span>Creative format</span>
+                    <span className="infoTooltip" tabIndex={0} aria-label={selectedFormatGroup.explanation}>
+                      i
+                      <span role="tooltip">{selectedFormatGroup.explanation}</span>
+                    </span>
                   </span>
-                </span>
-                <select
-                  id="creativeTypeSelect"
-                  value={selectedCreativeType}
-                  onChange={(event) => {
-                    const nextType = event.currentTarget.value as CreativeTypeId;
-                    const nextGroup = videoFormatGroups.find((group) => group.id === nextType) ?? videoFormatGroups[0];
-                    const nextSubFormat = nextGroup.subFormats[0];
-                    setSelectedCreativeType(nextType);
-                    setSelectedSubFormatId(nextSubFormat?.id ?? "beauty_personal_care");
-                    setSelectedTemplateId(nextSubFormat?.templates[0]?.id ?? "beauty_review");
-                    invalidateStarterPreview();
-                  }}
-                >
-                  {videoFormatGroups.map((group) => (
-                    <option key={group.id} title={group.explanation} value={group.id}>
-                      {group.name}
-                    </option>
-                  ))}
-                </select>
-                </label>
-                <label className="field compactControl" htmlFor="subFormatSelect">
-                <span className="controlLabel">
-                  <span>Sub format</span>
-                  <span className="infoTooltip" tabIndex={0} aria-label={selectedSubFormat.explanation}>
-                    i
-                    <span role="tooltip">{selectedSubFormat.explanation}</span>
+                  <ComposerSelect
+                    id="creativeTypeSelect"
+                    value={selectedCreativeType}
+                    options={videoFormatGroups.map((group) => ({
+                      value: group.id,
+                      label: group.name,
+                      title: group.explanation
+                    }))}
+                    onChange={(value) => {
+                      const nextType = value as CreativeTypeId;
+                      const nextGroup = videoFormatGroups.find((group) => group.id === nextType) ?? videoFormatGroups[0];
+                      const nextSubFormat = nextGroup.subFormats[0];
+                      setSelectedCreativeType(nextType);
+                      setSelectedSubFormatId(nextSubFormat?.id ?? "beauty_personal_care");
+                      setSelectedTemplateId(nextSubFormat?.templates[0]?.id ?? "beauty_review");
+                      invalidateStarterPreview();
+                    }}
+                  />
+                </div>
+                <div className="field compactControl">
+                  <span className="controlLabel">
+                    <span>Sub format</span>
+                    <span className="infoTooltip" tabIndex={0} aria-label={selectedSubFormat.explanation}>
+                      i
+                      <span role="tooltip">{selectedSubFormat.explanation}</span>
+                    </span>
                   </span>
-                </span>
-                <select
-                  id="subFormatSelect"
-                  value={selectedSubFormat.id}
-                  onChange={(event) => {
-                    const nextSubFormat = selectedFormatGroup.subFormats.find(
-                      (format) => format.id === event.currentTarget.value
-                    ) ?? selectedFormatGroup.subFormats[0];
-                    setSelectedSubFormatId(nextSubFormat.id);
-                    setSelectedTemplateId(nextSubFormat.templates[0]?.id ?? "beauty_review");
-                    invalidateStarterPreview();
-                  }}
-                >
-                  {selectedFormatGroup.subFormats.map((format) => (
-                    <option key={format.id} title={format.explanation} value={format.id}>
-                      {format.name}
-                    </option>
-                  ))}
-                </select>
-                </label>
-                <label className="field compactControl" htmlFor="templateSelect">
-                <span className="controlLabel">
-                  <span>Template</span>
-                  <span className="infoTooltip" tabIndex={0} aria-label={selectedTemplate.explanation}>
-                    i
-                    <span role="tooltip">{selectedTemplate.explanation}</span>
+                  <ComposerSelect
+                    id="subFormatSelect"
+                    value={selectedSubFormat.id}
+                    options={selectedFormatGroup.subFormats.map((format) => ({
+                      value: format.id,
+                      label: format.name,
+                      title: format.explanation
+                    }))}
+                    onChange={(value) => {
+                      const nextSubFormat = selectedFormatGroup.subFormats.find((format) => format.id === value)
+                        ?? selectedFormatGroup.subFormats[0];
+                      setSelectedSubFormatId(nextSubFormat.id);
+                      setSelectedTemplateId(nextSubFormat.templates[0]?.id ?? "beauty_review");
+                      invalidateStarterPreview();
+                    }}
+                  />
+                </div>
+                <div className="field compactControl">
+                  <span className="controlLabel">
+                    <span>Template</span>
+                    <span className="infoTooltip" tabIndex={0} aria-label={selectedTemplate.explanation}>
+                      i
+                      <span role="tooltip">{selectedTemplate.explanation}</span>
+                    </span>
                   </span>
-                </span>
-                <select
-                  id="templateSelect"
-                  value={selectedTemplate.id}
-                  onChange={(event) => {
-                    setSelectedTemplateId(event.currentTarget.value);
-                    invalidateStarterPreview();
-                  }}
-                >
-                  {selectedSubFormat.templates.map((template) => (
-                    <option key={template.id} title={template.explanation} value={template.id}>
-                      {template.name}
-                    </option>
-                  ))}
-                </select>
-                </label>
+                  <ComposerSelect
+                    id="templateSelect"
+                    value={selectedTemplate.id}
+                    options={selectedSubFormat.templates.map((template) => ({
+                      value: template.id,
+                      label: template.name,
+                      title: template.explanation
+                    }))}
+                    onChange={(value) => {
+                      setSelectedTemplateId(value);
+                      invalidateStarterPreview();
+                    }}
+                  />
+                </div>
               </div>
 
               <div className="gridThree runControls">
                 <div className="field">
-                  <label htmlFor="duration">Length</label>
-                  <select
+                  <span className="controlLabel">Length</span>
+                  <ComposerSelect
                     id="duration"
-                    name="duration"
-                    value={duration}
-                    onChange={(event) => setDuration(Number(event.currentTarget.value))}
-                  >
-                    <option value="5">5 seconds</option>
-                    <option value="10">10 seconds</option>
-                    <option value="15">15 seconds</option>
-                  </select>
+                    value={String(duration)}
+                    options={[
+                      { value: "5", label: "5 seconds" },
+                      { value: "10", label: "10 seconds" },
+                      { value: "15", label: "15 seconds" }
+                    ]}
+                    onChange={(value) => setDuration(Number(value))}
+                  />
                 </div>
                 <div className="field">
-                  <label htmlFor="count">Variants</label>
-                  <select
+                  <span className="controlLabel">Variants</span>
+                  <ComposerSelect
                     id="count"
-                    name="count"
-                    value={count}
-                    onChange={(event) => setCount(Number(event.currentTarget.value))}
-                  >
-                    {Array.from({ length: 10 }, (_, index) => index + 1).map((value) => (
-                      <option key={value} value={value}>
-                        {value}
-                      </option>
-                    ))}
-                  </select>
+                    value={String(count)}
+                    options={Array.from({ length: 10 }, (_, index) => {
+                      const nextValue = String(index + 1);
+                      return { value: nextValue, label: nextValue };
+                    })}
+                    onChange={(value) => setCount(Number(value))}
+                  />
                 </div>
               </div>
 
