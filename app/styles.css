@@ -3082,30 +3082,30 @@ h3 {
 .composerTypeRail {
   display: inline-flex;
   width: fit-content;
-  gap: 6px;
+  gap: 4px;
   align-items: center;
-  padding: 4px;
+  padding: 3px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.82);
   box-shadow: 0 12px 28px rgba(16, 18, 22, 0.06);
 }
 
 .typeRailButton {
   display: inline-grid;
-  min-height: 36px;
+  min-height: 28px;
   place-items: center;
   border: 0;
-  border-radius: 10px;
+  border-radius: 9px;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  padding: 0 12px;
+  padding: 0 10px;
   text-align: center;
 }
 
 .typeRailButton span {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 760;
   line-height: 1.1;
 }
@@ -3152,7 +3152,7 @@ h3 {
 .composerDeck .uploadGrid {
   grid-column: 1;
   grid-row: 3;
-  grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
+  grid-template-columns: repeat(5, var(--composer-col)) var(--generate-col);
   grid-template-rows: 104px;
   justify-content: center;
   align-items: stretch;
@@ -3161,7 +3161,7 @@ h3 {
 }
 
 .composerDeck .analysisPreviewPanel {
-  grid-column: 4 / 6;
+  grid-column: 4 / 7;
   margin-left: 0;
 }
 
@@ -3768,10 +3768,19 @@ h3 {
 }
 
 .formatActionRow select {
-  height: 58px;
+  height: 50px;
   min-height: 0;
+  font-size: 14px;
+  line-height: 1.15;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.formatActionRow .field label,
+.formatActionRow .compactControl > span,
+.formatActionRow .controlLabel {
+  font-size: 11px;
+  line-height: 1.1;
 }
 
 .composerDeck .field label,
