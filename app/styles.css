@@ -3815,6 +3815,7 @@ h3 {
   display: block;
   overflow: hidden;
   font-size: 14px;
+  font-weight: 650;
   line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
