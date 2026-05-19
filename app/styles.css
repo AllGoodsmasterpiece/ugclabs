@@ -178,7 +178,6 @@ a {
 
 .sidebarHistoryMenu {
   display: grid;
-  margin-top: auto;
   gap: 8px;
 }
 

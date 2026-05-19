@@ -2,7 +2,8 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 
-type SidebarSection = "studio" | "pricing" | "login" | "history" | "profile";
+type SidebarSection = "studio" | "pricing" | "login" | "history";
+type SidebarSelectedSection = SidebarSection | "profile";
 
 type HistoryItem = {
   jobId: string;
@@ -67,12 +68,6 @@ function SidebarIcon({ name }: { name: SidebarSection }) {
         <path d="M3 3v6h6" />
         <path d="M12 7v5l3 2" />
       </>
-    ),
-    profile: (
-      <>
-        <path d="M20 21a8 8 0 0 0-16 0" />
-        <circle cx="12" cy="7" r="4" />
-      </>
     )
   };
 
@@ -87,7 +82,7 @@ export function AppSidebar({
   selected,
   historyItems
 }: {
-  selected: SidebarSection;
+  selected: SidebarSelectedSection;
   historyItems?: HistoryItem[];
 }) {
   const [historyOpen, setHistoryOpen] = useState(selected === "history");
@@ -190,10 +185,6 @@ export function AppSidebar({
             </ul>
           ) : null}
         </div>
-        <a className={selected === "profile" ? "sidebarNavItem selected" : "sidebarNavItem"} href="/profile">
-          <SidebarIcon name="profile" />
-          <span>Profile</span>
-        </a>
       </nav>
     </aside>
   );

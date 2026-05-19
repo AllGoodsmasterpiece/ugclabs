@@ -23,7 +23,7 @@ export default function LoginPage() {
         throw new Error(payload.error ?? "Access failed.");
       }
 
-      window.location.href = "/";
+      window.location.href = "/profile";
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Access failed.");
     } finally {
