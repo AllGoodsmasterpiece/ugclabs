@@ -2433,7 +2433,7 @@ h3 {
 }
 
 .pricingBillingToggle {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
@@ -2441,7 +2441,7 @@ h3 {
   margin: 0 auto;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: #f3f4f6;
+  background: #ffffff;
   padding: 4px;
 }
 
@@ -2453,16 +2453,16 @@ h3 {
   gap: 8px;
   border: 0;
   border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
+  background: #ffffff;
+  color: #101216;
   cursor: pointer;
   padding: 0 15px;
   font-size: 13px;
   font-weight: 820;
 }
 
-.pricingBillingToggle button.selected {
-  background: #101216;
+.pricingBillingToggle button:nth-child(2) {
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
   color: #ffffff;
 }
 
@@ -2472,7 +2472,7 @@ h3 {
   align-items: center;
   border-radius: 999px;
   background: #ffffff;
-  color: #101216;
+  color: var(--accent-dark);
   padding: 0 8px;
   font-size: 11px;
   font-weight: 820;

@@ -10,27 +10,6 @@ export default function PricingPage() {
       selected="pricing"
     >
       <PricingPlans />
-
-      <section className="pricingExplainer" aria-label="Credit rules">
-        <div>
-          <span>Credit system</span>
-          <h2>Simple usage math.</h2>
-        </div>
-        <dl>
-          <div>
-            <dt>5-sec video</dt>
-            <dd>50 credits</dd>
-          </div>
-          <div>
-            <dt>10-sec video</dt>
-            <dd>100 credits</dd>
-          </div>
-          <div>
-            <dt>15-sec video</dt>
-            <dd>150 credits</dd>
-          </div>
-        </dl>
-      </section>
     </MarketingPageShell>
   );
 }
