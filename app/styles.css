@@ -2427,9 +2427,55 @@ h3 {
 .pricingGrid {
   display: grid;
   width: min(1180px, 100%);
-  margin: 0 auto;
+  margin: 16px auto 0;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
+}
+
+.pricingBillingToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: max-content;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #f3f4f6;
+  padding: 4px;
+}
+
+.pricingBillingToggle button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0 15px;
+  font-size: 13px;
+  font-weight: 820;
+}
+
+.pricingBillingToggle button.selected {
+  background: #101216;
+  color: #ffffff;
+}
+
+.pricingBillingToggle span {
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #101216;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 820;
 }
 
 .pricingCard {
@@ -2487,6 +2533,14 @@ h3 {
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
+}
+
+.pricingCardTop small {
+  min-height: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 680;
+  line-height: 1.35;
 }
 
 .pricingCreditBlock {
@@ -4576,6 +4630,15 @@ h3 {
 
   .pricingCard {
     min-height: auto;
+  }
+
+  .pricingBillingToggle {
+    width: 100%;
+  }
+
+  .pricingBillingToggle button {
+    flex: 1 1 0;
+    padding: 0 10px;
   }
 
   .pricingExplainer dl,
