@@ -3741,15 +3741,15 @@ h3 {
 }
 
 .composerDeck .composerControlGrid {
-  grid-template-columns: repeat(2, var(--composer-col));
-  grid-column: 1 / span 2;
+  grid-template-columns: repeat(3, var(--composer-col));
+  grid-column: 1 / span 3;
   justify-content: center;
   gap: var(--composer-gap);
 }
 
 .formatActionRow {
   display: grid;
-  grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
+  grid-template-columns: repeat(5, var(--composer-col)) var(--generate-col);
   align-items: start;
   justify-content: center;
   column-gap: var(--composer-gap);
@@ -3757,14 +3757,14 @@ h3 {
 }
 
 .formatActionRow .runControls {
-  grid-column: 3 / span 2;
+  grid-column: 4 / span 2;
   position: relative;
   margin-left: 0;
   padding-left: 0;
 }
 
 .formatActionRow .deckGenerateButton {
-  grid-column: 5;
+  grid-column: 6;
 }
 
 .formatActionRow select {
@@ -4089,19 +4089,19 @@ h3 {
 
 @media (max-width: 1320px) {
   .formatActionRow {
-    grid-template-columns: repeat(4, var(--composer-col)) var(--generate-col);
+    grid-template-columns: repeat(5, var(--composer-col)) var(--generate-col);
   }
 
   .formatActionRow .composerControlGrid {
-    grid-column: 1 / span 2;
+    grid-column: 1 / span 3;
   }
 
   .formatActionRow .runControls {
-    grid-column: 3 / span 2;
+    grid-column: 4 / span 2;
   }
 
   .formatActionRow .deckGenerateButton {
-    grid-column: 5;
+    grid-column: 6;
   }
 }
 

@@ -15,9 +15,9 @@ export type VideoFormat = {
   promptIntent: string;
 };
 
-export type CreativeTypeId = "ugc" | "product_demo" | "app_screen" | "comparison";
+export type CreativeTypeId = "model_product";
 
-export type VideoSubFormat = {
+export type VideoTemplate = {
   id: string;
   name: string;
   videoFormat: VideoFormatId;
@@ -26,6 +26,24 @@ export type VideoSubFormat = {
   assetNotes: string[];
   bestFor: string[];
   caution: string;
+  hookStructure: string;
+  visualDirection: string;
+  dialogueDirection: string;
+  creativeTypeId: CreativeTypeId;
+  creativeTypeName: string;
+  categoryId: string;
+  categoryName: string;
+};
+
+export type VideoSubFormat = {
+  id: string;
+  name: string;
+  shortDescription: string;
+  explanation: string;
+  assetNotes: string[];
+  bestFor: string[];
+  caution: string;
+  templates: VideoTemplate[];
 };
 
 export type VideoFormatGroup = {
@@ -217,7 +235,7 @@ export function getUgcTemplateStyle(id: string | undefined): UgcTemplateStyle | 
   return ugcTemplateStyles.find((style) => style.id === id);
 }
 
-export const videoFormatGroups: VideoFormatGroup[] = [
+const legacyVideoFormatGroups = [
   {
     id: "ugc",
     name: "UGC",
@@ -410,14 +428,292 @@ export const videoFormatGroups: VideoFormatGroup[] = [
   }
 ];
 
+type TemplateSeed = {
+  id: string;
+  name: string;
+  videoFormat?: VideoFormatId;
+  hookStructure?: string;
+  visualDirection?: string;
+  dialogueDirection?: string;
+};
+
+const modelProductCreativeType = {
+  id: "model_product" as const,
+  name: "Model + product"
+};
+
+function template(
+  category: Pick<VideoSubFormat, "id" | "name" | "assetNotes" | "bestFor" | "caution">,
+  seed: TemplateSeed
+): VideoTemplate {
+  const hookStructure = seed.hookStructure
+    ?? `Open with a clear ${seed.name} hook, then move into product proof.`;
+  const visualDirection = seed.visualDirection
+    ?? `Stage the creator and product in a native social scene for ${category.name}.`;
+  const dialogueDirection = seed.dialogueDirection
+    ?? `Keep the line natural and specific to the product benefit.`;
+
+  return {
+    id: seed.id,
+    name: seed.name,
+    videoFormat: seed.videoFormat ?? inferVideoFormat(seed.name),
+    shortDescription: `${category.name} template`,
+    explanation: [
+      `${seed.name} for ${category.name}.`,
+      `Hook: ${hookStructure}`,
+      `Screen: ${visualDirection}`,
+      `Dialogue: ${dialogueDirection}`
+    ].join("\n"),
+    assetNotes: category.assetNotes,
+    bestFor: category.bestFor,
+    caution: category.caution,
+    hookStructure,
+    visualDirection,
+    dialogueDirection,
+    creativeTypeId: modelProductCreativeType.id,
+    creativeTypeName: modelProductCreativeType.name,
+    categoryId: category.id,
+    categoryName: category.name
+  };
+}
+
+function inferVideoFormat(name: string): VideoFormatId {
+  const normalized = name.toLowerCase();
+
+  if (normalized.includes("unboxing") || normalized.includes("haul")) return "unboxing";
+  if (normalized.includes("before") || normalized.includes("after") || normalized.includes("comparison")) {
+    return "before_after";
+  }
+  if (normalized.includes("demo") || normalized.includes("routine") || normalized.includes("step")) return "tutorial";
+  if (normalized.includes("app") || normalized.includes("screen")) return "app_ugc";
+
+  return "ugc_beauty_product";
+}
+
+function category(
+  id: string,
+  name: string,
+  shortDescription: string,
+  seeds: TemplateSeed[],
+  options: Pick<VideoSubFormat, "assetNotes" | "bestFor" | "caution">
+): VideoSubFormat {
+  const base = {
+    id,
+    name,
+    shortDescription,
+    explanation: `${name} template family from the Ugcday format sheet.`,
+    ...options
+  };
+
+  return {
+    ...base,
+    templates: seeds.map((seed) => template(base, seed))
+  };
+}
+
+export const videoFormatGroups: VideoFormatGroup[] = [
+  {
+    id: modelProductCreativeType.id,
+    name: modelProductCreativeType.name,
+    shortDescription: "Creator with visible product",
+    explanation:
+      "Model-led product videos organized by product category, then template. The selected template injects hook, screen direction, and dialogue direction into the planner.",
+    subFormats: [
+      category(
+        "beauty_personal_care",
+        "Beauty & Personal Care",
+        "Beauty, skincare, makeup, and personal care UGC",
+        [
+          { id: "beauty_review", name: "Review" },
+          { id: "beauty_before_after", name: "Before&After", videoFormat: "before_after" },
+          { id: "beauty_grwm", name: "GRWM", videoFormat: "tutorial" },
+          { id: "beauty_makeup_hacks", name: "Make up hacks", videoFormat: "tutorial" },
+          { id: "beauty_skincare_routine", name: "skincare routine", videoFormat: "tutorial" },
+          { id: "beauty_half_face", name: "half face", videoFormat: "before_after" },
+          { id: "beauty_comparison", name: "comparison", videoFormat: "before_after" }
+        ],
+        {
+          assetNotes: ["Product image", "Creator image optional", "Reference video optional in Fast UGC"],
+          bestFor: ["Skincare", "makeup", "hair", "beauty tools", "personal care"],
+          caution: "Avoid unsupported medical, clinical, permanent, or body-result claims."
+        }
+      ),
+      category(
+        "womenswear",
+        "Womenswear",
+        "Fashion try-on, styling, and outfit transformation",
+        [
+          { id: "womenswear_grwm", name: "GRWM", videoFormat: "tutorial" },
+          { id: "womenswear_fit_check", name: "Fit Check / OOTD" },
+          { id: "womenswear_try_on_haul", name: "Try-on Haul", videoFormat: "unboxing" },
+          { id: "womenswear_outfit_transition", name: "Outfit Transition", videoFormat: "before_after" },
+          { id: "womenswear_supersize_look", name: "Supersize the Look / Styling Hacks", videoFormat: "tutorial" },
+          { id: "womenswear_unboxing_try_on", name: "Unboxing + Try-on", videoFormat: "unboxing" },
+          { id: "womenswear_micro_trends", name: "Micro-Trends & Fashion Aesthetic Definitions" },
+          { id: "womenswear_celebrity_dupes", name: "Celebrity Style Dupes & Outfit Recreations" },
+          { id: "womenswear_before_after", name: "Before -> After Outfit Transition", videoFormat: "before_after" },
+          { id: "womenswear_problem_solution", name: "Problem-Solution Styling", videoFormat: "before_after" }
+        ],
+        {
+          assetNotes: ["Product image", "Full-body creator reference helps", "Reference motion helps for transitions"],
+          bestFor: ["Tops", "dresses", "sets", "outerwear", "fashion brands"],
+          caution: "Keep garment shape and product details grounded in the uploaded asset."
+        }
+      ),
+      category(
+        "wellness",
+        "Health & Wellness",
+        "Routine, explainer, and wellness journey formats",
+        [
+          { id: "wellness_expert_tip", name: "Educational Explainer / Expert Tip", videoFormat: "tutorial" },
+          { id: "wellness_day_in_life", name: "Real Wellness Routine / Day in the Life", videoFormat: "tutorial" },
+          { id: "wellness_myth_busting", name: "Myth-Busting / Did You Know?" },
+          { id: "wellness_journey", name: "Authentic Wellness Journey / Before & After", videoFormat: "before_after" },
+          { id: "wellness_product_demo", name: "Product Demo / Multi-Angle Routine Test", videoFormat: "tutorial" },
+          { id: "wellness_problem_routine", name: "Problem-solving routine", videoFormat: "tutorial" },
+          { id: "wellness_supplement_demo", name: "Drink / supplement demo", videoFormat: "tutorial" },
+          { id: "wellness_morning_night", name: "Morning / night wellness routine", videoFormat: "tutorial" },
+          { id: "wellness_7day_review", name: "Honest review / 7-day test", videoFormat: "before_after" }
+        ],
+        {
+          assetNotes: ["Product image", "Routine context", "Reference video for use action"],
+          bestFor: ["Supplements", "wellness drinks", "fitness accessories", "self-care products"],
+          caution: "Avoid diagnosis, treatment, guaranteed health outcomes, or medical claims."
+        }
+      ),
+      category(
+        "consumer_electronics",
+        "Consumer Electronics",
+        "Gadget reveal, feature demo, and problem-solution ads",
+        [
+          { id: "electronics_unboxing", name: "Unboxing", videoFormat: "unboxing" },
+          { id: "electronics_music_showcase", name: "Popular Music Product Showcase" },
+          { id: "electronics_problem_solution", name: "Problem/Solution", videoFormat: "before_after" },
+          { id: "electronics_feature_breakdown", name: "Product Details / Feature Breakdown", videoFormat: "tutorial" },
+          { id: "electronics_custom_function", name: "Surprise / Customizable Function", videoFormat: "tutorial" }
+        ],
+        {
+          assetNotes: ["Product image", "Feature notes recommended", "Screen or device asset if relevant"],
+          bestFor: ["Gadgets", "phone accessories", "speakers", "home tech", "smart devices"],
+          caution: "Do not invent precise UI, specs, or features that were not supplied."
+        }
+      ),
+      category(
+        "sports_outdoors",
+        "Sports & Outdoors",
+        "Workout, outdoor, and real-use proof templates",
+        [
+          { id: "sports_step_demo", name: "Step-by-Step Product Demo", videoFormat: "tutorial" },
+          { id: "sports_feature_breakdown", name: "Multi-Angle Feature Breakdown", videoFormat: "tutorial" },
+          { id: "sports_problem_solution", name: "Problem -> Solution Demo", videoFormat: "before_after" },
+          { id: "sports_workout_routine", name: "Workout Routine / Use-in-Action", videoFormat: "tutorial" },
+          { id: "sports_outdoor_test", name: "Outdoor Adventure / Real Environment Test" }
+        ],
+        {
+          assetNotes: ["Product image", "Use environment", "Reference action helps"],
+          bestFor: ["Fitness gear", "outdoor accessories", "bags", "bottles", "exercise tools"],
+          caution: "Keep movement realistic and avoid unsafe or exaggerated performance claims."
+        }
+      ),
+      category(
+        "kids_maternity",
+        "Kids & Maternity",
+        "Parent-led product solution and safety-comfort formats",
+        [
+          { id: "kids_parent_solution", name: "Parent Problem -> Product Solution", videoFormat: "before_after" },
+          { id: "kids_safety_comfort", name: "Safety & Comfort Feature Demo", videoFormat: "tutorial" },
+          { id: "kids_learning_play", name: "Learning / Sensory Play Demo", videoFormat: "tutorial" },
+          { id: "kids_mom_routine", name: "Mom Routine / Day in the Life", videoFormat: "tutorial" },
+          { id: "kids_unboxing_review", name: "Unboxing + Real Parent Review", videoFormat: "unboxing" }
+        ],
+        {
+          assetNotes: ["Product image", "Parent/guardian scene", "Feature notes are important"],
+          bestFor: ["Baby products", "maternity goods", "toys", "learning products", "family lifestyle"],
+          caution: "Avoid showing risky child handling or making unsupported safety guarantees."
+        }
+      ),
+      category(
+        "home_living",
+        "Home & Living",
+        "Home solution, demo, makeover, and reset routines",
+        [
+          { id: "home_problem_solution", name: "Problem -> Home Solution", videoFormat: "before_after" },
+          { id: "home_step_demo", name: "Step-by-Step Product Demo", videoFormat: "tutorial" },
+          { id: "home_feature_breakdown", name: "Multi-Angle Feature Breakdown", videoFormat: "tutorial" },
+          { id: "home_room_makeover", name: "Room Makeover / Before & After", videoFormat: "before_after" },
+          { id: "home_sunday_reset", name: "Sunday Reset / Cleaning & Organizing Routine", videoFormat: "tutorial" }
+        ],
+        {
+          assetNotes: ["Product image", "Room or surface context", "Before/result evidence helps"],
+          bestFor: ["Kitchen", "cleaning", "decor", "organization", "home tools"],
+          caution: "Do not fake unrealistic room transformations without reference evidence."
+        }
+      ),
+      category(
+        "food_beverage",
+        "Food & Beverage",
+        "Taste, texture, haul, and social snack moments",
+        [
+          { id: "food_taste_test", name: "Taste Test / First Bite Reaction" },
+          { id: "food_asmr_texture", name: "ASMR / Texture Close-up", videoFormat: "tutorial" },
+          { id: "food_snack_haul", name: "Snack Haul / Drink Haul", videoFormat: "unboxing" },
+          { id: "food_viral_hack", name: "Weird Combo / Viral Food Hack", videoFormat: "tutorial" },
+          { id: "food_social_snack", name: "Social Snack Moment" }
+        ],
+        {
+          assetNotes: ["Product image", "Serving context", "Texture/use notes help"],
+          bestFor: ["Snacks", "drinks", "packaged food", "functional beverages", "desserts"],
+          caution: "Avoid nutrition, weight-loss, or health claims unless explicitly supported."
+        }
+      ),
+      category(
+        "accessories",
+        "Accessories",
+        "Styling, detail, upgrade, and gifting scenarios",
+        [
+          { id: "accessories_ootd", name: "OOTD / Styling Guide", videoFormat: "tutorial" },
+          { id: "accessories_unboxing", name: "Unboxing + First Impression", videoFormat: "unboxing" },
+          { id: "accessories_detail_breakdown", name: "Multi-Angle Detail / Feature Breakdown", videoFormat: "tutorial" },
+          { id: "accessories_before_after", name: "Before & After Accessory Upgrade", videoFormat: "before_after" },
+          { id: "accessories_gift", name: "Gift Scenario / Perfect Gift" }
+        ],
+        {
+          assetNotes: ["Product image", "Creator styling context", "Macro detail reference helps"],
+          bestFor: ["Bags", "jewelry", "phone cases", "hats", "small fashion goods"],
+          caution: "Preserve scale and material; do not make the accessory look like a different product."
+        }
+      ),
+      category(
+        "app_promotion",
+        "App Promotion / App Install",
+        "App demo and screen-led creator formats",
+        [
+          { id: "app_problem_solution", name: "Problem -> App Solution", videoFormat: "app_ugc" },
+          { id: "app_screen_walkthrough", name: "App Demo / Screen Recording Walkthrough", videoFormat: "app_split_demo" },
+          { id: "app_result_reveal", name: "Before -> After Result Reveal", videoFormat: "before_after" },
+          { id: "app_creator_review", name: "Creator POV / I Found This App Review", videoFormat: "app_ugc" },
+          { id: "app_trend_use_case", name: "Trend / Meme App Use Case", videoFormat: "app_ugc" },
+          { id: "app_split_reaction", name: "Split-Screen App Reaction Demo", videoFormat: "app_split_demo" }
+        ],
+        {
+          assetNotes: ["Real app screen asset", "Creator image optional", "Reference motion for taps or reactions"],
+          bestFor: ["Mobile apps", "SaaS", "AI tools", "marketplaces", "consumer apps"],
+          caution: "For production-quality UI text, route to template or screen rendering instead of inventing screens."
+        }
+      )
+    ]
+  }
+];
+
 export function getVideoFormat(id: string): VideoFormat {
   return videoFormats.find((format) => format.id === id) ?? videoFormats[0];
 }
 
-export function getVideoSubFormat(id: string | undefined): VideoSubFormat | undefined {
+export function getVideoSubFormat(id: string | undefined): VideoTemplate | undefined {
   if (!id) return undefined;
 
   return videoFormatGroups
     .flatMap((group) => group.subFormats)
-    .find((format) => format.id === id);
+    .flatMap((format) => format.templates)
+    .find((template) => template.id === id);
 }

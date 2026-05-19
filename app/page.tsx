@@ -67,18 +67,19 @@ type ActiveVideoModal = {
 };
 
 const subFormatTemplateStyleMap: Record<string, string> = {
-  ugc_review: "review_demo",
-  ugc_review_demo: "review_demo",
-  ugc_detail_discovery: "detail_discovery",
-  ugc_lifestyle: "lifestyle_recommendation",
-  ugc_performance_proof: "performance_proof",
-  ugc_texture_proof: "texture_proof",
-  ugc_asmr_detail: "asmr_detail",
-  ugc_tutorial: "real_use_result",
-  ugc_unboxing: "sensory_unboxing",
-  ugc_before_after: "performance_proof",
-  product_only: "asmr_detail",
-  comparison_before_after: "performance_proof"
+  beauty_review: "review_demo",
+  beauty_before_after: "performance_proof",
+  beauty_grwm: "real_use_result",
+  beauty_makeup_hacks: "texture_proof",
+  beauty_skincare_routine: "texture_proof",
+  beauty_half_face: "performance_proof",
+  beauty_comparison: "performance_proof",
+  electronics_unboxing: "sensory_unboxing",
+  accessories_unboxing: "sensory_unboxing",
+  kids_unboxing_review: "sensory_unboxing",
+  food_asmr_texture: "asmr_detail",
+  accessories_detail_breakdown: "detail_discovery",
+  electronics_feature_breakdown: "detail_discovery"
 };
 
 function templateStyleForSubFormat(subFormatId: string): string {
@@ -262,8 +263,9 @@ export default function Home() {
   const [activeVideoModal, setActiveVideoModal] = useState<ActiveVideoModal | null>(null);
   const [layerPreviewOpen, setLayerPreviewOpen] = useState(false);
   const [generationMode, setGenerationMode] = useState<GenerationMode>("fast_ugc");
-  const [selectedCreativeType, setSelectedCreativeType] = useState<CreativeTypeId>("ugc");
-  const [selectedSubFormatId, setSelectedSubFormatId] = useState("ugc_review");
+  const [selectedCreativeType, setSelectedCreativeType] = useState<CreativeTypeId>("model_product");
+  const [selectedSubFormatId, setSelectedSubFormatId] = useState("beauty_personal_care");
+  const [selectedTemplateId, setSelectedTemplateId] = useState("beauty_review");
   const [duration, setDuration] = useState(10);
   const [count, setCount] = useState(3);
   const [modelMode, setModelMode] = useState<(typeof modelModeOptions)[number]["id"]>("auto_generated");
@@ -297,8 +299,14 @@ export default function Home() {
       ?? selectedFormatGroup.subFormats[0],
     [selectedFormatGroup, selectedSubFormatId]
   );
-  const selectedFormatId: VideoFormatId = selectedSubFormat.videoFormat;
-  const selectedUgcTemplateStyle = templateStyleForSubFormat(selectedSubFormat.id);
+  const selectedTemplate = useMemo(
+    () =>
+      selectedSubFormat.templates.find((template) => template.id === selectedTemplateId)
+      ?? selectedSubFormat.templates[0],
+    [selectedSubFormat, selectedTemplateId]
+  );
+  const selectedFormatId: VideoFormatId = selectedTemplate.videoFormat;
+  const selectedUgcTemplateStyle = templateStyleForSubFormat(selectedTemplate.id);
   const requiresStarterApproval = modelMode !== "auto_generated";
   const requiresReferenceVideo = generationMode !== "fast_ugc";
   const estimatedVideoCost = duration * count * 0.168;
@@ -630,7 +638,7 @@ export default function Home() {
       jobId: payload.jobId,
       title: productLabel || "Untitled product",
       createdAt: new Date().toISOString(),
-      formatName: selectedSubFormat.name,
+      formatName: selectedTemplate.name,
       styleName: selectedGenerationModeOption.title,
       videoCount: payload.videos.length,
       thumbnailUrl: payload.videos.find((video) => video.playbackUrl || video.sourceUrl)?.playbackUrl
@@ -783,8 +791,8 @@ export default function Home() {
           </div>
 
           <input name="videoFormat" type="hidden" value={selectedFormatId} />
-          <input name="subFormatId" type="hidden" value={selectedSubFormat.id} />
-          <input name="subFormatName" type="hidden" value={selectedSubFormat.name} />
+          <input name="subFormatId" type="hidden" value={selectedTemplate.id} />
+          <input name="subFormatName" type="hidden" value={selectedTemplate.name} />
           <input name="ugcTemplateStyle" type="hidden" value={selectedUgcTemplateStyle} />
           <input name="generationMode" type="hidden" value={generationMode} />
           <input name="referenceProductMode" type="hidden" value="replace_product" />
@@ -802,7 +810,7 @@ export default function Home() {
               <div className="composerControlGrid">
                 <label className="field compactControl" htmlFor="creativeTypeSelect">
                 <span className="controlLabel">
-                  <span>Creative type</span>
+                  <span>Creative format</span>
                   <span className="infoTooltip" tabIndex={0} aria-label={selectedFormatGroup.explanation}>
                     i
                     <span role="tooltip">{selectedFormatGroup.explanation}</span>
@@ -814,8 +822,10 @@ export default function Home() {
                   onChange={(event) => {
                     const nextType = event.currentTarget.value as CreativeTypeId;
                     const nextGroup = videoFormatGroups.find((group) => group.id === nextType) ?? videoFormatGroups[0];
+                    const nextSubFormat = nextGroup.subFormats[0];
                     setSelectedCreativeType(nextType);
-                    setSelectedSubFormatId(nextGroup.subFormats[0]?.id ?? "ugc_review");
+                    setSelectedSubFormatId(nextSubFormat?.id ?? "beauty_personal_care");
+                    setSelectedTemplateId(nextSubFormat?.templates[0]?.id ?? "beauty_review");
                     invalidateStarterPreview();
                   }}
                 >
@@ -842,12 +852,36 @@ export default function Home() {
                       (format) => format.id === event.currentTarget.value
                     ) ?? selectedFormatGroup.subFormats[0];
                     setSelectedSubFormatId(nextSubFormat.id);
+                    setSelectedTemplateId(nextSubFormat.templates[0]?.id ?? "beauty_review");
                     invalidateStarterPreview();
                   }}
                 >
                   {selectedFormatGroup.subFormats.map((format) => (
                     <option key={format.id} title={format.explanation} value={format.id}>
                       {format.name}
+                    </option>
+                  ))}
+                </select>
+                </label>
+                <label className="field compactControl" htmlFor="templateSelect">
+                <span className="controlLabel">
+                  <span>Template</span>
+                  <span className="infoTooltip" tabIndex={0} aria-label={selectedTemplate.explanation}>
+                    i
+                    <span role="tooltip">{selectedTemplate.explanation}</span>
+                  </span>
+                </span>
+                <select
+                  id="templateSelect"
+                  value={selectedTemplate.id}
+                  onChange={(event) => {
+                    setSelectedTemplateId(event.currentTarget.value);
+                    invalidateStarterPreview();
+                  }}
+                >
+                  {selectedSubFormat.templates.map((template) => (
+                    <option key={template.id} title={template.explanation} value={template.id}>
+                      {template.name}
                     </option>
                   ))}
                 </select>
@@ -907,19 +941,31 @@ export default function Home() {
               <div className="formatInfoPanel">
                 <div>
                   <span>What it makes</span>
-                  <strong>{selectedSubFormat.explanation}</strong>
+                  <strong>{selectedTemplate.explanation}</strong>
                 </div>
                 <div>
                   <span>Best for</span>
-                  <p>{selectedSubFormat.bestFor.join(" / ")}</p>
+                  <p>{selectedTemplate.bestFor.join(" / ")}</p>
                 </div>
                 <div>
                   <span>Assets</span>
-                  <p>{selectedSubFormat.assetNotes.join(" / ")}</p>
+                  <p>{selectedTemplate.assetNotes.join(" / ")}</p>
                 </div>
                 <div>
                   <span>Watch out</span>
-                  <p>{selectedSubFormat.caution}</p>
+                  <p>{selectedTemplate.caution}</p>
+                </div>
+                <div>
+                  <span>Hook</span>
+                  <p>{selectedTemplate.hookStructure}</p>
+                </div>
+                <div>
+                  <span>Screen</span>
+                  <p>{selectedTemplate.visualDirection}</p>
+                </div>
+                <div>
+                  <span>Dialogue</span>
+                  <p>{selectedTemplate.dialogueDirection}</p>
                 </div>
               </div>
             </div>
