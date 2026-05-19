@@ -17,7 +17,7 @@ export function proxy(request: NextRequest) {
     pathname === "/api/access" ||
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/favicon") ||
-    pathname.match(/\.(png|jpe?g|webp|gif|svg|ico|css|js|woff2?)$/i)
+    pathname.match(/\.(png|jpe?g|webp|gif|svg|ico|css|js|woff2?|mp4|mov|webm)$/i)
   ) {
     return NextResponse.next();
   }
