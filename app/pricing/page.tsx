@@ -1,36 +1,105 @@
-import { InfoGrid, MarketingPageShell } from "../site-pages";
+import { MarketingPageShell } from "../site-pages";
 
-const plans = [
+const pricingPlans = [
   {
-    title: "Starter",
-    body: "For validating products, hooks, and UGC angles before scaling ad volume.",
-    meta: "$49 / month"
+    name: "Starter",
+    price: "$19",
+    credits: "700 credits",
+    videos: "Up to 7 x 10-sec videos/month",
+    batch: "Generate up to 7 videos at once",
+    badge: "Start testing",
+    featured: false
   },
   {
-    title: "Growth",
-    body: "More monthly credits, saved assets, history reuse, and faster format testing.",
-    meta: "$149 / month"
+    name: "Pro",
+    price: "$49",
+    credits: "1,800 credits",
+    videos: "Up to 18 x 10-sec videos/month",
+    batch: "Generate up to 18 videos at once",
+    badge: "Best for creators",
+    featured: true
   },
   {
-    title: "Studio",
-    body: "For teams running multiple products, creators, accounts, and repeat UGC campaigns.",
-    meta: "Custom"
+    name: "Ultra",
+    price: "$99",
+    credits: "4,000 credits",
+    videos: "Up to 40 x 10-sec videos/month",
+    batch: "Generate up to 30 videos at once",
+    badge: "Lower credit price",
+    featured: false
+  },
+  {
+    name: "Agency",
+    price: "$199",
+    credits: "9,000 credits",
+    videos: "Up to 90 x 10-sec videos/month",
+    batch: "Generate up to 30 videos at once",
+    badge: "Lowest credit price",
+    featured: false
   }
+];
+
+const includedFeatures = [
+  "All video formats",
+  "Product image to UGC video generation",
+  "Creator/model modes",
+  "Saved generation history",
+  "Commercial-ready vertical outputs"
 ];
 
 export default function PricingPage() {
   return (
     <MarketingPageShell
       eyebrow="Pricing"
-      title="Credits built for UGC testing."
-      description="Keep the public pricing simple now, then connect billing and credit limits when account auth is ready."
+      title="Plans built for high-volume UGC testing."
+      description="Choose a monthly credit pack, generate UGC ad variants, and scale the formats that start getting traction."
       selected="pricing"
     >
-      <InfoGrid items={plans} />
-      <section className="siteCallout">
-        <h2>Current MVP rule</h2>
-        <p>The generator stays password locked until usage limits, billing, and account roles are wired.</p>
-        <a href="/login">Request access</a>
+      <section className="pricingGrid" aria-label="UGCDay pricing plans">
+        {pricingPlans.map((plan) => (
+          <article className={plan.featured ? "pricingCard featured" : "pricingCard"} key={plan.name}>
+            <div className="pricingCardTop">
+              <span>{plan.badge}</span>
+              <h2>{plan.name}</h2>
+              <p>
+                <strong>{plan.price}</strong>
+                <em>/month</em>
+              </p>
+            </div>
+            <div className="pricingCreditBlock">
+              <strong>{plan.credits}</strong>
+              <span>{plan.videos}</span>
+            </div>
+            <ul>
+              {includedFeatures.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
+              <li>{plan.batch}</li>
+            </ul>
+            <a href="/login">Get started</a>
+          </article>
+        ))}
+      </section>
+
+      <section className="pricingExplainer" aria-label="Credit rules">
+        <div>
+          <span>Credit system</span>
+          <h2>Simple usage math.</h2>
+        </div>
+        <dl>
+          <div>
+            <dt>5-sec video</dt>
+            <dd>50 credits</dd>
+          </div>
+          <div>
+            <dt>10-sec video</dt>
+            <dd>100 credits</dd>
+          </div>
+          <div>
+            <dt>15-sec video</dt>
+            <dd>150 credits</dd>
+          </div>
+        </dl>
       </section>
     </MarketingPageShell>
   );

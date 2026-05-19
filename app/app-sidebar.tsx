@@ -146,7 +146,7 @@ export function AppSidebar({
       <nav className="sidebarNav" aria-label="Studio navigation">
         <a className={selected === "studio" ? "sidebarNavItem selected" : "sidebarNavItem"} href="/">
           <SidebarIcon name="studio" />
-          <span>Studio</span>
+          <span>UGC Studio</span>
         </a>
         <a className={selected === "pricing" ? "sidebarNavItem selected" : "sidebarNavItem"} href="/pricing">
           <SidebarIcon name="pricing" />
