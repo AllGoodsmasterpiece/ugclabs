@@ -2263,9 +2263,7 @@ h3 {
 
 .sitePageShell {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 72% 8%, rgba(255, 47, 146, 0.13), transparent 28%),
-    linear-gradient(180deg, #ffffff 0, #fbfcff 60%, #ffffff 100%);
+  background: #ffffff;
   color: var(--ink);
   padding: 18px clamp(16px, 4vw, 54px) 34px;
 }
@@ -2447,8 +2445,8 @@ h3 {
 }
 
 .pricingCard.featured {
-  border-color: rgba(255, 47, 146, 0.42);
-  box-shadow: 0 22px 54px rgba(255, 47, 146, 0.14);
+  border-color: #101216;
+  box-shadow: 0 22px 54px rgba(16, 18, 22, 0.1);
 }
 
 .pricingCardTop {
@@ -2461,7 +2459,7 @@ h3 {
 .affiliateHeroPanel span,
 .affiliateSectionHeader span,
 .affiliateFinalCta span {
-  color: var(--accent);
+  color: #6b7280;
   font-size: 12px;
   font-weight: 820;
   text-transform: uppercase;
@@ -2495,12 +2493,12 @@ h3 {
   display: grid;
   gap: 5px;
   border-radius: 12px;
-  background: var(--accent-soft);
+  background: #f3f4f6;
   padding: 14px;
 }
 
 .pricingCreditBlock strong {
-  color: var(--accent-dark);
+  color: #101216;
   font-size: 18px;
 }
 
@@ -2536,7 +2534,7 @@ h3 {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #101216;
 }
 
 .pricingCard a,
@@ -2683,8 +2681,8 @@ h3 {
   height: 40px;
   place-items: center;
   border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent-dark);
+  background: #f3f4f6;
+  color: #101216;
   font-size: 13px;
   font-weight: 840;
 }
@@ -2697,9 +2695,9 @@ h3 {
 .affiliateFinalCta {
   justify-items: center;
   margin-top: 42px;
-  border: 1px solid rgba(255, 47, 146, 0.18);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  background: linear-gradient(180deg, #fff7fb, #ffffff);
+  background: #ffffff;
   padding: clamp(26px, 5vw, 54px);
   text-align: center;
 }
@@ -2838,9 +2836,7 @@ h3 {
 }
 
 .siteWithSidebar {
-  background:
-    radial-gradient(circle at 82% 4%, rgba(255, 47, 146, 0.10), transparent 25%),
-    linear-gradient(180deg, #ffffff 0, #fbfcff 58%, #ffffff 100%);
+  background: #ffffff;
 }
 
 .siteMainWithSidebar {
