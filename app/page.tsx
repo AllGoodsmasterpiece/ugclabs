@@ -6,6 +6,7 @@ import {
   type CreativeTypeId,
   type VideoFormatId
 } from "@/lib/video-formats";
+import { AppSidebar } from "./app-sidebar";
 
 type GeneratedVideo = {
   index: number;
@@ -22,6 +23,7 @@ type GeneratedVideo = {
 
 type GenerateResponse = {
   jobId: string;
+  inputSnapshot?: Record<string, unknown>;
   analysis: Record<string, unknown>;
   intent?: Record<string, unknown>;
   assetBinding?: Record<string, unknown>;
@@ -95,6 +97,13 @@ function valueText(value: unknown, fallback = "Not available yet."): string {
 
 function pathValue(source: unknown, path: string[]) {
   return path.reduce<unknown>((current, key) => asRecord(current)?.[key], source);
+}
+
+function snapshotText(snapshot: Record<string, unknown> | undefined, key: string, fallback = "Not provided") {
+  const value = snapshot?.[key];
+  if (typeof value === "string" && value.trim()) return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  return fallback;
 }
 
 function mergeHistoryItems(...groups: ProjectHistoryItem[][]) {
@@ -715,35 +724,7 @@ export default function Home() {
 
   return (
     <main className="studioShell">
-      <aside className="projectSidebar" aria-label="Project history">
-        <div className="sidebarBrand">
-          <img className="sidebarWordmark" alt="UGCDay" src="/ugcday-wordmark.png" />
-        </div>
-        <nav className="sidebarNav" aria-label="Studio navigation">
-          <a className="sidebarNavItem selected" href="#generate">
-            <SidebarIcon name="studio" />
-            <span>Studio</span>
-          </a>
-          <a className="sidebarNavItem" href="/pricing">
-            <SidebarIcon name="pricing" />
-            <span>Pricing</span>
-          </a>
-          <a className="sidebarNavItem" href="/login">
-            <SidebarIcon name="login" />
-            <span>Login</span>
-          </a>
-          <div className="sidebarHistoryMenu">
-            <a className="sidebarNavItem historyToggle" href="/history">
-              <SidebarIcon name="history" />
-              <span>History</span>
-              <em>{projectHistory.length}</em>
-              <svg className="sidebarChevron" aria-hidden="true" viewBox="0 0 24 24">
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </a>
-          </div>
-        </nav>
-      </aside>
+      <AppSidebar selected="studio" historyItems={projectHistory} />
 
       <div className="studioMain">
       <div className="floatingTopActions" aria-label="Account shortcuts">
@@ -1591,9 +1572,29 @@ function LayerPreviewContent({
   const starterComposition = pathValue(productUnderstanding, ["starterComposition"]);
   const physicalUseModel = pathValue(productUnderstanding, ["physicalUseModel"]);
   const tags = pathValue(result, ["assetBinding", "generationTags"]);
+  const inputSnapshot = result.inputSnapshot;
 
   return (
     <div className="layerPreviewBody">
+      <section>
+        <span>Actual input</span>
+        <p>{snapshotText(inputSnapshot, "productFeatureNotes", "No custom product prompt was provided.")}</p>
+        <dl>
+          <div>
+            <dt>Product</dt>
+            <dd>{snapshotText(inputSnapshot, "productName")}</dd>
+          </div>
+          <div>
+            <dt>Format</dt>
+            <dd>{snapshotText(inputSnapshot, "subFormatName")}</dd>
+          </div>
+          <div>
+            <dt>Duration</dt>
+            <dd>{snapshotText(inputSnapshot, "durationSeconds")} seconds</dd>
+          </div>
+        </dl>
+      </section>
+
       <section>
         <span>Product analysis</span>
         <p>{valueText(pathValue(productProfile, ["description"]))}</p>

@@ -6,6 +6,7 @@ export default function ProfilePage() {
       eyebrow="Profile"
       title="Account, credits, assets, and models."
       description="This page is the operating dashboard for billing, usage, reusable assets, creator models, and multi-account setup."
+      selected="profile"
     >
       <section className="profileSummaryGrid">
         <article>

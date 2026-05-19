@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AppSidebar } from "../app-sidebar";
 
 type GeneratedVideo = {
   index: number;
@@ -15,6 +16,7 @@ type GeneratedVideo = {
 
 type GenerateResponse = {
   jobId: string;
+  inputSnapshot?: Record<string, unknown>;
   analysis?: Record<string, unknown>;
   intent?: Record<string, unknown>;
   assetBinding?: Record<string, unknown>;
@@ -72,6 +74,7 @@ function compactSource(result: GenerateResponse | undefined) {
   return JSON.stringify(
     {
       jobId: result.jobId,
+      inputSnapshot: result.inputSnapshot,
       analysis: result.analysis,
       intent: result.intent,
       assetBinding: result.assetBinding,
@@ -92,16 +95,46 @@ function compactSource(result: GenerateResponse | undefined) {
   );
 }
 
+function snapshotText(snapshot: Record<string, unknown> | undefined, key: string, fallback = "Not provided") {
+  const value = snapshot?.[key];
+  if (typeof value === "string" && value.trim()) return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  return fallback;
+}
+
+function sourceSettings(snapshot: Record<string, unknown> | undefined) {
+  if (!snapshot) return "No input snapshot stored for this older job.";
+  return [
+    snapshotText(snapshot, "generationMode"),
+    snapshotText(snapshot, "subFormatName"),
+    `${snapshotText(snapshot, "durationSeconds")}s`,
+    `${snapshotText(snapshot, "variantCount")} variants`
+  ].filter(Boolean).join(" / ");
+}
+
 export default function HistoryPage() {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [activePreview, setActivePreview] = useState<ActivePreview | null>(null);
   const [sourceItem, setSourceItem] = useState<HistoryItem | null>(null);
   const [error, setError] = useState("");
+  const [selectedJobId, setSelectedJobId] = useState("");
 
   const totalVideos = useMemo(
     () => items.reduce((sum, item) => sum + (item.result?.videos.length || item.videoCount || 0), 0),
     [items]
   );
+  const displayItems = useMemo(() => {
+    if (!selectedJobId) return items;
+    return [...items].sort((a, b) => {
+      if (a.jobId === selectedJobId) return -1;
+      if (b.jobId === selectedJobId) return 1;
+      return 0;
+    });
+  }, [items, selectedJobId]);
+
+  useEffect(() => {
+    setSelectedJobId(new URLSearchParams(window.location.search).get("jobId") ?? "");
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -157,19 +190,8 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="historyVaultPage">
-      <aside className="historyVaultSidebar" aria-label="History navigation">
-        <a className="historyVaultLogo" href="/">
-          <img alt="UGCDay" src="/ugcday-wordmark.png" />
-        </a>
-        <nav>
-          <a href="/">Studio</a>
-          <a className="selected" href="/history">History</a>
-          <a href="/pricing">Pricing</a>
-          <a href="/profile">Profile</a>
-        </nav>
-      </aside>
-
+    <main className="studioShell historyVaultPage">
+      <AppSidebar selected="history" />
       <section className="historyVaultMain">
         <header className="historyVaultHero">
           <div>
@@ -188,13 +210,13 @@ export default function HistoryPage() {
         {error ? <p className="historyVaultNotice">{error}</p> : null}
 
         <div className="historyJobList">
-          {items.length ? (
-            items.map((item) => {
+          {displayItems.length ? (
+            displayItems.map((item) => {
               const videos = item.result?.videos ?? [];
               const fallbackUrl = item.thumbnailUrl ?? "";
 
               return (
-                <article className="historyJobCard" key={item.jobId}>
+                <article className={item.jobId === selectedJobId ? "historyJobCard selected" : "historyJobCard"} key={item.jobId}>
                   <div className="historyJobTop">
                     <div>
                       <span>{formatDate(item.createdAt)}</span>
@@ -288,6 +310,27 @@ export default function HistoryPage() {
               <h2>{sourceItem.title}</h2>
               <button type="button" aria-label="Close source" onClick={() => setSourceItem(null)}>x</button>
             </div>
+            <section className="historySourceInputs">
+              <span>Actual input</span>
+              <dl>
+                <div>
+                  <dt>Product</dt>
+                  <dd>{snapshotText(sourceItem.result?.inputSnapshot, "productName")}</dd>
+                </div>
+                <div>
+                  <dt>User prompt</dt>
+                  <dd>{snapshotText(sourceItem.result?.inputSnapshot, "productFeatureNotes")}</dd>
+                </div>
+                <div>
+                  <dt>Settings</dt>
+                  <dd>{sourceSettings(sourceItem.result?.inputSnapshot)}</dd>
+                </div>
+                <div>
+                  <dt>Uploaded source</dt>
+                  <dd>{snapshotText(sourceItem.result?.inputSnapshot, "referenceVideoFileName", "No reference video")}</dd>
+                </div>
+              </dl>
+            </section>
             <pre>{compactSource(sourceItem.result)}</pre>
           </div>
         </div>

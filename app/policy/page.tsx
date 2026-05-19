@@ -6,6 +6,7 @@ export default function PolicyPage() {
       eyebrow="Policy"
       title="Usage rules for the private MVP."
       description="This page is a lightweight policy placeholder for launch week. Legal copy can be expanded before public onboarding."
+      selected="studio"
     >
       <InfoGrid
         items={[

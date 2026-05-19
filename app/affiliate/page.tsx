@@ -6,6 +6,7 @@ export default function AffiliatePage() {
       eyebrow="Affiliate"
       title="Earn 30% from referred company revenue."
       description="UGCDay can support a simple partner program for creators, agencies, and operators who bring paying customers."
+      selected="studio"
     >
       <InfoGrid
         items={[

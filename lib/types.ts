@@ -207,8 +207,35 @@ export type GeneratedVideo = {
   error?: string;
 };
 
+export type InputSnapshot = {
+  createdAt: string;
+  generationMode: ProductFocusInput["generationMode"];
+  videoFormat: ProductFocusInput["videoFormat"];
+  subFormatId?: string;
+  subFormatName?: string;
+  ugcTemplateStyle?: string;
+  productName: string;
+  productUrl?: string;
+  productFeatureNotes?: string;
+  productAnalysisMode: ProductFocusInput["productAnalysisMode"];
+  modelMode: ProductFocusInput["modelMode"];
+  creatorMode: ProductFocusInput["creatorMode"];
+  referenceProductMode: ProductFocusInput["referenceProductMode"];
+  tone: string;
+  durationSeconds: ProductFocusInput["duration"];
+  variantCount: number;
+  productImageProvided: boolean;
+  productImageFileName?: string;
+  referenceVideoProvided: boolean;
+  referenceVideoFileName?: string;
+  creatorReferenceProvided: boolean;
+  creatorReferenceNames: string[];
+  approvedStarterJobId?: string;
+};
+
 export type PipelineResult = {
   jobId: string;
+  inputSnapshot?: InputSnapshot;
   analysis: ReferenceAnalysis;
   intent?: ResolvedIntent;
   assetBinding?: AssetBindingDebug;

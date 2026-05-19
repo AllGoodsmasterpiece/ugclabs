@@ -1,41 +1,40 @@
+import { AppSidebar } from "./app-sidebar";
+import type { ReactNode } from "react";
+
 type InfoCard = {
   title: string;
   body: string;
   meta?: string;
 };
 
+type SidebarSection = "studio" | "pricing" | "login" | "history" | "profile";
+
 export function MarketingPageShell({
   eyebrow,
   title,
   description,
-  children
+  children,
+  selected = "studio"
 }: {
   eyebrow: string;
   title: string;
   description: string;
   children: ReactNode;
+  selected?: SidebarSection;
 }) {
   return (
-    <main className="sitePageShell">
-      <header className="sitePageTop">
-        <a className="sitePageLogo" href="/">
-          <img alt="UGCDay" src="/ugcday-wordmark.png" />
-        </a>
-        <nav aria-label="Primary">
-          <a href="/">Studio</a>
-          <a href="/pricing">Pricing</a>
-          <a href="/login">Login</a>
-        </nav>
-      </header>
+    <main className="studioShell siteWithSidebar">
+      <AppSidebar selected={selected} />
+      <div className="studioMain siteMainWithSidebar">
+        <section className="sitePageHero">
+          <span>{eyebrow}</span>
+          <h1>{title}</h1>
+          <p>{description}</p>
+        </section>
 
-      <section className="sitePageHero">
-        <span>{eyebrow}</span>
-        <h1>{title}</h1>
-        <p>{description}</p>
-      </section>
-
-      {children}
-      <SiteFooter />
+        {children}
+        <SiteFooter />
+      </div>
     </main>
   );
 }
@@ -71,4 +70,3 @@ export function InfoGrid({ items }: { items: InfoCard[] }) {
     </section>
   );
 }
-import type { ReactNode } from "react";

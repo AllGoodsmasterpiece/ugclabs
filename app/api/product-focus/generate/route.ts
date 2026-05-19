@@ -17,7 +17,7 @@ import { createQualityStarterImage } from "@/lib/quality-starter";
 import { hasR2Config, publicGlobalObjectKey, publicObjectKey, readPublicObject, uploadPublicObject } from "@/lib/r2";
 import { legacyPublicOutputCandidatePath, runtimeOutputCandidatePath, runtimeOutputUrl } from "@/lib/runtime-storage";
 import { createReferenceStarterFrame } from "@/lib/scene-starter";
-import type { AssetProfile, GeneratedVideo, PipelineResult, ProductFocusInput } from "@/lib/types";
+import type { AssetProfile, GeneratedVideo, InputSnapshot, PipelineResult, ProductFocusInput } from "@/lib/types";
 import { getVideoFormat, getVideoSubFormat } from "@/lib/video-formats";
 
 export const runtime = "nodejs";
@@ -257,8 +257,16 @@ export async function POST(request: Request) {
       }
     }
 
+    const createdAt = new Date().toISOString();
     const payload: PipelineResult = {
       jobId,
+      inputSnapshot: buildInputSnapshot(input, {
+        createdAt,
+        productImage,
+        referenceVideo: usableReferenceVideo,
+        creatorReferences: profiledCreatorReferences,
+        approvedStarterJobId
+      }),
       analysis,
       intent,
       assetBinding,
@@ -275,7 +283,7 @@ export async function POST(request: Request) {
     await writeHistoryEntry({
       jobId,
       title: input.productName || "Untitled product",
-      createdAt: new Date().toISOString(),
+      createdAt,
       formatName: input.subFormatName ?? getVideoFormat(input.videoFormat).name,
       styleName: input.generationMode === "fast_ugc"
         ? "Fast UGC"
@@ -483,6 +491,45 @@ function parseInput(form: FormData): ProductFocusInput {
     tone,
     duration: duration as 5 | 10 | 15,
     count
+  };
+}
+
+function buildInputSnapshot(
+  input: ProductFocusInput,
+  context: {
+    createdAt: string;
+    productImage?: File;
+    referenceVideo?: File;
+    creatorReferences: CreatorReference[];
+    approvedStarterJobId?: string;
+  }
+): InputSnapshot {
+  return {
+    createdAt: context.createdAt,
+    generationMode: input.generationMode,
+    videoFormat: input.videoFormat,
+    subFormatId: input.subFormatId,
+    subFormatName: input.subFormatName,
+    ugcTemplateStyle: input.ugcTemplateStyle,
+    productName: input.productName,
+    productUrl: input.productUrl || undefined,
+    productFeatureNotes: input.productFeatureNotes || undefined,
+    productAnalysisMode: input.productAnalysisMode,
+    modelMode: input.modelMode,
+    creatorMode: input.creatorMode,
+    referenceProductMode: input.referenceProductMode,
+    tone: input.tone,
+    durationSeconds: input.duration,
+    variantCount: input.count,
+    productImageProvided: input.productImageProvided,
+    productImageFileName: context.productImage?.name || undefined,
+    referenceVideoProvided: Boolean(context.referenceVideo),
+    referenceVideoFileName: context.referenceVideo?.name || undefined,
+    creatorReferenceProvided: input.creatorReferenceProvided,
+    creatorReferenceNames: context.creatorReferences
+      .filter((reference) => reference.imagePath)
+      .map((reference) => reference.accountName),
+    approvedStarterJobId: context.approvedStarterJobId
   };
 }
 

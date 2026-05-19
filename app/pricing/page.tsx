@@ -24,6 +24,7 @@ export default function PricingPage() {
       eyebrow="Pricing"
       title="Credits built for UGC testing."
       description="Keep the public pricing simple now, then connect billing and credit limits when account auth is ready."
+      selected="pricing"
     >
       <InfoGrid items={plans} />
       <section className="siteCallout">

@@ -36,6 +36,7 @@ export default function LoginPage() {
       eyebrow="Login"
       title="Private MVP access."
       description="Use the access password to open the studio. Full user login comes after billing and credit controls."
+      selected="login"
     >
       <form className="siteLoginPanel" onSubmit={onSubmit}>
         <label htmlFor="loginPassword">Access password</label>
