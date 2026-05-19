@@ -2409,7 +2409,6 @@ h3 {
 
 .siteCallout a,
 .siteLoginPanel button,
-.googleLoginButton,
 .profileActions a,
 .historyPageActions a {
   display: inline-flex;
@@ -2769,8 +2768,11 @@ h3 {
 
 .siteLoginPanel {
   display: grid;
-  width: min(460px, 100%);
-  gap: 14px;
+  width: min(560px, 100%);
+  gap: 20px;
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 20px 60px rgba(16, 18, 22, 0.08);
   text-align: left;
 }
 
@@ -2801,7 +2803,7 @@ h3 {
 
 .emailLoginForm {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .siteLoginPanel label {
@@ -2814,9 +2816,9 @@ h3 {
 }
 
 .siteLoginPanel input {
-  min-height: 48px;
+  min-height: 58px;
   border: 1px solid var(--line-strong);
-  border-radius: 12px;
+  border-radius: 14px;
   background: #ffffff;
   color: var(--ink);
   padding: 0 14px;
@@ -2840,11 +2842,11 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #ffffff;
-  padding: 4px;
+  padding: 6px;
 }
 
 .loginModeTabs button {
-  min-height: 38px;
+  min-height: 52px;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -2856,6 +2858,27 @@ h3 {
 .loginModeTabs button.selected {
   background: linear-gradient(180deg, var(--accent), var(--accent-dark));
   color: #ffffff;
+}
+
+.googleLoginButton {
+  display: inline-flex;
+  width: 100%;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #27313d;
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.googleLoginButton svg {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
 }
 
 .loginDivider {
@@ -2878,6 +2901,69 @@ h3 {
 
 .emailLoginForm button {
   justify-self: stretch;
+  min-height: 58px;
+  font-size: 17px;
+}
+
+.forgotPasswordPanel {
+  display: grid;
+  width: min(560px, 100%);
+  margin: 12px auto 0;
+  gap: 12px;
+  text-align: center;
+}
+
+.forgotPasswordPanel > button {
+  justify-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 760;
+}
+
+.forgotPasswordPanel form {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 14px;
+  text-align: left;
+}
+
+.forgotPasswordPanel label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.forgotPasswordPanel input {
+  min-height: 48px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  padding: 0 14px;
+}
+
+.forgotPasswordPanel form button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.forgotPasswordPanel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
 }
 
 .profileActions {
