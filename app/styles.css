@@ -1871,6 +1871,7 @@ h3 {
 }
 
 .mediaGalleryCard video,
+.mediaGalleryCard img,
 .mediaGalleryCard .missingVideo {
   width: 100%;
   height: 100%;
@@ -1880,6 +1881,29 @@ h3 {
 
 .mediaGalleryCard video {
   display: block;
+}
+
+.referenceVideoCard .referencePoster,
+.referenceVideoCard .referenceHoverVideo {
+  position: absolute;
+  inset: 0;
+}
+
+.referenceVideoCard .referencePoster {
+  display: block;
+  z-index: 0;
+  user-select: none;
+}
+
+.referenceVideoCard .referenceHoverVideo {
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 90ms ease;
+}
+
+.referenceVideoCard.hovering.videoReady .referenceHoverVideo {
+  opacity: 1;
 }
 
 .mediaGalleryCard::after {

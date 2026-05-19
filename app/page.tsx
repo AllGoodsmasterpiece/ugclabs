@@ -125,7 +125,11 @@ function englishOnlyText(value: string) {
 
 function playCardVideo(event: MouseEvent<HTMLElement>) {
   const video = event.currentTarget.querySelector("video");
-  if (video) void video.play();
+  if (!video) return;
+  video.muted = true;
+  void video.play().catch(() => {
+    // Browsers can still reject hover playback while media metadata is loading.
+  });
 }
 
 function pauseCardVideo(event: MouseEvent<HTMLElement>, reset = false) {
@@ -180,26 +184,31 @@ type GalleryVideoCard = {
   title: string;
   subtitle: string;
   videoUrl: string;
+  previewVideoUrl: string;
   posterUrl?: string;
 };
 
-function assetUrl(filename: string) {
-  return `/api/assets/${encodeURIComponent(filename)}`;
+function showcaseUrl(filename: string) {
+  return `/showcase/${filename}`;
+}
+
+function showcasePreviewUrl(filename: string) {
+  return `/showcase/preview/${filename}`;
 }
 
 const formatReferenceCards: GalleryVideoCard[] = [
-  { title: "UGC", subtitle: "Review", videoUrl: assetUrl("8c088aec-fal-kling-1.mp4"), posterUrl: assetUrl("starter8c088aec-quality-starter.png") },
-  { title: "Unboxing", subtitle: "Reveal", videoUrl: assetUrl("0bd56b9be1b9-fal-kling-1.mp4") },
-  { title: "Tutorial", subtitle: "Step demo", videoUrl: assetUrl("b74228c4be2c-fal-kling-1.mp4") },
-  { title: "Product Only", subtitle: "B-roll", videoUrl: assetUrl("b9a121525ce0-fal-kling-1.mp4") },
-  { title: "Before & After", subtitle: "Comparison", videoUrl: assetUrl("b69c58dba608-fal-kling-1.mp4"), posterUrl: assetUrl("5908b572d594-quality-starter.png") },
-  { title: "UGC Virtual Try On", subtitle: "Fit", videoUrl: assetUrl("bf27b4235a30-fal-kling-1.mp4"), posterUrl: assetUrl("31bff124ffcd-quality-starter.png") },
-  { title: "App UGC", subtitle: "Creator + screen", videoUrl: assetUrl("d23297e7-fal-kling-1.mp4"), posterUrl: assetUrl("5c195a641e4f-quality-starter.png") },
-  { title: "Reference Match", subtitle: "Motion match", videoUrl: assetUrl("145c567c-fal-kling-1.mp4"), posterUrl: assetUrl("8c088aec-reference-starter.jpg") },
-  { title: "Winning Ad Remix", subtitle: "Ad structure", videoUrl: assetUrl("379975b5-fal-kling-1.mp4") },
-  { title: "ASMR Detail", subtitle: "Close detail", videoUrl: assetUrl("ee663ca62084-fal-kling-1.mp4"), posterUrl: assetUrl("33645175c641-quality-starter.png") },
-  { title: "Performance Proof", subtitle: "Use proof", videoUrl: assetUrl("4e7353eb85f4-fal-kling-1.mp4"), posterUrl: assetUrl("69ba71ae9c0f-quality-starter.png") },
-  { title: "Lifestyle UGC", subtitle: "Daily use", videoUrl: assetUrl("0f003c3c6a91-fal-kling-1.mp4"), posterUrl: assetUrl("b1adc4265cef-quality-starter.png") }
+  { title: "UGC", subtitle: "Review", videoUrl: showcasePreviewUrl("8c088aec-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("8c088aec-fal-kling-1.mp4"), posterUrl: showcaseUrl("8c088aec-fal-kling-1.jpg") },
+  { title: "Unboxing", subtitle: "Reveal", videoUrl: showcasePreviewUrl("0bd56b9be1b9-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("0bd56b9be1b9-fal-kling-1.mp4"), posterUrl: showcaseUrl("0bd56b9be1b9-fal-kling-1.jpg") },
+  { title: "Tutorial", subtitle: "Step demo", videoUrl: showcasePreviewUrl("b74228c4be2c-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("b74228c4be2c-fal-kling-1.mp4"), posterUrl: showcaseUrl("b74228c4be2c-fal-kling-1.jpg") },
+  { title: "Product Only", subtitle: "B-roll", videoUrl: showcasePreviewUrl("b9a121525ce0-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("b9a121525ce0-fal-kling-1.mp4"), posterUrl: showcaseUrl("b9a121525ce0-fal-kling-1.jpg") },
+  { title: "Before & After", subtitle: "Comparison", videoUrl: showcasePreviewUrl("b69c58dba608-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("b69c58dba608-fal-kling-1.mp4"), posterUrl: showcaseUrl("b69c58dba608-fal-kling-1.jpg") },
+  { title: "UGC Virtual Try On", subtitle: "Fit", videoUrl: showcasePreviewUrl("bf27b4235a30-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("bf27b4235a30-fal-kling-1.mp4"), posterUrl: showcaseUrl("bf27b4235a30-fal-kling-1.jpg") },
+  { title: "App UGC", subtitle: "Creator + screen", videoUrl: showcasePreviewUrl("d23297e7-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("d23297e7-fal-kling-1.mp4"), posterUrl: showcaseUrl("d23297e7-fal-kling-1.jpg") },
+  { title: "Reference Match", subtitle: "Motion match", videoUrl: showcasePreviewUrl("145c567c-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("145c567c-fal-kling-1.mp4"), posterUrl: showcaseUrl("145c567c-fal-kling-1.jpg") },
+  { title: "Winning Ad Remix", subtitle: "Ad structure", videoUrl: showcasePreviewUrl("379975b5-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("379975b5-fal-kling-1.mp4"), posterUrl: showcaseUrl("379975b5-fal-kling-1.jpg") },
+  { title: "ASMR Detail", subtitle: "Close detail", videoUrl: showcasePreviewUrl("ee663ca62084-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("ee663ca62084-fal-kling-1.mp4"), posterUrl: showcaseUrl("ee663ca62084-fal-kling-1.jpg") },
+  { title: "Performance Proof", subtitle: "Use proof", videoUrl: showcasePreviewUrl("4e7353eb85f4-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("4e7353eb85f4-fal-kling-1.mp4"), posterUrl: showcaseUrl("4e7353eb85f4-fal-kling-1.jpg") },
+  { title: "Lifestyle UGC", subtitle: "Daily use", videoUrl: showcasePreviewUrl("0f003c3c6a91-fal-kling-1.mp4"), previewVideoUrl: showcasePreviewUrl("0f003c3c6a91-fal-kling-1.mp4"), posterUrl: showcaseUrl("0f003c3c6a91-fal-kling-1.jpg") }
 ];
 
 const generationModeOptions = [
@@ -1451,31 +1460,17 @@ export default function Home() {
         </div>
         <div className="mediaGalleryGrid referenceVideoGrid">
           {formatReferenceCards.slice(0, 30).map((card) => (
-            <article
-              className="mediaGalleryCard referenceVideoCard"
+            <ReferenceVideoCard
+              card={card}
               key={`${card.title}-${card.videoUrl}`}
-              onMouseEnter={playCardVideo}
-              onMouseLeave={(event) => pauseCardVideo(event, true)}
-              onClick={() =>
+              onOpen={() =>
                 setActiveVideoModal({
                   title: card.title,
                   subtitle: card.subtitle,
                   url: card.videoUrl
                 })
               }
-            >
-              <video
-                muted
-                playsInline
-                poster={card.posterUrl}
-                preload="auto"
-                src={card.videoUrl}
-              />
-              <div className="mediaCardOverlay">
-                <span>{card.title}</span>
-                <strong>{card.subtitle}</strong>
-              </div>
-            </article>
+            />
           ))}
         </div>
       </section>
@@ -1714,6 +1709,74 @@ async function recoverGeneratedResult(jobId: string): Promise<GenerateResponse |
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function ReferenceVideoCard({
+  card,
+  onOpen
+}: {
+  card: GalleryVideoCard;
+  onOpen: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hovered, setHovered] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  function playPreview() {
+    setHovered(true);
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    void video.play().catch(() => {
+      setReady(false);
+    });
+  }
+
+  function stopPreview() {
+    setHovered(false);
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.pause();
+    video.currentTime = 0;
+  }
+
+  return (
+    <article
+      aria-label={`${card.title} ${card.subtitle}`}
+      className={`mediaGalleryCard referenceVideoCard${hovered ? " hovering" : ""}${ready ? " videoReady" : ""}`}
+      onClick={onOpen}
+      onMouseEnter={playPreview}
+      onMouseLeave={stopPreview}
+    >
+      {card.posterUrl ? (
+        <img
+          alt=""
+          className="referencePoster"
+          draggable={false}
+          loading="eager"
+          src={card.posterUrl}
+        />
+      ) : null}
+      <video
+        ref={videoRef}
+        className="referenceHoverVideo"
+        loop
+        muted
+        playsInline
+        poster={card.posterUrl}
+        preload="auto"
+        src={card.previewVideoUrl}
+        onCanPlay={() => setReady(true)}
+        onLoadedData={() => setReady(true)}
+      />
+      <div className="mediaCardOverlay">
+        <span>{card.title}</span>
+        <strong>{card.subtitle}</strong>
+      </div>
+    </article>
+  );
 }
 
 function ModePicker({
