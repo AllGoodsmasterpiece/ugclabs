@@ -25,11 +25,23 @@ function envValue(...names: string[]) {
 }
 
 export function googleClientId() {
-  return envValue("GOOGLE_CLIENT_ID", "GOOGLE_OAUTH_CLIENT_ID", "GOOGLE_AUTH_CLIENT_ID");
+  return envValue(
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_OAUTH_CLIENT_ID",
+    "GOOGLE_AUTH_CLIENT_ID",
+    "google Client id",
+    "Google OAUTH client ID"
+  );
 }
 
 export function googleClientSecret() {
-  return envValue("GOOGLE_CLIENT_SECRET", "GOOGLE_OAUTH_CLIENT_SECRET", "GOOGLE_AUTH_CLIENT_SECRET");
+  return envValue(
+    "GOOGLE_CLIENT_SECRET",
+    "GOOGLE_OAUTH_CLIENT_SECRET",
+    "GOOGLE_AUTH_CLIENT_SECRET",
+    "client secret",
+    "Google OAUTH client password"
+  );
 }
 
 export function authSecret() {
