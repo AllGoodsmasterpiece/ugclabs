@@ -84,6 +84,7 @@ export function PricingPlans() {
       <section className="pricingGrid" aria-label="UGCDay pricing plans">
         {pricingPlans.map((plan) => {
           const displayPrice = yearly ? plan.yearlyPrice : plan.monthlyPrice;
+          const effectiveMonthly = (plan.yearlyPrice / 12).toFixed(2);
 
           return (
             <article className={plan.featured ? "pricingCard featured" : "pricingCard"} key={plan.name}>
@@ -94,7 +95,7 @@ export function PricingPlans() {
                   <strong>${displayPrice}</strong>
                   <em>{yearly ? "/year" : "/month"}</em>
                 </p>
-                {yearly ? <small>Equals ${plan.monthlyPrice}/month with annual billing.</small> : null}
+                {yearly ? <small>2 months free. ${effectiveMonthly}/month effective.</small> : null}
               </div>
               <div className="pricingCreditBlock">
                 <strong>{plan.credits}</strong>
