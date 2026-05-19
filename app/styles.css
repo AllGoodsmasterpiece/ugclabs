@@ -3050,6 +3050,10 @@ h3 {
   z-index: 1000;
 }
 
+.composerDeck:has(.composerSelect.open) {
+  z-index: 900;
+}
+
 .composerDeck::before {
   content: "";
   z-index: 0;
