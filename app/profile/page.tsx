@@ -1,29 +1,42 @@
+import { cookies } from "next/headers";
+import { readSessionFromCookieStore, sessionCookieName } from "@/lib/auth";
 import { InfoGrid, MarketingPageShell } from "../site-pages";
 
-export default function ProfilePage() {
+export const dynamic = "force-dynamic";
+
+export default async function ProfilePage() {
+  const session = await readSessionFromCookieStore(await cookies());
+  const planLabel = session?.master ? "Master account" : session?.subscribed ? "Active subscription" : "Subscription required";
+  const billingLabel = session?.subscribed ? "Enabled" : "Not active";
+
   return (
     <MarketingPageShell
       eyebrow="Profile"
       title="Account, credits, assets, and models."
-      description="This page is the operating dashboard for billing, usage, reusable assets, creator models, and multi-account setup."
+      description="Manage your login, billing state, reusable assets, creator models, and multi-account setup."
       selected="profile"
     >
       <section className="profileSummaryGrid">
         <article>
-          <span>Credits</span>
-          <strong>Private MVP</strong>
-          <p>Manual credit control until billing automation is connected.</p>
+          <span>Account</span>
+          <strong>{session?.name || session?.email || "Google user"}</strong>
+          <p>{session?.email ?? "Signed in with Google."}</p>
         </article>
         <article>
           <span>Billing</span>
-          <strong>Not connected</strong>
-          <p>Stripe or Lemon Squeezy can be wired after pricing is fixed.</p>
+          <strong>{billingLabel}</strong>
+          <p>{session?.subscribed ? "Studio generation is available." : "Choose a plan before using UGC Studio."}</p>
         </article>
         <article>
           <span>Plan</span>
-          <strong>Operator</strong>
-          <p>Owner-only access remains active for launch preparation.</p>
+          <strong>{planLabel}</strong>
+          <p>{session?.master ? "Master access bypasses billing until Paddle is connected." : "Paddle billing will attach here."}</p>
         </article>
+      </section>
+
+      <section className="profileActions">
+        {!session?.subscribed ? <a href="/pricing">View pricing</a> : <a href="/">Open UGC Studio</a>}
+        <a href="/api/auth/logout">Logout</a>
       </section>
 
       <InfoGrid

@@ -1,39 +1,64 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { readSessionFromToken, sessionCookieName } from "./lib/auth";
 
-const accessCookieName = "ugcday_access";
-const publicPages = new Set(["/login", "/pricing", "/history", "/policy", "/affiliate"]);
+const publicPages = new Set(["/login", "/pricing", "/policy", "/affiliate"]);
 
-export function proxy(request: NextRequest) {
-  const password = process.env.UGCDAY_ACCESS_PASSWORD;
+function isPublicAsset(pathname: string) {
+  return (
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/showcase/") ||
+    pathname.match(/\.(png|jpe?g|webp|gif|svg|ico|css|js|woff2?|mp4|mov|webm)$/i)
+  );
+}
 
-  if (!password) {
-    return NextResponse.next();
-  }
+function loginRedirect(request: NextRequest) {
+  const loginUrl = request.nextUrl.clone();
+  loginUrl.pathname = "/login";
+  loginUrl.searchParams.set("next", request.nextUrl.pathname);
+  return NextResponse.redirect(loginUrl);
+}
 
+function pricingRedirect(request: NextRequest) {
+  const pricingUrl = request.nextUrl.clone();
+  pricingUrl.pathname = "/pricing";
+  pricingUrl.searchParams.set("subscription", "required");
+  return NextResponse.redirect(pricingUrl);
+}
+
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (
     publicPages.has(pathname) ||
+    pathname.startsWith("/api/auth/") ||
     pathname === "/api/access" ||
-    pathname.startsWith("/_next/") ||
-    pathname.startsWith("/favicon") ||
-    pathname.match(/\.(png|jpe?g|webp|gif|svg|ico|css|js|woff2?|mp4|mov|webm)$/i)
+    isPublicAsset(pathname)
   ) {
     return NextResponse.next();
   }
 
-  if (request.cookies.get(accessCookieName)?.value === password) {
-    return NextResponse.next();
+  const session = await readSessionFromToken(request.cookies.get(sessionCookieName)?.value);
+
+  if (!session) {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Login required." }, { status: 401 });
+    }
+
+    return loginRedirect(request);
   }
 
-  if (pathname.startsWith("/api/")) {
-    return NextResponse.json({ error: "Access locked." }, { status: 401 });
+  const requiresSubscription = pathname === "/" || pathname.startsWith("/api/product-focus/generate");
+
+  if (requiresSubscription && !session.subscribed) {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Active subscription required." }, { status: 402 });
+    }
+
+    return pricingRedirect(request);
   }
 
-  const loginUrl = request.nextUrl.clone();
-  loginUrl.pathname = "/";
-  loginUrl.searchParams.set("locked", "1");
-  return NextResponse.rewrite(loginUrl);
+  return NextResponse.next();
 }
 
 export const config = {

@@ -2409,6 +2409,8 @@ h3 {
 
 .siteCallout a,
 .siteLoginPanel button,
+.googleLoginButton,
+.profileActions a,
 .historyPageActions a {
   display: inline-flex;
   min-height: 42px;
@@ -2770,6 +2772,31 @@ h3 {
   text-align: left;
 }
 
+.siteLoginPanel div {
+  display: grid;
+  gap: 8px;
+}
+
+.siteLoginPanel div span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.siteLoginPanel h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.siteLoginPanel div p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 650;
+  line-height: 1.45;
+  text-align: left;
+}
+
 .siteLoginPanel label {
   color: var(--muted);
   font-size: 12px;
@@ -2791,6 +2818,24 @@ h3 {
   color: var(--danger);
   font-weight: 720;
   text-align: center;
+}
+
+.profileActions {
+  display: flex;
+  width: min(1180px, 100%);
+  margin: 0 auto 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profileActions a {
+  justify-self: start;
+}
+
+.profileActions a:last-child {
+  border: 1px solid var(--line-strong);
+  background: #ffffff;
+  color: var(--ink);
 }
 
 .historyPageTable {

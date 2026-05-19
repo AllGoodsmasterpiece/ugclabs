@@ -17,6 +17,7 @@ import { createQualityStarterImage } from "@/lib/quality-starter";
 import { hasR2Config, publicGlobalObjectKey, publicObjectKey, readPublicObject, uploadPublicObject } from "@/lib/r2";
 import { legacyPublicOutputCandidatePath, runtimeOutputCandidatePath, runtimeOutputUrl } from "@/lib/runtime-storage";
 import { createReferenceStarterFrame } from "@/lib/scene-starter";
+import { readSessionFromRequest } from "@/lib/auth";
 import type { AssetProfile, GeneratedVideo, InputSnapshot, PipelineResult, ProductFocusInput } from "@/lib/types";
 import { getVideoFormat, getVideoSubFormat } from "@/lib/video-formats";
 
@@ -59,6 +60,16 @@ export async function POST(request: Request) {
   let jobId = randomUUID().slice(0, 8);
 
   try {
+    const session = await readSessionFromRequest(request);
+
+    if (!session) {
+      return NextResponse.json({ error: "Login required." }, { status: 401 });
+    }
+
+    if (!session.subscribed) {
+      return NextResponse.json({ error: "Active subscription required." }, { status: 402 });
+    }
+
     const form = await request.formData();
     jobId = parseJobId(form.get("clientJobId")) ?? jobId;
     const runMode = String(form.get("runMode") || "video");

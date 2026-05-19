@@ -93,19 +93,19 @@ export function AppSidebar({
 }) {
   const [historyOpen, setHistoryOpen] = useState(selected === "history");
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [accessUnlocked, setAccessUnlocked] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
   const displayHistory = historyItems ? mergeHistoryItems(historyItems, history) : history;
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadAccessStatus() {
+    async function loadSessionStatus() {
       try {
-        const response = await fetch("/api/access");
-        const payload = await response.json() as { unlocked?: boolean };
-        if (!cancelled) setAccessUnlocked(Boolean(payload.unlocked));
+        const response = await fetch("/api/auth/session");
+        const payload = await response.json() as { authenticated?: boolean };
+        if (!cancelled) setAuthenticated(Boolean(payload.authenticated));
       } catch {
-        if (!cancelled) setAccessUnlocked(false);
+        if (!cancelled) setAuthenticated(false);
       }
     }
 
@@ -129,7 +129,7 @@ export function AppSidebar({
       }
     }
 
-    void loadAccessStatus();
+    void loadSessionStatus();
     void loadHistory();
     return () => {
       cancelled = true;
@@ -152,7 +152,7 @@ export function AppSidebar({
           <SidebarIcon name="pricing" />
           <span>Pricing</span>
         </a>
-        {accessUnlocked ? (
+        {authenticated ? (
           <a className={selected === "profile" ? "sidebarNavItem selected" : "sidebarNavItem"} href="/profile">
             <SidebarIcon name="profile" />
             <span>Profile</span>
