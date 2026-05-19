@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 
-type SidebarSection = "studio" | "pricing" | "login" | "history";
+type SidebarSection = "studio" | "pricing" | "login" | "history" | "profile";
 type SidebarSelectedSection = SidebarSection | "profile";
 
 type HistoryItem = {
@@ -68,6 +68,12 @@ function SidebarIcon({ name }: { name: SidebarSection }) {
         <path d="M3 3v6h6" />
         <path d="M12 7v5l3 2" />
       </>
+    ),
+    profile: (
+      <>
+        <path d="M20 21a8 8 0 0 0-16 0" />
+        <circle cx="12" cy="7" r="4" />
+      </>
     )
   };
 
@@ -87,10 +93,21 @@ export function AppSidebar({
 }) {
   const [historyOpen, setHistoryOpen] = useState(selected === "history");
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [accessUnlocked, setAccessUnlocked] = useState(false);
   const displayHistory = historyItems ? mergeHistoryItems(historyItems, history) : history;
 
   useEffect(() => {
     let cancelled = false;
+
+    async function loadAccessStatus() {
+      try {
+        const response = await fetch("/api/access");
+        const payload = await response.json() as { unlocked?: boolean };
+        if (!cancelled) setAccessUnlocked(Boolean(payload.unlocked));
+      } catch {
+        if (!cancelled) setAccessUnlocked(false);
+      }
+    }
 
     async function loadHistory() {
       let localItems: HistoryItem[] = [];
@@ -112,6 +129,7 @@ export function AppSidebar({
       }
     }
 
+    void loadAccessStatus();
     void loadHistory();
     return () => {
       cancelled = true;
@@ -134,10 +152,17 @@ export function AppSidebar({
           <SidebarIcon name="pricing" />
           <span>Pricing</span>
         </a>
-        <a className={selected === "login" ? "sidebarNavItem selected" : "sidebarNavItem"} href="/login">
-          <SidebarIcon name="login" />
-          <span>Login</span>
-        </a>
+        {accessUnlocked ? (
+          <a className={selected === "profile" ? "sidebarNavItem selected" : "sidebarNavItem"} href="/profile">
+            <SidebarIcon name="profile" />
+            <span>Profile</span>
+          </a>
+        ) : (
+          <a className={selected === "login" ? "sidebarNavItem selected" : "sidebarNavItem"} href="/login">
+            <SidebarIcon name="login" />
+            <span>Login</span>
+          </a>
+        )}
         <div className="sidebarHistoryMenu">
           <button
             className={selected === "history" ? "sidebarNavItem historyToggle selected" : "sidebarNavItem historyToggle"}

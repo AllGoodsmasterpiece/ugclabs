@@ -2,6 +2,23 @@ import { NextResponse } from "next/server";
 
 const accessCookieName = "ugcday_access";
 
+export async function GET(request: Request) {
+  const configuredPassword = process.env.UGCDAY_ACCESS_PASSWORD;
+
+  if (!configuredPassword) {
+    return NextResponse.json({ unlocked: true });
+  }
+
+  const cookie = request.headers
+    .get("cookie")
+    ?.split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${accessCookieName}=`));
+  const value = cookie ? decodeURIComponent(cookie.slice(accessCookieName.length + 1)) : "";
+
+  return NextResponse.json({ unlocked: value === configuredPassword });
+}
+
 export async function POST(request: Request) {
   const configuredPassword = process.env.UGCDAY_ACCESS_PASSWORD;
 
