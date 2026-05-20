@@ -2338,18 +2338,21 @@ h3 {
   line-height: 1.45;
 }
 
-.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero {
+.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero,
+.siteMainWithSidebar:has(.pricingGrid) .sitePageHero {
   gap: 7px;
   margin: 34px auto 22px;
 }
 
-.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero h1 {
+.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero h1,
+.siteMainWithSidebar:has(.pricingGrid) .sitePageHero h1 {
   max-width: 560px;
   font-size: clamp(28px, 3.2vw, 42px);
   line-height: 1.06;
 }
 
-.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero p {
+.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero p,
+.siteMainWithSidebar:has(.pricingGrid) .sitePageHero p {
   max-width: 520px;
   font-size: 14px;
   line-height: 1.4;
