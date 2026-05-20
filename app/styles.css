@@ -2338,6 +2338,23 @@ h3 {
   line-height: 1.45;
 }
 
+.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero {
+  gap: 7px;
+  margin: 34px auto 22px;
+}
+
+.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero h1 {
+  max-width: 560px;
+  font-size: clamp(28px, 3.2vw, 42px);
+  line-height: 1.06;
+}
+
+.siteMainWithSidebar:has(.siteLoginPanel) .sitePageHero p {
+  max-width: 520px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .siteInfoGrid,
 .profileSummaryGrid {
   display: grid;
@@ -2768,11 +2785,11 @@ h3 {
 
 .siteLoginPanel {
   display: grid;
-  width: min(560px, 100%);
-  gap: 20px;
-  border-radius: 20px;
-  padding: 26px;
-  box-shadow: 0 20px 60px rgba(16, 18, 22, 0.08);
+  width: min(440px, 100%);
+  gap: 14px;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 16px 42px rgba(16, 18, 22, 0.07);
   text-align: left;
 }
 
@@ -2803,22 +2820,22 @@ h3 {
 
 .emailLoginForm {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .siteLoginPanel label {
   display: grid;
-  gap: 7px;
+  gap: 6px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
 }
 
 .siteLoginPanel input {
-  min-height: 58px;
+  min-height: 46px;
   border: 1px solid var(--line-strong);
-  border-radius: 14px;
+  border-radius: 12px;
   background: #ffffff;
   color: var(--ink);
   padding: 0 14px;
@@ -2842,11 +2859,11 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 999px;
   background: #ffffff;
-  padding: 6px;
+  padding: 4px;
 }
 
 .loginModeTabs button {
-  min-height: 52px;
+  min-height: 40px;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -2863,21 +2880,21 @@ h3 {
 .googleLoginButton {
   display: inline-flex;
   width: 100%;
-  min-height: 58px;
+  min-height: 46px;
   align-items: center;
   justify-content: center;
   gap: 14px;
   border: 1px solid var(--line-strong);
-  border-radius: 14px;
+  border-radius: 12px;
   background: #ffffff;
   color: #27313d;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 650;
 }
 
 .googleLoginButton svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   flex: 0 0 auto;
 }
 
@@ -2887,7 +2904,7 @@ h3 {
   align-items: center;
   gap: 10px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -2901,14 +2918,14 @@ h3 {
 
 .emailLoginForm button {
   justify-self: stretch;
-  min-height: 58px;
-  font-size: 17px;
+  min-height: 48px;
+  font-size: 15px;
 }
 
 .forgotPasswordPanel {
   display: grid;
-  width: min(560px, 100%);
-  margin: 12px auto 0;
+  width: min(440px, 100%);
+  margin: 8px auto 0;
   gap: 12px;
   text-align: center;
 }
@@ -2919,7 +2936,7 @@ h3 {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 760;
 }
 
